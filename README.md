@@ -1,51 +1,51 @@
-## Plataforma de Gestión Escolar UTMA
+# UTMA School Management Platform
 
-### Descripción
+## Description
 
-La Plataforma de Gestión Escolar UTMA es un sistema desarrollado para la administración eficiente de usuarios, asignaturas y horarios en la Universidad Tecnológica Metropolitana de Aguascalientes (UTMA). El sistema permite la gestión de perfiles de alumnos, administrativos y docentes, así como la integración de funcionalidades para la consulta de información mediante llamadas HTTP a APIs externas.
+The UTMA School Management Platform is a system developed for efficient management of users, subjects, and schedules at the Universidad Tecnológica Metropolitana de Aguascalientes (UTMA). The system allows the management of profiles for students, administrative staff, and teachers, as well as integrating functionalities for querying information through HTTP calls to external APIs.
 
-### Funcionalidades
+## Features
 
-- Registro y gestión de usuarios con diferentes roles: alumnos, administrativos y docentes.
-- Gestión de asignaturas y horarios.
-- Creación y gestión de grupos y asignación de materias.
-- Integración con APIs externas para la consulta de datos.
-- Panel de administración para aprobación de registros.
-- Interfaz de usuario desarrollada en React.
+- Registration and management of users with different roles: students, administrative staff, and teachers.
+- Management of subjects and schedules.
+- Creation and management of groups and assignment of subjects.
+- Integration with external APIs for data querying.
+- Administration panel for approval of registrations.
+- User interface developed in React.
 
-### Tecnologías Utilizadas
+## Technologies Used
 
-- **Frontend:** React.js con CSS para el estilado.
-- **Backend:** Motoko en la plataforma Internet Computer.
-- **Autenticación:** Internet Identity para la gestión de identidades de usuario.
+- **Frontend:** React.js with CSS for styling.
+- **Backend:** Motoko on the Internet Computer platform.
+- **Authentication:** Internet Identity for user identity management.
 
-### Configuración del Entorno
+## Environment Setup
 
-#### Prerrequisitos
+### Prerequisites
 
-- Node.js y npm instalados
-- DFX (Dfinity SDK) configurado y funcionando
-- Internet Identity configurado para el desarrollo local
+- Node.js and npm installed
+- DFX (Dfinity SDK) configured and running
+- Internet Identity configured for local development
 
-#### Instalación
+### Installation
 
-1. **Clonar el repositorio:**
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/AngelSaulCorreaMartinez/AII.git
    cd AII
    ```
 
-2. **Instalar las dependencias del frontend:**
+2. **Install frontend dependencies:**
 
    ```bash
    cd AII_frontend
    npm install
    ```
 
-3. **Verificar Mops:**
+3. **Verify Mops:**
    
-   - Clonar el repositorio de Mops y construir la herramienta:
+   - Clone the Mops repository and build the tool:
      ```bash
      git clone https://github.com/ZenVoich/mops.git
      cd mops/cli
@@ -53,20 +53,20 @@ La Plataforma de Gestión Escolar UTMA es un sistema desarrollado para la admini
      npm link
      ```
 
-   - Navegar a la ruta de tu proyecto e inicializar Mops en tu proyecto:
+   - Navigate to your project directory and initialize Mops in your project:
      ```bash
      cd ../../AII
      mops init
      ```
 
-   - Agregar las dependencias necesarias utilizando Mops:
+   - Add the necessary dependencies using Mops:
      ```bash
      mops add base
      mops add Map
      mops install
      ```
 
-4. **Hacer deploy:**
+4. **Deploy the project:**
 
    ```bash
    cd ../AII_backend
@@ -74,74 +74,145 @@ La Plataforma de Gestión Escolar UTMA es un sistema desarrollado para la admini
    dfx deploy
    ```
 
-### Información Detallada de Funcionalidades
+## Detailed Information on Features
 
-#### Registro y Gestión de Usuarios
+### User Registration and Management
 
-- **Alumnos:** Registro de estudiantes con información detallada como nombre, apellidos, fecha de nacimiento, CURP, género, lugar de nacimiento, estado civil, correo electrónico, direcciones, teléfonos, detalles médicos, número de seguro social, entre otros.
-- **Administrativos:** Registro de personal administrativo con información relevante como nombre, apellidos, fecha de nacimiento, CURP, género, lugar de nacimiento, estado civil, correo electrónico, direcciones, teléfonos, detalles médicos, número de seguro social, cédula profesional, etc.
-- **Docentes:** Registro de profesores con información similar a la de los administrativos, además de un listado de materias que imparte.
+- **Students:** Registration of students with detailed information such as name, surname, date of birth, CURP, gender, place of birth, marital status, email, addresses, phone numbers, medical details, social security number, etc.
+- **Administrative Staff:** Registration of administrative staff with relevant information such as name, surname, date of birth, CURP, gender, place of birth, marital status, email, addresses, phone numbers, medical details, social security number, professional ID, etc.
+- **Teachers:** Registration of teachers with information similar to that of administrative staff, plus a list of subjects they teach.
 
-#### Gestión de Asignaturas y Horarios
+### Subject and Schedule Management
 
-- **Grupos:** Creación y gestión de grupos de alumnos.
-- **Asignaturas:** Asignación de materias a grupos y docentes.
-- **Horarios:** Gestión de horarios para cada grupo, incluyendo la asignación de materias y docentes a horarios específicos.
+- **Groups:** Creation and management of student groups.
+- **Subjects:** Assignment of subjects to groups and teachers.
+- **Schedules:** Management of schedules for each group, including the assignment of subjects and teachers to specific timeslots.
 
-#### Integración con APIs Externas
+### Integration with External APIs
 
-- Capacidad para realizar consultas a APIs externas para obtener información adicional o verificar datos.
+- Capability to perform queries to external APIs to obtain additional information or verify data.
 
-#### Panel de Administración
+### Administration Panel
 
-- **Aprobación de Registros:** Los administradores pueden aprobar o rechazar solicitudes de registro de alumnos, administrativos y docentes.
-- **Consulta de Información:** Visualización de los registros de alumnos, administrativos, docentes, grupos y horarios.
+- **Approval of Registrations:** Administrators can approve or reject registration requests for students, administrative staff, and teachers.
+- **Information Query:** Viewing records of students, administrative staff, teachers, groups, and schedules.
 
-#### Interfaz de Usuario
+### User Interface
 
-- **React.js:** Desarrollo del frontend utilizando React.js para una experiencia de usuario dinámica y responsiva.
-- **Estilos en CSS:** Uso de CSS para el estilado y la presentación visual de la interfaz de usuario.
+- **React.js:** Frontend development using React.js for a dynamic and responsive user experience.
+- **CSS Styling:** Use of CSS for styling and visual presentation of the user interface.
 
-### Desarrollo y Contribución
+### Development and Contribution
 
-1. **Configuración del Entorno de Desarrollo:**
+1. **Development Environment Setup:**
 
-   Asegúrate de tener instalados los siguientes prerrequisitos antes de comenzar con el desarrollo:
-   - Node.js y npm
+   Ensure you have the following prerequisites installed before starting development:
+   - Node.js and npm
    - DFX (Dfinity SDK)
-   - Internet Identity configurado
+   - Internet Identity configured
 
-2. **Pasos para Contribuir:**
+2. **Steps to Contribute:**
 
-   - Clonar el repositorio.
-   - Crear una rama nueva para tu característica o corrección de error:
+   - Clone the repository.
+   - Create a new branch for your feature or bug fix:
      ```bash
-     git checkout -b nombre-de-tu-rama
+     git checkout -b your-branch-name
      ```
-   - Realizar los cambios necesarios y hacer commit:
+   - Make the necessary changes and commit them:
      ```bash
-     git commit -m "Descripción de tus cambios"
+     git commit -m "Description of your changes"
      ```
-   - Hacer push a la rama creada:
+   - Push to the branch you created:
      ```bash
-     git push origin nombre-de-tu-rama
+     git push origin your-branch-name
      ```
-   - Crear un Pull Request en GitHub para que tus cambios sean revisados e integrados.
+   - Create a Pull Request on GitHub for your changes to be reviewed and merged.
 
-### Preguntas Frecuentes
+### Frequently Asked Questions
 
-- **¿Cómo puedo reiniciar el entorno de desarrollo?**
-  Para reiniciar el entorno de desarrollo, puedes detener y reiniciar el servicio DFX:
+- **How can I restart the development environment?**
+  To restart the development environment, you can stop and restart the DFX service:
   ```bash
   dfx stop
   dfx start --background
   ```
 
-- **¿Cómo puedo verificar el estado de despliegue de los canisters?**
-  Puedes utilizar el comando `dfx canister status` para verificar el estado de despliegue de los canisters:
+- **How can I check the deployment status of the canisters?**
+  You can use the `dfx canister status` command to check the deployment status of the canisters:
   ```bash
-  dfx canister status nombre_del_canister
+  dfx canister status canister_name
   ```
 
-- **¿Dónde puedo encontrar más información sobre el uso de DFX y Motoko?**
-  La documentación oficial de Dfinity proporciona guías detalladas y ejemplos sobre el uso de DFX y el desarrollo en Motoko. Visita [Internet Computer Developer Documentation](https://smartcontracts.org/docs/developers-guide/introducing-
+- **Where can I find more information about using DFX and Motoko?**
+  The official Dfinity documentation provides detailed guides and examples on using DFX and developing in Motoko. Visit [Internet Computer Developer Documentation](https://smartcontracts.org/docs/developers-guide/introducing-ic.html).
+
+### API Endpoints and External Integration
+
+1. **External API Integration:**
+   - The platform includes functionalities to make HTTP requests to external APIs to fetch data or verify existing information.
+
+2. **Endpoints:**
+   - Detailed documentation for each endpoint provided by the external APIs should be referenced here.
+
+### System Architecture
+
+1. **Frontend:**
+   - Built with React.js, providing a responsive and dynamic user interface.
+   - Styled using CSS for a modern and clean look.
+
+2. **Backend:**
+   - Developed in Motoko, deployed on the Internet Computer.
+   - Handles user authentication, data storage, and business logic.
+
+3. **Database:**
+   - The Internet Computer's stable storage is used for data persistence.
+
+4. **Authentication:**
+   - Managed by Internet Identity, ensuring secure and seamless user login.
+
+### Deployment and Hosting
+
+- **Internet Computer:**
+  - The backend is deployed on the Internet Computer, leveraging its decentralized infrastructure.
+  - Ensure DFX is configured correctly to deploy the canisters.
+
+- **Local Development:**
+  - Use `dfx start` to run a local replica of the Internet Computer for development and testing.
+
+### Contributing to the Project
+
+We welcome contributions from the community! To contribute, follow these steps:
+
+1. **Fork the Repository:**
+   - Click the "Fork" button at the top right corner of the repository page on GitHub.
+
+2. **Clone Your Fork:**
+   - Clone your forked repository to your local machine:
+     ```bash
+     git clone https://github.com/your-username/AII.git
+     cd AII
+     ```
+
+3. **Create a New Branch:**
+   - Create a new branch for your changes:
+     ```bash
+     git checkout -b feature/your-feature-name
+     ```
+
+4. **Make Your Changes:**
+   - Make the necessary changes in your local repository.
+
+5. **Commit Your Changes:**
+   - Commit your changes with a descriptive message:
+     ```bash
+     git commit -m "Add your commit message here"
+     ```
+
+6. **Push Your Changes:**
+   - Push your changes to your forked repository:
+     ```bash
+     git push origin feature/your-feature-name
+     ```
+
+7. **Create a Pull Request:**
+   - Open a pull request from your forked repository to the main repository.
