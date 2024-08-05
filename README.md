@@ -7,11 +7,12 @@ The UTMA School Management Platform is a system developed for efficient manageme
 ## Features
 
 - Registration and management of users with different roles: students, administrative staff, and teachers.
-- Management of subjects and schedules.
-- Creation and management of groups and assignment of subjects.
+- Management of subjects and schedules. (Developing)
+- Creation and management of groups and assignment of subjects. (Developing)
 - Integration with external APIs for data querying.
 - Administration panel for approval of registrations.
 - User interface developed in React.
+- Backend developed in Motoko
 
 ## Technologies Used
 
