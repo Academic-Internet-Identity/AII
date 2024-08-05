@@ -33,7 +33,7 @@ The UTMA School Management Platform is a system developed for efficient manageme
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/AngelSaulCorreaMartinez/AII.git
+   git clone https://github.com/Academic-Internet-Identity/AII.git
    cd AII
    ```
 
