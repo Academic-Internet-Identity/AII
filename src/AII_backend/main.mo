@@ -3,13 +3,12 @@ import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
 import Map "mo:map/Map";
 import { thash; phash } "mo:map/Map";
-//import Time "mo:base/Time";
-//import Buffer "mo:base/Buffer";
 import Text "mo:base/Text";
 import Set "mo:map/Set";
 import Debug "mo:base/Debug"; // Import Debug for logging
 import Types "./types";
-
+import Cycles "mo:base/ExperimentalCycles";
+import Blob "mo:base/Blob";
 
 shared ({ caller }) actor class _Plataforma() {
 
@@ -56,14 +55,14 @@ shared ({ caller }) actor class _Plataforma() {
         Map.get(usuarios, phash, caller);
     };
 
-    func esUsuario(p : Principal) : Bool {
+    func _esUsuario(p : Principal) : Bool {
         return switch (Map.get<Principal, Usuario>(usuarios, Map.phash, p)) {
             case null { false };
             case _ { true };
         };
     };
 
-    func esAlumno(p : Principal) : Bool {
+    func _esAlumno(p : Principal) : Bool {
         return switch (Map.get<Principal, Alumno>(alumnos, Map.phash, p)) {
             case null { false };
             case _ { true };
@@ -77,14 +76,14 @@ shared ({ caller }) actor class _Plataforma() {
         result;
     };
 
-    func esAdministrativo(p : Principal) : Bool {
+    func _esAdministrativo(p : Principal) : Bool {
         return switch (Map.get<Principal, Administrativo>(administrativos, Map.phash, p)) {
             case null { false };
             case _ { true };
         };
     };
 
-    func esDocente(p : Principal) : Bool {
+    func _esDocente(p : Principal) : Bool {
         return switch (Map.get<Principal, Docente>(docentes, Map.phash, p)) {
             case null { false };
             case _ { true };
@@ -92,7 +91,7 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared ({ caller }) func agregarAdmin(p : Principal) : async Bool {
-        assert esAdmin(caller) and esUsuario(p);
+        assert esAdmin(caller) and _esUsuario(p);
         ignore Set.put<Principal>(admins, Map.phash, p);
         true;
     };
@@ -110,7 +109,7 @@ shared ({ caller }) actor class _Plataforma() {
             Debug.print("Caller cannot be anonymous");
             return "Error: Caller cannot be anonymous";
         };
-        if (esUsuario(caller)) {
+        if (_esUsuario(caller)) {
             Debug.print("Caller is already registered as a user");
             return "Error: Caller is already registered as a user";
         };
@@ -270,7 +269,7 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Principal, Docente>(docentes));
     };
 
-    func enArray<T>(a : [T], e : T, equal : (T, T) -> Bool) : Bool {
+    func _enArray<T>(a : [T], e : T, equal : (T, T) -> Bool) : Bool {
         for (i in a.vals()) { if (equal(i, e)) { return true } };
         return false;
     };
@@ -287,5 +286,87 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Principal, Alumno>(alumnos));
     };
 
+    public shared query ({ caller }) func verMiPerfil() : async ?Alumno {
+        Debug.print("Caller in verMiPerfil: " # Principal.toText(caller));
+        Map.get(alumnos, phash, caller);
+    };
 
+    // Declare IC actor
+    let ic : Types.IC = actor "aaaaa-aa"; // Management Canister ID
+
+    // HTTP Outcall functions
+
+    public func fetchAlumnosData() : async Text {
+        let url: Text = "https://ingsoftware.uaz.edu.mx/api/alumnos";
+
+        let request_headers = [
+            { name = "Host"; value = "ingsoftware.uaz.edu.mx:443" },
+            { name = "User-Agent"; value = "Motoko HTTP Agent" },
+        ];
+
+        let http_request : Types.HttpRequestArgs = {
+            url = url;
+            max_response_bytes = null;
+            headers = request_headers;
+            body = null;
+            method = #get;
+            transform = null;
+        };
+
+        Cycles.add<system>(20_949_972_000);
+
+        let http_response : Types.HttpResponsePayload = await ic.http_request(http_request);
+
+        let response_body: Blob = Blob.fromArray(http_response.body);
+        let decoded_text: Text = switch (Text.decodeUtf8(response_body)) {
+            case (null) { "No value returned" };
+            case (?text) { text };
+        };
+
+        return decoded_text;
+    };
+
+    public func sendAlumnoData(alumno: Types.Alumno) : async Text {
+        let alumnoJson: Text = encodeAlumnoJson(alumno);
+
+        let url: Text = "https://ingsoftware.uaz.edu.mx/api/alumnos";
+
+        let bodyBytesBlob = Text.encodeUtf8(alumnoJson);
+        let bodyBytes = Blob.toArray(bodyBytesBlob);
+
+        let request_headers = [
+            { name = "Host"; value = "ingsoftware.uaz.edu.mx:443" },
+            { name = "Content-Type"; value = "application/json" }
+        ];
+        let http_request : Types.HttpRequestArgs = {
+            url = url;
+            max_response_bytes = null;
+            headers = request_headers;
+            body = ?bodyBytes;
+            method = #post;
+            transform = null;
+        };
+
+        Cycles.add<system>(1_000_000_000_000);
+
+        let http_response : Types.HttpResponsePayload = await ic.http_request(http_request);
+
+        let response_body: Blob = Blob.fromArray(http_response.body);
+        let decoded_text: Text = switch (Text.decodeUtf8(response_body)) {
+            case (null) { "No value returned" };
+            case (?text) { text };
+        };
+
+        return decoded_text;
+    };
+
+    private func encodeAlumnoJson(alumno: Types.Alumno) : Text {
+        "{ \"apellidoMaterno\": \"" # alumno.apellidoMaterno #
+        "\", \"apellidoPaterno\": \"" # alumno.apellidoPaterno #
+        "\", \"carrera\": \"" # alumno.carrera #
+        "\", \"fechaNacimiento\": \"" # alumno.fechaNacimiento #
+        "\", \"nombre\": \"" # alumno.nombre #
+        "\", \"semestre\": " # Nat.toText(alumno.semestre) #
+        " }"
+    }
 };
