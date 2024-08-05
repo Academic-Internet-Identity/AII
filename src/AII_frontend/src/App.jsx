@@ -22,6 +22,7 @@ import './styles/commonStyles.css';
 import { UserProvider, useUser } from './UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as AII_backend from "declarations/AII_backend";
+import ConsultaAlumnos from './components/ConsultaAlumnos';
 
 const client = createClient({
   canisters: {
@@ -109,6 +110,7 @@ function AppRoutes() {
         <Route path="/detalles-alumno/:principal" element={<DetallesAlumno />} />
         <Route path="/detalles-administrativo/:principal" element={<DetallesAdministrativo />} />
         <Route path="/detalles-docente/:principal" element={<DetallesDocente />} />
+        <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
         
       </Routes>
     </>

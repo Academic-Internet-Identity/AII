@@ -1,12 +1,16 @@
+// Archivo: src/components/Inicio.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../UserContext';
 import { useCanister } from '@connect2ic/react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/inicioStyles.css';
 
 function Inicio() {
   const { principal } = useUser();
   const [AII_backend] = useCanister('AII_backend');
   const [rol, setRol] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('Principal in Inicio:', principal);
@@ -49,6 +53,10 @@ function Inicio() {
     }
   }, [principal, AII_backend]);
 
+  const handleConsultaAlumnosClick = () => {
+    navigate('/consulta-alumnos');
+  };
+
   return (
     <div className="main-content">
       <h1>Bienvenidos a la Gestión de Alumnos</h1>
@@ -56,6 +64,9 @@ function Inicio() {
         <>
           <p className="principal-text">Principal: {principal}</p>
           <p className="rol-text">Rol: {rol}</p>
+          <button onClick={handleConsultaAlumnosClick} className="consulta-alumnos-button">
+            Consultar Alumnos HTTP outcall
+          </button>
         </>
       ) : (
         <p className="principal-text">No se ha encontrado el principal</p>
