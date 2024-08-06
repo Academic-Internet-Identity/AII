@@ -77,8 +77,9 @@ The AII (School Management Platform) is a system developed for efficient managem
 
 - To deploy your Internet Computer application locally, you need to use the `deps`.
 
-```bash
-dfx deps deploy
+    ```bash
+    dfx deps deploy
+    ```
 
 ## Adding an Admin via Terminal
 
