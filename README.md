@@ -135,7 +135,7 @@ The UTMA School Management Platform is a system developed for efficient manageme
   To restart the development environment, you can stop and restart the DFX service:
   ```bash
   dfx stop
-  dfx start --background
+  dfx start --background --clean
   ```
 
 - **How can I check the deployment status of the canisters?**
@@ -144,76 +144,6 @@ The UTMA School Management Platform is a system developed for efficient manageme
   dfx canister status canister_name
   ```
 
-- **Where can I find more information about using DFX and Motoko?**
-  The official Dfinity documentation provides detailed guides and examples on using DFX and developing in Motoko. Visit [Internet Computer Developer Documentation](https://smartcontracts.org/docs/developers-guide/introducing-ic.html).
+- **Where can I find more information about using DFX, Motoko and ICP?**
+  The official Internet Computer documentation provides detailed guides and examples on using DFX and developing in Motoko and other languages. Visit [Internet Computer Developer Documentation](https://internetcomputer.org/docs/current/home).
 
-### API Endpoints and External Integration
-
-1. **External API Integration:**
-   - The platform includes functionalities to make HTTP requests to external APIs to fetch data or verify existing information.
-
-2. **Endpoints:**
-   - Detailed documentation for each endpoint provided by the external APIs should be referenced here.
-
-### System Architecture
-
-1. **Frontend:**
-   - Built with React.js, providing a responsive and dynamic user interface.
-   - Styled using CSS for a modern and clean look.
-
-2. **Backend:**
-   - Developed in Motoko, deployed on the Internet Computer.
-   - Handles user authentication, data storage, and business logic.
-
-3. **Database:**
-   - The Internet Computer's stable storage is used for data persistence.
-
-4. **Authentication:**
-   - Managed by Internet Identity, ensuring secure and seamless user login.
-
-### Deployment and Hosting
-
-- **Internet Computer:**
-  - The backend is deployed on the Internet Computer, leveraging its decentralized infrastructure.
-  - Ensure DFX is configured correctly to deploy the canisters.
-
-- **Local Development:**
-  - Use `dfx start` to run a local replica of the Internet Computer for development and testing.
-
-### Contributing to the Project
-
-We welcome contributions from the community! To contribute, follow these steps:
-
-1. **Fork the Repository:**
-   - Click the "Fork" button at the top right corner of the repository page on GitHub.
-
-2. **Clone Your Fork:**
-   - Clone your forked repository to your local machine:
-     ```bash
-     git clone https://github.com/your-username/AII.git
-     cd AII
-     ```
-
-3. **Create a New Branch:**
-   - Create a new branch for your changes:
-     ```bash
-     git checkout -b feature/your-feature-name
-     ```
-
-4. **Make Your Changes:**
-   - Make the necessary changes in your local repository.
-
-5. **Commit Your Changes:**
-   - Commit your changes with a descriptive message:
-     ```bash
-     git commit -m "Add your commit message here"
-     ```
-
-6. **Push Your Changes:**
-   - Push your changes to your forked repository:
-     ```bash
-     git push origin feature/your-feature-name
-     ```
-
-7. **Create a Pull Request:**
-   - Open a pull request from your forked repository to the main repository.
