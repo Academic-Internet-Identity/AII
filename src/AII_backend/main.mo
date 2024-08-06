@@ -45,7 +45,6 @@ shared ({ caller }) actor class _Plataforma() {
     stable let administrativos = Map.new<Principal, Administrativo>();
     stable let docentes = Map.new<Principal, Docente>();
     ignore Set.put<Principal>(admins, phash, deployer);
-    ignore Set.put<Principal>(admins, phash, deployer);
 
     stable let alumnosIngresantes = Map.new<Principal, RegistroAlumnoForm>();
     stable let administrativosIngresantes = Map.new<Principal, RegistroAdministrativoForm>();
