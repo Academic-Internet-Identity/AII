@@ -1,8 +1,8 @@
-# UTMA School Management Platform
+# Academic Internet Identity
 
 ## Description
 
-The UTMA School Management Platform is a system developed for efficient management of users, subjects, and schedules at the Universidad Tecnológica Metropolitana de Aguascalientes (UTMA). The system allows the management of profiles for students, administrative staff, and teachers, as well as integrating functionalities for querying information through HTTP calls to external APIs.
+The AII (School Management Platform) is a system developed for efficient management of users, subjects, and schedules at the Universidad Tecnológica Metropolitana de Aguascalientes (UTMA), with the possibility of expanding the scope. The system allows the management of profiles for students, administrative staff, and teachers, as well as integrating functionalities for querying information through HTTP calls to external APIs.
 
 ## Features
 
