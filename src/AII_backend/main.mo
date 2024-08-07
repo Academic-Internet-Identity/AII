@@ -9,6 +9,7 @@ import Debug "mo:base/Debug"; // Import Debug for logging
 import Types "./types";
 import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
+import Array "mo:base/Array"; // Import Array module
 
 shared ({ caller }) actor class _Plataforma() {
 
@@ -20,6 +21,8 @@ shared ({ caller }) actor class _Plataforma() {
     public type Docente = Types.Docente;
     public type Uid = Types.Uid; // Usuario id
     public type Aid = Types.Aid; // Alumno id
+    public type Materia = Types.Materia;
+    public type Horario = Types.Horario;
 
     public type RegistroAlumnoForm = Types.RegistroAlumnoForm;
     public type RegistroAdministrativoForm = Types.RegistroAdministrativoForm;
@@ -45,10 +48,14 @@ shared ({ caller }) actor class _Plataforma() {
     stable let administrativos = Map.new<Principal, Administrativo>();
     stable let docentes = Map.new<Principal, Docente>();
     ignore Set.put<Principal>(admins, phash, deployer);
+    ignore Set.put<Principal>(admins, phash, deployer);
 
     stable let alumnosIngresantes = Map.new<Principal, RegistroAlumnoForm>();
     stable let administrativosIngresantes = Map.new<Principal, RegistroAdministrativoForm>();
     stable let docentesIngresantes = Map.new<Principal, RegistroDocenteForm>();
+
+    stable let materias = Map.new<Text, Materia>();
+    stable let horarios = Map.new<Text, [Horario]>();
 
     public shared ({ caller }) func getMyUser() : async ?Usuario {
         Map.get(usuarios, phash, caller);
@@ -290,6 +297,40 @@ shared ({ caller }) actor class _Plataforma() {
         Map.get(alumnos, phash, caller);
     };
 
+    public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat) : async Text {
+        assert esAdmin(caller);
+        let nuevaMateria : Materia = { nombre; codigo; creditos };
+        ignore Map.put<Text, Materia>(materias, thash, codigo, nuevaMateria);
+        return "Materia agregada exitosamente";
+    };
+
+    public shared query ({ caller }) func verMaterias() : async [Materia] {
+        assert esAdmin(caller);
+        Iter.toArray(Map.vals<Text, Materia>(materias));
+    };
+
+    public shared ({ caller }) func agregarHorario(codigoMateria: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
+        assert esAdmin(caller);
+        let materia = Map.get<Text, Materia>(materias, thash, codigoMateria);
+        switch materia {
+            case null { return "Materia no encontrada"; };
+            case (?materia) {
+                let nuevoHorario : Horario = { dia; horaInicio; horaFin; materia };
+                let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, codigoMateria)) {
+                    case null { []; };
+                    case (?h) { h };
+                };
+                ignore Map.put<Text, [Horario]>(horarios, thash, codigoMateria, Array.append(horariosExistentes, [nuevoHorario]));
+                return "Horario agregado exitosamente";
+            };
+        };
+    };
+
+    public shared query ({ caller }) func verHorarios(codigoMateria: Text) : async ?[Horario] {
+        assert esAdmin(caller);
+        Map.get<Text, [Horario]>(horarios, thash, codigoMateria);
+    };
+
     // Declare IC actor
     let ic : Types.IC = actor "aaaaa-aa"; // Management Canister ID
 
@@ -366,6 +407,6 @@ shared ({ caller }) actor class _Plataforma() {
         "\", \"fechaNacimiento\": \"" # alumno.fechaNacimiento #
         "\", \"nombre\": \"" # alumno.nombre #
         "\", \"semestre\": " # Nat.toText(alumno.semestre) #
-        " }"
-    }
+        "}"
+        }
 };

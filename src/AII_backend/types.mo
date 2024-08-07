@@ -174,7 +174,19 @@ module {
         materias: [Text];
     };
 
-    // New HTTP types
+    public type Materia = {
+        nombre: Text;
+        codigo: Text;
+        creditos: Nat;
+    };
+
+    public type Horario = {
+        dia: Text;
+        horaInicio: Text;
+        horaFin: Text;
+        materia: Materia;
+    };
+
     public type Timestamp = Nat64;
 
     public type HttpHeader = {
