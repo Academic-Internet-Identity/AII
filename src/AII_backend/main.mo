@@ -409,4 +409,8 @@ shared ({ caller }) actor class _Plataforma() {
         "\", \"semestre\": " # Nat.toText(alumno.semestre) #
         "}"
         }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 5c4bd00de5020654618bd3d7479b4eb37903d16b
