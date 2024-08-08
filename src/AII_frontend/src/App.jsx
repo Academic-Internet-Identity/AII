@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Inicio from './components/Inicio';
@@ -15,6 +16,8 @@ import AprobarDocente from './components/AprobarDocente';
 import DetallesAlumno from './components/DetallesAlumno';
 import DetallesAdministrativo from './components/DetallesAdministrativo';
 import DetallesDocente from './components/DetallesDocente';
+import ConsultaAlumnos from './components/ConsultaAlumnos';
+import AgregarMateria from './components/AgregarMateria';
 import { Connect2ICProvider, useConnect, useCanister } from '@connect2ic/react';
 import { createClient } from '@connect2ic/core';
 import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
@@ -22,18 +25,17 @@ import './styles/commonStyles.css';
 import { UserProvider, useUser } from './UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as AII_backend from "declarations/AII_backend";
-import ConsultaAlumnos from './components/ConsultaAlumnos';
 
 const client = createClient({
   canisters: {
     AII_backend,
   },
   providers: [
-    //new InternetIdentity({ providerUrl: "http://localhost:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai" })
-    new InternetIdentity({ providerUrl: "https://identity.ic0.app" })
+    new InternetIdentity({ providerUrl: "http://localhost:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai" })
+    //new InternetIdentity({ providerUrl: "https://identity.ic0.app" })
   ],
   globalProviderConfig: {
-    dev: false,
+    dev: true,
   },
 });
 
@@ -86,6 +88,9 @@ function AppRoutes() {
           console.error('Error al verificar si el usuario está registrado:', error);
         }
       } else if (!isConnected && location.pathname !== '/') {
+        setPrincipal(null);
+        setRol('');
+        hasCheckedUser.current = false;
         navigate('/');
       }
     };
@@ -112,7 +117,7 @@ function AppRoutes() {
         <Route path="/detalles-administrativo/:principal" element={<DetallesAdministrativo />} />
         <Route path="/detalles-docente/:principal" element={<DetallesDocente />} />
         <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
-        
+        <Route path="/agregar-materia" element={<AgregarMateria />} />
       </Routes>
     </>
   );

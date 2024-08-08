@@ -298,14 +298,14 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat) : async Text {
-        assert esAdmin(caller);
+        //assert esAdmin(caller);
         let nuevaMateria : Materia = { nombre; codigo; creditos };
         ignore Map.put<Text, Materia>(materias, thash, codigo, nuevaMateria);
         return "Materia agregada exitosamente";
     };
 
     public shared query ({ caller }) func verMaterias() : async [Materia] {
-        assert esAdmin(caller);
+        //assert esAdmin(caller);
         Iter.toArray(Map.vals<Text, Materia>(materias));
     };
 
@@ -409,8 +409,4 @@ shared ({ caller }) actor class _Plataforma() {
         "\", \"semestre\": " # Nat.toText(alumno.semestre) #
         "}"
         }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 5c4bd00de5020654618bd3d7479b4eb37903d16b
