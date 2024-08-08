@@ -1,72 +1,79 @@
+// Archivo: src/components/AprobarDocente.jsx
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
-import { useParams } from 'react-router-dom';
-import '../styles/detallesStyles.css';
+import { Principal } from '@dfinity/principal';
+import '../styles/aprobarDocenteStyles.css';
 
-function DetallesDocente() {
+function AprobarDocente() {
   const [AII_backend] = useCanister('AII_backend');
-  const { principal } = useParams();
-  const [docente, setDocente] = useState(null);
+  const [docentesIngresantes, setDocentesIngresantes] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchDocentesIngresantes = async () => {
+    try {
+      const result = await AII_backend.verDocentesIngresantes();
+      setDocentesIngresantes(result);
+    } catch (error) {
+      console.error('Error al obtener los docentes ingresantes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDocenteDetalles = async () => {
-      try {
-        const result = await AII_backend.verDocentes();
-        const docente = result.find(d => d.principalID.toString() === principal);
-        setDocente(docente);
-      } catch (error) {
-        console.error('Error al obtener los detalles del docente:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchDocentesIngresantes();
+  }, [AII_backend]);
 
-    fetchDocenteDetalles();
-  }, [AII_backend, principal]);
-
-  if (loading) {
-    return <p>Cargando...</p>;
-  }
-
-  if (!docente) {
-    return <p>No se encontró información del docente.</p>;
-  }
+  const aprobarDocente = async (principalId) => {
+    try {
+      const principal = Principal.fromText(principalId);
+      const response = await AII_backend.aprobarRegistroDeDocente(principal);
+      console.log(response);
+      fetchDocentesIngresantes();
+    } catch (error) {
+      console.error('Error al aprobar el registro del docente:', error);
+    }
+  };
 
   return (
-    <div className="detalles-dashboard">
-      <h2 className="dashboard-heading">Detalles del Docente</h2>
-      <div className="dashboard-sections">
-        <div className="dashboard-section">
-          <h3>Información Personal</h3>
-          <p><strong>Principal:</strong> {docente.principalID.toString()}</p>
-          <p><strong>Nombre:</strong> {docente.nombre}</p>
-          <p><strong>Apellido Paterno:</strong> {docente.apellidoPaterno}</p>
-          <p><strong>Apellido Materno:</strong> {docente.apellidoMaterno}</p>
-          <p><strong>Fecha de Nacimiento:</strong> {docente.fechaNacimiento}</p>
-          <p><strong>Género:</strong> {docente.genero}</p>
-          <p><strong>CURP:</strong> {docente.curp}</p>
-        </div>
-        <div className="dashboard-section">
-          <h3>Información de Contacto</h3>
-          <p><strong>Email Personal:</strong> {docente.emailPersonal}</p>
-          <p><strong>Teléfonos:</strong> {docente.telefonos.join(', ')}</p>
-          <p><strong>Direcciones:</strong> {docente.direcciones.join(', ')}</p>
-        </div>
-        <div className="dashboard-section">
-          <h3>Información Profesional</h3>
-          <p><strong>Cédula Profesional:</strong> {docente.cedulaProfesional}</p>
-          <p><strong>Materias:</strong> {docente.materias.join(', ')}</p>
-        </div>
-        <div className="dashboard-section">
-          <h3>Información Médica</h3>
-          <p><strong>Tipo Sanguíneo:</strong> {docente.tipoSanguineo}</p>
-          <p><strong>Detalles Médicos:</strong> {docente.detallesMedicos}</p>
-          <p><strong>Número de Seguro Social:</strong> {docente.numeroSeguroSocial}</p>
-        </div>
-      </div>
+    <div className="aprobar-docente-container">
+      <h2 className="table-heading">Aprobar Docentes</h2>
+      {loading ? (
+        <p>Cargando...</p>
+      ) : (
+        <table className="docentes-table">
+          <thead>
+            <tr>
+              <th>Principal</th>
+              <th>Nombre</th>
+              <th>Apellido Paterno</th>
+              <th>Apellido Materno</th>
+              <th>CURP</th>
+              <th>Email Personal</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {docentesIngresantes.map(([principal, docente]) => (
+              <tr key={principal.toString()}>
+                <td>{principal.toString()}</td>
+                <td>{docente.nombre}</td>
+                <td>{docente.apellidoPaterno}</td>
+                <td>{docente.apellidoMaterno}</td>
+                <td>{docente.curp}</td>
+                <td>{docente.emailPersonal}</td>
+                <td>
+                  <button onClick={() => aprobarDocente(principal.toString())} className="approve-button">
+                    Aprobar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
 
-export default DetallesDocente;
+export default AprobarDocente;

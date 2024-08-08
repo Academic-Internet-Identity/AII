@@ -1,4 +1,3 @@
-// src/components/NavBar.jsx
 import React, { useEffect } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import logo from '/logo-completo-utma.png';
 
 function NavBar() {
   const { isConnected, disconnect, connect } = useConnect();
-  const { principal, setPrincipal, setRol, rol, resetUser } = useUser();
+  const { principal, setRol, rol } = useUser();
   const navigate = useNavigate();
   const [AII_backend] = useCanister('AII_backend');
 
@@ -58,7 +57,6 @@ function NavBar() {
 
   const handleLogout = async () => {
     await disconnect();
-    resetUser();
     navigate('/');
   };
 
@@ -86,8 +84,7 @@ function NavBar() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <NavDropdown title="Menú" id="basic-nav-dropdown">
-            <NavDropdown title={<span className="alumnos-dropdown">Alumnos</span>} id="alumnos-nav-dropdown" className="submenu-right">
+          <NavDropdown title="Menú" id="basic-nav-dropdown">            <NavDropdown title={<span className="alumnos-dropdown">Alumnos</span>} id="alumnos-nav-dropdown" className="submenu-right">
               <NavDropdown.Item as={Link} to="/registro-alumno">Registrar Alumno</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/ver-alumnos-inscritos">Ver Alumnos</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/ver-alumnos-ingresantes">Aprobar Alumnos</NavDropdown.Item>
@@ -98,6 +95,7 @@ function NavBar() {
               <NavDropdown.Item as={Link} to="/ver-administrativos">Ver Administrativos</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/aprobar-administrativo">Aprobar Administrativo</NavDropdown.Item>
               {rol === 'Administrativo' && <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>}
+              {rol === 'Administrativo' && <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>}
             </NavDropdown>
             <NavDropdown title={<span className="docentes-dropdown">Docentes</span>} id="docentes-nav-dropdown" className="submenu-right">
               <NavDropdown.Item as={Link} to="/registro-docente">Registrar Docente</NavDropdown.Item>

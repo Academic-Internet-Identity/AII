@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Inicio from './components/Inicio';
@@ -18,6 +17,7 @@ import DetallesAdministrativo from './components/DetallesAdministrativo';
 import DetallesDocente from './components/DetallesDocente';
 import ConsultaAlumnos from './components/ConsultaAlumnos';
 import AgregarMateria from './components/AgregarMateria';
+import ListarMaterias from './components/ListarMaterias';
 import { Connect2ICProvider, useConnect, useCanister } from '@connect2ic/react';
 import { createClient } from '@connect2ic/core';
 import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
@@ -32,7 +32,6 @@ const client = createClient({
   },
   providers: [
     new InternetIdentity({ providerUrl: "http://localhost:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai" })
-    //new InternetIdentity({ providerUrl: "https://identity.ic0.app" })
   ],
   globalProviderConfig: {
     dev: true,
@@ -88,9 +87,6 @@ function AppRoutes() {
           console.error('Error al verificar si el usuario está registrado:', error);
         }
       } else if (!isConnected && location.pathname !== '/') {
-        setPrincipal(null);
-        setRol('');
-        hasCheckedUser.current = false;
         navigate('/');
       }
     };
@@ -118,6 +114,7 @@ function AppRoutes() {
         <Route path="/detalles-docente/:principal" element={<DetallesDocente />} />
         <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
         <Route path="/agregar-materia" element={<AgregarMateria />} />
+        <Route path="/listar-materias" element={<ListarMaterias />} />
       </Routes>
     </>
   );
