@@ -75,6 +75,22 @@ The AII (School Management Platform) is a system developed for efficient managem
    dfx deploy
    ```
 
+- To deploy your Internet Computer application locally, you need to use the `deps`.
+
+    ```bash
+    dfx deps deploy
+    ```
+
+## Adding an Admin via Terminal
+
+To add a user as an admin in your Internet Computer application using the terminal, use the following `dfx` command. Replace `<USER_PRINCIPAL>` with the actual principal ID of the user you want to add as an admin.
+
+   ```bash
+   dfx canister call AII_backend agregarAdmin '(principal "<USER_PRINCIPAL>")'
+   ```
+- Only the deployer can designate a user as an admin using the terminal.
+- An admin user can approve and manage all the services of the platform.
+
 ## Detailed Information on Features
 
 ### User Registration and Management

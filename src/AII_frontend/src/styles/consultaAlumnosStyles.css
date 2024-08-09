@@ -1,0 +1,71 @@
+/* Archivo: src/styles/consultaAlumnosStyles.css */
+
+.alumnos-table-container {
+    padding: 1rem;
+    background-color: #004b72;
+    color: #fff;
+    min-height: 100vh;
+  }
+  
+  .alumnos-table {
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #00385d;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    width: 90%;
+    max-width: 100%;
+  }
+  
+  .alumnos-table th,
+  .alumnos-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+  }
+  
+  .alumnos-table th {
+    background-color: #00385d;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .alumnos-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .alumnos-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+  }
+  
+  .alumnos-table tr:hover {
+    background-color: #1A91DA;
+  }
+  
+  .alumnos-table td {
+    text-align: center;
+  }
+  
+  .table-heading {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .consulta-alumnos-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .consulta-alumnos-button:hover {
+    background-color: #0056b3;
+  }

@@ -1,0 +1,53 @@
+/* src/styles/listarMateriasStyles.css */
+
+.listar-materias-container {
+    padding: 1rem;
+    background-color: #004b72;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.materias-table {
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #00385d;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    width: auto;
+    max-width: 100%;
+}
+
+.materias-table th,
+.materias-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+.materias-table th {
+    background-color: #00385d;
+    color: #fff;
+}
+
+.materias-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.materias-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+}
+
+.materias-table tr:hover {
+    background-color: #1A91DA;
+}
+
+.materias-table td {
+    text-align: center;
+}
+
+.table-heading {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

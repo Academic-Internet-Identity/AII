@@ -15,7 +15,9 @@ import AprobarDocente from './components/AprobarDocente';
 import DetallesAlumno from './components/DetallesAlumno';
 import DetallesAdministrativo from './components/DetallesAdministrativo';
 import DetallesDocente from './components/DetallesDocente';
-import Perfil from './components/Perfil';
+import ConsultaAlumnos from './components/ConsultaAlumnos';
+import AgregarMateria from './components/AgregarMateria';
+import ListarMaterias from './components/ListarMaterias';
 import { Connect2ICProvider, useConnect, useCanister } from '@connect2ic/react';
 import { createClient } from '@connect2ic/core';
 import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
@@ -29,7 +31,7 @@ const client = createClient({
     AII_backend,
   },
   providers: [
-    new InternetIdentity({ providerUrl: "http://localhost:4943/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai" })
+    new InternetIdentity({ providerUrl: "http://localhost:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai" })
   ],
   globalProviderConfig: {
     dev: true,
@@ -110,7 +112,9 @@ function AppRoutes() {
         <Route path="/detalles-alumno/:principal" element={<DetallesAlumno />} />
         <Route path="/detalles-administrativo/:principal" element={<DetallesAdministrativo />} />
         <Route path="/detalles-docente/:principal" element={<DetallesDocente />} />
-        <Route path="/mi-perfil" element={<Perfil />} />
+        <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
+        <Route path="/agregar-materia" element={<AgregarMateria />} />
+        <Route path="/listar-materias" element={<ListarMaterias />} />
       </Routes>
     </>
   );
