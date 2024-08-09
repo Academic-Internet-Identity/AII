@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useConnect, useCanister } from '@connect2ic/react';
 import { ConnectButton, ConnectDialog } from '@connect2ic/react';
+import { useUser } from '../UserContext'; // Import the custom user context
 import '@connect2ic/core/style.css';
 import '../styles/loginStyles.css';
 import logo from '/logo-completo-utma.png';
 
 function Login() {
-  const { isConnected, principal } = useConnect();
+  const { isConnected, principal: connectPrincipal } = useConnect();
   const [AII_backend] = useCanister('AII_backend');
+  const { setPrincipal, resetUser } = useUser(); // Use the custom user context
   const navigate = useNavigate();
 
   const [nick, setNick] = useState('');
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (isConnected) {
+      setPrincipal(connectPrincipal); // Set principal whenever the user is connected
+    } else {
+      resetUser(); // Reset user state when disconnected
+    }
+  }, [isConnected, connectPrincipal, setPrincipal, resetUser]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +34,7 @@ function Login() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!principal) {
+    if (!connectPrincipal) {
       setErrorMessage('Error: Principal is undefined');
       return;
     }
@@ -51,7 +61,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!principal) {
+    if (!connectPrincipal) {
       setErrorMessage('Error: Principal is undefined');
       return;
     }

@@ -7,14 +7,15 @@ import '../styles/navBarStyles.css';
 import logo from '/logo-completo-utma.png';
 
 function NavBar() {
-  const { isConnected, disconnect, connect } = useConnect();
-  const { principal, setRol, rol } = useUser();
+  const { isConnected, disconnect, connect, principal: connectPrincipal } = useConnect();
+  const { principal, setPrincipal, setRol, rol, resetUser } = useUser();
   const navigate = useNavigate();
   const [AII_backend] = useCanister('AII_backend');
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      if (isConnected && principal) {
+    if (isConnected && connectPrincipal) {
+      setPrincipal(connectPrincipal);
+      const fetchUserRole = async () => {
         try {
           const user = await AII_backend.getMyUser();
           if (user && user.length > 0) {
@@ -45,11 +46,13 @@ function NavBar() {
         } catch (error) {
           console.error('Error al obtener el rol del usuario:', error);
         }
-      }
-    };
+      };
 
-    fetchUserRole();
-  }, [isConnected, principal, AII_backend, setRol]);
+      fetchUserRole();
+    } else {
+      resetUser(); // Resetea el estado cuando se desconecta
+    }
+  }, [isConnected, connectPrincipal, AII_backend, setPrincipal, setRol, resetUser]);
 
   const handleLogoClick = () => {
     navigate('/inicio');
@@ -57,6 +60,7 @@ function NavBar() {
 
   const handleLogout = async () => {
     await disconnect();
+    resetUser(); // Resetea el estado del usuario al desconectarse
     navigate('/');
   };
 
@@ -106,15 +110,15 @@ function NavBar() {
             )}
             {rol === 'Administrativo' && (
               <>
-                <NavDropdown title={<span className="alumnos-dropdown">Alumnos</span>} id="alumnos-nav-dropdown" className="dropdown-submenu">
+                <NavDropdown title={<span className="alumnos-dropdown">Alumnos</span>} id="alumnos-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/ver-alumnos-inscritos">Ver Alumnos</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/ver-alumnos-ingresantes">Aprobar Alumnos</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title={<span className="administrativos-dropdown">Administrativos</span>} id="administrativos-nav-dropdown" className="dropdown-submenu">
+                <NavDropdown title={<span className="administrativos-dropdown">Administrativos</span>} id="administrativos-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/ver-administrativos">Ver Administrativos</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/aprobar-administrativo">Aprobar Administrativo</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title={<span className="docentes-dropdown">Docentes</span>} id="docentes-nav-dropdown" className="dropdown-submenu">
+                <NavDropdown title={<span className="docentes-dropdown">Docentes</span>} id="docentes-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/ver-docentes">Ver Docentes</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/aprobar-docente">Aprobar Docente</NavDropdown.Item>
                 </NavDropdown>

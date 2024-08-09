@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import '../styles/registroDocenteStyles.css';
 
@@ -9,7 +9,21 @@ function RegistroDocente() {
     curp: '', genero: '', lugarNacimiento: '', estadoCivil: '', emailPersonal: '', direcciones: [''],
     telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', cedulaProfesional: '', materias: ['']
   });
+  const [materiasDisponibles, setMateriasDisponibles] = useState([]);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const fetchMaterias = async () => {
+      try {
+        const result = await AII_backend.verMaterias();
+        setMateriasDisponibles(result);
+      } catch (error) {
+        console.error('Error al obtener las materias:', error);
+      }
+    };
+
+    fetchMaterias();
+  }, [AII_backend]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -17,13 +31,23 @@ function RegistroDocente() {
   };
 
   const handleArrayChange = (e, index, field) => {
-    const newArray = form[field].slice();
+    const newArray = [...form[field]];
     newArray[index] = e.target.value;
     setForm({ ...form, [field]: newArray });
   };
 
   const addArrayField = (field) => {
     setForm({ ...form, [field]: [...form[field], ''] });
+  };
+
+  const handleMateriaChange = (e, index) => {
+    const newArray = form.materias.slice();
+    newArray[index] = e.target.value;
+    setForm({ ...form, materias: newArray });
+  };
+
+  const addMateriaField = () => {
+    setForm({ ...form, materias: [...form.materias, ''] });
   };
 
   const handleSubmit = async (e) => {
@@ -98,12 +122,17 @@ function RegistroDocente() {
           <input type="text" name="numeroSeguroSocial" value={form.numeroSeguroSocial} onChange={handleChange} placeholder="Número de Seguro Social" required />
           
           {form.materias.map((materia, index) => (
-            <input key={index} type="text" value={materia} onChange={(e) => handleArrayChange(e, index, 'materias')} placeholder="Materia" required />
+            <select key={index} value={materia} onChange={(e) => handleMateriaChange(e, index)} required>
+              <option value="">Seleccione una Materia</option>
+              {materiasDisponibles.map((materia, idx) => (
+                <option key={idx} value={materia.codigo}>{materia.nombre}</option>
+              ))}
+            </select>
           ))}
           <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('materias')}>Agregar Materia</button>
+            <button type="button" className="add-button" onClick={addMateriaField}>Agregar Materia</button>
           </div>
-          
+
           <input type="text" name="cedulaProfesional" value={form.cedulaProfesional} onChange={handleChange} placeholder="Cédula Profesional" required />
         </div>
         
