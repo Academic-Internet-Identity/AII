@@ -1,6 +1,29 @@
 module {
     public type Uid = Text; // Usuario id
     public type Aid = Text; // Alumno id
+    
+    public type Calificaciones = {
+        p1: ?Nat; // Primera evaluación
+        p2: ?Nat; // Segunda evaluación
+        p3: ?Nat; // Tercera evaluación
+        final: ?Nat; // Calificación final
+    };
+
+    public type RegistroGrupo = {
+        alumno: Principal; // Principal del alumno
+        nombre: Text; // Nombre del alumno
+        calificaciones: Calificaciones; // Calificaciones del alumno
+        cuatrimestre: Text; // Cuatrimestre
+        materia: Text; // Materia
+    };
+
+    public type Grupo = {
+        id: Text; // ID del grupo
+        nombre: Text; // Nombre del grupo
+        materia: Text; // Materia del grupo
+        cuatrimestre: Text; // Cuatrimestre
+        alumnos: [RegistroGrupo]; // Lista de registros de alumnos en el grupo
+    };
 
     public type Rol = {
         #Admin;
@@ -65,7 +88,10 @@ module {
         matricula: Text;
         carrera: Text;
         semestre: Nat;
+        nivelDeIngles: Text; // Nuevo campo para el nivel de inglés
+        certificacionDeIngles: Bool; // Nuevo campo para la certificación de inglés
     };
+
 
     public type RegistroAdministrativoForm = {
         nombre: Text;
@@ -133,7 +159,10 @@ module {
         matricula: Text;
         carrera: Text;
         semestre: Nat;
+        nivelDeIngles: Text; // Nuevo campo
+        certificacionDeIngles: Bool; // Nuevo campo
     };
+
 
     public type Administrativo = {
         principalID: Principal;

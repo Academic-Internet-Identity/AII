@@ -23,13 +23,17 @@ shared ({ caller }) actor class _Plataforma() {
     public type Aid = Types.Aid; // Alumno id
     public type Materia = Types.Materia;
     public type Horario = Types.Horario;
-
+    public type Grupo = Types.Grupo;
+    public type RegistroGrupo = Types.RegistroGrupo;
+    public type Calificaciones = Types.Calificaciones;
     public type RegistroAlumnoForm = Types.RegistroAlumnoForm;
     public type RegistroAdministrativoForm = Types.RegistroAdministrativoForm;
     public type RegistroDocenteForm = Types.RegistroDocenteForm;
 
     stable var actualUid : Nat = 0;
     stable var actualAid : Nat = 0;
+
+    stable var grupos = Map.new<Text, Grupo>(); // Mapa de grupos por ID
 
     func generarUid() : Text {
         actualUid += 1;
@@ -148,7 +152,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     public shared ({ caller }) func aprobarRegistroDeAlumno(solicitante : Principal) : async Text {
         Debug.print("Approving student registration for: " # Principal.toText(solicitante));
-        assert esAdmin(caller);
+        assert esAdmin(caller); // Solo un administrador puede aprobar
         let usuario = Map.get<Principal, Usuario>(usuarios, Map.phash, solicitante);
         switch usuario {
             case null { return "El usuario no está registrado"; };
@@ -158,9 +162,36 @@ shared ({ caller }) actor class _Plataforma() {
                     case null { return "No hay solicitud de registro de alumno para este usuario"; };
                     case (?solicitud) {
                         let nuevoAlumno : Alumno = {
-                            solicitud with
                             principal = solicitante;
                             aid = generarAid();
+                            nombre = solicitud.nombre;
+                            apellidoPaterno = solicitud.apellidoPaterno;
+                            apellidoMaterno = solicitud.apellidoMaterno;
+                            tipoSanguineo = solicitud.tipoSanguineo;
+                            fechaNacimiento = solicitud.fechaNacimiento;
+                            curp = solicitud.curp;
+                            genero = solicitud.genero;
+                            lugarNacimiento = solicitud.lugarNacimiento;
+                            estadoCivil = solicitud.estadoCivil;
+                            emailPersonal = solicitud.emailPersonal;
+                            direcciones = solicitud.direcciones;
+                            telefonos = solicitud.telefonos;
+                            detallesMedicos = solicitud.detallesMedicos;
+                            numeroSeguroSocial = solicitud.numeroSeguroSocial;
+                            escuelasProcedencia = solicitud.escuelasProcedencia;
+                            ocupaciones = solicitud.ocupaciones;
+                            tutorJefeFamilia = solicitud.tutorJefeFamilia;
+                            familiares = solicitud.familiares;
+                            pertenenciaEtniaIndigena = solicitud.pertenenciaEtniaIndigena;
+                            hablaLenguaIndigena = solicitud.hablaLenguaIndigena;
+                            viveComunidadIndigena = solicitud.viveComunidadIndigena;
+                            folioCeneval = solicitud.folioCeneval;
+                            emailInstitucional = solicitud.emailInstitucional;
+                            matricula = solicitud.matricula;
+                            carrera = solicitud.carrera;
+                            semestre = solicitud.semestre;
+                            nivelDeIngles = solicitud.nivelDeIngles; // Asignar nivel de inglés
+                            certificacionDeIngles = solicitud.certificacionDeIngles; // Asignar certificación de inglés
                         };
                         ignore Map.put<Principal, Alumno>(alumnos, Map.phash, solicitante, nuevoAlumno);
                         ignore Map.put<Principal, Usuario>(usuarios, Map.phash, solicitante, {usuario with rol = #Alumno});
@@ -170,6 +201,8 @@ shared ({ caller }) actor class _Plataforma() {
             };
         };
     };
+
+
 
     public shared ({ caller }) func registrarseComoAdministrativo(_init : RegistroAdministrativoForm) : async Text {
         assert not Principal.isAnonymous(caller);
@@ -337,6 +370,88 @@ shared ({ caller }) actor class _Plataforma() {
         assert esAdmin(caller);
         Map.get<Text, [Horario]>(horarios, thash, codigoMateria);
     };
+
+    public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Principal, nuevoNivel: Text, certificacion: Bool) : async Text {
+        // Verificar que el que llama la función es un administrador
+        assert esAdmin(caller);
+
+        // Buscar al alumno en el mapa usando el principal especificado
+        let alumno = Map.get<Principal, Alumno>(alumnos, Map.phash, alumnoId);
+        switch alumno {
+            case null { return "El alumno especificado no está registrado"; };
+            case (?alumno) {
+                // Crear un nuevo registro de alumno con el nivel de inglés actualizado
+                let alumnoActualizado = { alumno with nivelDeIngles = nuevoNivel; certificacionDeIngles = certificacion };
+                // Guardar el registro actualizado en el mapa
+                ignore Map.put<Principal, Alumno>(alumnos, Map.phash, alumnoId, alumnoActualizado);
+                return "Nivel de inglés y certificación actualizados exitosamente";
+            };
+        };
+    };
+
+    // Función para crear un nuevo grupo
+    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
+        assert esAdmin(caller); // Solo un administrador puede crear grupos
+
+        let nuevoGrupo : Grupo = {
+            id;
+            nombre;
+            materia;
+            cuatrimestre;
+            alumnos = []; // Inicialmente, el grupo no tiene alumnos
+        };
+
+        ignore Map.put<Text, Grupo>(grupos, thash, id, nuevoGrupo);
+        return "Grupo creado exitosamente";
+    };
+
+    // Función para agregar un alumno a un grupo
+    public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, alumnoId: Principal, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
+        assert esAdmin(caller); // Solo un administrador puede agregar alumnos a grupos
+
+        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+        switch grupo {
+            case null { return "El grupo especificado no existe"; };
+            case (?grupo) {
+                let nuevoRegistro : RegistroGrupo = {
+                    alumno = alumnoId;
+                    nombre;
+                    calificaciones = { p1 = null; p2 = null; p3 = null; final = null }; // Inicialmente sin calificaciones
+                    cuatrimestre;
+                    materia;
+                };
+
+                // Actualizar el grupo con el nuevo alumno
+                let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
+                ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+
+                return "Alumno agregado al grupo exitosamente";
+            };
+        };
+    };
+
+    // Función para listar los alumnos de un grupo
+    public shared query ({ caller }) func listarAlumnosDeGrupo(grupoId: Text) : async ?[RegistroGrupo] {
+        assert esAdmin(caller); // Solo un administrador puede listar alumnos
+
+        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+        switch grupo {
+            case null { return null; };
+            case (?grupo) {
+                return ?grupo.alumnos;
+            };
+        };
+    };
+
+    
+
+
+
+
+
+
+
+
 
     // Declare IC actor
     let ic : Types.IC = actor "aaaaa-aa"; // Management Canister ID
