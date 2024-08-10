@@ -64,22 +64,6 @@ function NavBar() {
     navigate('/');
   };
 
-  const handlePerfilClick = () => {
-    switch (rol) {
-      case 'Alumno':
-        navigate(`/detalles-alumno/${principal}`);
-        break;
-      case 'Profesor':
-        navigate(`/detalles-docente/${principal}`);
-        break;
-      case 'Administrativo':
-        navigate(`/detalles-administrativo/${principal}`);
-        break;
-      default:
-        console.error('Rol no reconocido');
-    }
-  };
-
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Navbar.Brand onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
@@ -99,13 +83,13 @@ function NavBar() {
             {rol === 'Alumno' && (
               <>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
-                <NavDropdown.Item onClick={handlePerfilClick}>Mi Perfil</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}
             {rol === 'Profesor' && (
               <>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
-                <NavDropdown.Item onClick={handlePerfilClick}>Mi Perfil</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}
             {rol === 'Administrativo' && (
@@ -124,7 +108,7 @@ function NavBar() {
                 </NavDropdown>
                 <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>
-                <NavDropdown.Item onClick={handlePerfilClick}>Mi Perfil</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}
           </NavDropdown>

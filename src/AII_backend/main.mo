@@ -292,10 +292,17 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Principal, Alumno>(alumnos));
     };
 
-    public shared query ({ caller }) func verMiPerfil() : async ?Alumno {
-        Debug.print("Caller in verMiPerfil: " # Principal.toText(caller));
+    ///VER PERFIL DEL USUARIO///
+    public shared ({ caller }) func getMyAlumno() : async ?Alumno {
         Map.get(alumnos, phash, caller);
     };
+    public shared ({ caller }) func getMyDocente() : async ?Docente {
+        Map.get(docentes, phash, caller);
+    };
+    public shared ({ caller }) func getMyAdministrativo() : async ?Administrativo {
+        Map.get(administrativos, phash, caller);
+    };
+    ///FIN DE VER PERFIL DEL USUARIO/// 
 
     public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat) : async Text {
         //assert esAdmin(caller);
