@@ -18,6 +18,7 @@ import DetallesDocente from './components/DetallesDocente';
 import ConsultaAlumnos from './components/ConsultaAlumnos';
 import AgregarMateria from './components/AgregarMateria';
 import ListarMaterias from './components/ListarMaterias';
+import MiPerfil from './components/MiPerfil';
 import { Connect2ICProvider, useConnect, useCanister } from '@connect2ic/react';
 import { createClient } from '@connect2ic/core';
 import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
@@ -115,6 +116,7 @@ function AppRoutes() {
         <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
         <Route path="/agregar-materia" element={<AgregarMateria />} />
         <Route path="/listar-materias" element={<ListarMaterias />} />
+        <Route path="/mi-perfil" element={<MiPerfil/>}/>
       </Routes>
     </>
   );

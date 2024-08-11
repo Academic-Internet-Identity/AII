@@ -49,7 +49,7 @@ function VerAlumnosInscritos() {
           </thead>
           <tbody>
             {alumnosInscritos.map(alumno => (
-              <tr key={alumno.principal.toString()}>
+              <tr key={alumno.principalID.toString()}>
                 <td>{alumno.nombre}</td>
                 <td>{alumno.apellidoPaterno}</td>
                 <td>{alumno.apellidoMaterno}</td>
@@ -58,7 +58,7 @@ function VerAlumnosInscritos() {
                 <td>{alumno.carrera}</td>
                 <td>{alumno.semestre.toString()}</td>
                 <td>
-                  <button onClick={() => handleVerDetalles(alumno.principal.toString())} className="details-button">
+                  <button onClick={() => handleVerDetalles(alumno.principalID.toString())} className="details-button">
                     Ver Detalles
                   </button>
                 </td>
