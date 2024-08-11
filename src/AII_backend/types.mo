@@ -131,7 +131,7 @@ module {
     };
 
     public type Alumno = {
-        principal: Principal;
+        principalID: Principal;
         aid: Text;
         nombre: Text;
         apellidoPaterno: Text;

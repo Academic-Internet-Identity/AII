@@ -162,7 +162,7 @@ shared ({ caller }) actor class _Plataforma() {
                     case null { return "No hay solicitud de registro de alumno para este usuario"; };
                     case (?solicitud) {
                         let nuevoAlumno : Alumno = {
-                            principal = solicitante;
+                            principalID = solicitante;
                             aid = generarAid();
                             nombre = solicitud.nombre;
                             apellidoPaterno = solicitud.apellidoPaterno;

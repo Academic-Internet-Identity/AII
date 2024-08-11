@@ -13,7 +13,7 @@ function DetallesAlumno() {
     const fetchAlumnoDetalles = async () => {
       try {
         const result = await AII_backend.verAlumnos();
-        const alumno = result.find(a => a.principal.toString() === principal);
+        const alumno = result.find(a => a.principalID.toString() === principal);
         setAlumno(alumno);
       } catch (error) {
         console.error('Error al obtener los detalles del alumno:', error);
@@ -45,7 +45,7 @@ function DetallesAlumno() {
           <p><strong>Fecha de Nacimiento:</strong> {alumno.fechaNacimiento}</p>
           <p><strong>Género:</strong> {alumno.genero}</p>
           <p><strong>CURP:</strong> {alumno.curp}</p>
-          <p><strong>Principal:</strong> {alumno.principal.toString()}</p>
+          <p><strong>Principal ID:</strong> {alumno.principalID.toString()}</p>
         </div>
         <div className="dashboard-section">
           <h3>Información de Contacto</h3>
@@ -60,6 +60,8 @@ function DetallesAlumno() {
           <p><strong>Carrera:</strong> {alumno.carrera}</p>
           <p><strong>Semestre:</strong> {alumno.semestre.toString()}</p>
           <p><strong>Escuelas de Procedencia:</strong> {alumno.escuelasProcedencia.join(', ')}</p>
+          <p><strong>Nivel de Inglés:</strong> {alumno.nivelDeIngles}</p>
+          <p><strong>Certificación de Inglés:</strong> {alumno.certificacionDeIngles ? 'Sí' : 'No'}</p>
         </div>
         <div className="dashboard-section">
           <h3>Información Médica</h3>

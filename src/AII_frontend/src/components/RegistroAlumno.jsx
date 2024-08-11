@@ -9,7 +9,8 @@ function RegistroAlumno() {
     curp: '', genero: '', lugarNacimiento: '', estadoCivil: '', emailPersonal: '', direcciones: [''],
     telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', escuelasProcedencia: [''], ocupaciones: [''],
     tutorJefeFamilia: '', familiares: [''], pertenenciaEtniaIndigena: false, hablaLenguaIndigena: false,
-    viveComunidadIndigena: false, folioCeneval: '', emailInstitucional: '', matricula: '', carrera: '', semestre: 1
+    viveComunidadIndigena: false, folioCeneval: '', emailInstitucional: '', matricula: '', carrera: '', semestre: "",
+    nivelDeIngles: '', certificacionDeIngles: false
   });
   const [message, setMessage] = useState('');
 
@@ -151,6 +152,21 @@ function RegistroAlumno() {
             <option value="TSU Nanotecnología Área Materiales">TSU Nanotecnología Área Materiales</option>
           </select>
           <input type="number" name="semestre" value={form.semestre} onChange={handleChange} placeholder="Semestre" required min="1" />
+          <select name="nivelDeIngles" value={form.nivelDeIngles} onChange={handleChange} required>
+            <option value="">Seleccione Nivel de Inglés</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
+          </select>
+          <div className="checkbox-group">
+            <label>
+              <input type="checkbox" name="certificacionDeIngles" checked={form.certificacionDeIngles} onChange={handleChange} />
+              Certificación de Inglés
+            </label>
+          </div>
         </div>
         <button type="submit" className="form-button">Registrar</button>
       </form>
