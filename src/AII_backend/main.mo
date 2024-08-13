@@ -65,6 +65,8 @@ shared ({ caller }) actor class _Plataforma() {
         Map.get(usuarios, phash, caller);
     };
 
+        ///////////Seccion para verificar roles//////////
+
     func _esUsuario(p : Principal) : Bool {
         return switch (Map.get<Principal, Usuario>(usuarios, Map.phash, p)) {
             case null { false };
@@ -72,8 +74,8 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
-    func _esAlumno(p : Principal) : Bool {
-        return switch (Map.get<Principal, Alumno>(alumnos, Map.phash, p)) {
+    func _esAlumno(p: Principal) : Bool {
+        switch (Map.get(alumnos, phash, p)) {
             case null { false };
             case _ { true };
         };
@@ -86,19 +88,21 @@ shared ({ caller }) actor class _Plataforma() {
         result;
     };
 
-    func _esAdministrativo(p : Principal) : Bool {
-        return switch (Map.get<Principal, Administrativo>(administrativos, Map.phash, p)) {
+    func _esDocente(p: Principal) : Bool {
+        switch (Map.get(docentes, phash, p)) {
             case null { false };
             case _ { true };
         };
     };
 
-    func _esDocente(p : Principal) : Bool {
-        return switch (Map.get<Principal, Docente>(docentes, Map.phash, p)) {
+    func esAdministrativo(p: Principal) : Bool {
+        switch (Map.get(administrativos, phash, p)) {
             case null { false };
             case _ { true };
         };
     };
+
+        ///////////Fin Seccion para verificar roles//////////
 
     public shared ({ caller }) func agregarAdmin(p : Principal) : async Bool {
         assert esAdmin(caller) and _esUsuario(p);
@@ -284,7 +288,7 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func verAlumnosIngresantes() : async [(Principal, RegistroAlumnoForm)] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.entries<Principal, RegistroAlumnoForm>(alumnosIngresantes));
     };
 
