@@ -85,6 +85,8 @@ function MiPerfil() {
             <p><strong>Carrera:</strong> {perfil.carrera}</p>
             <p><strong>Semestre:</strong> {perfil.semestre.toString()}</p>
             <p><strong>Escuelas de Procedencia:</strong> {perfil.escuelasProcedencia.join(', ')}</p>
+            <p><strong>Nivel de Inglés:</strong> {perfil.nivelDeIngles}</p> {/* Nuevo campo */}
+            <p><strong>Certificación de Inglés:</strong> {perfil.certificacionDeIngles ? 'Sí' : 'No'}</p> {/* Nuevo campo */}
           </div>
         )}
         {(rol === 'Profesor' || rol === 'Administrativo') && (

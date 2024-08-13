@@ -313,16 +313,16 @@ shared ({ caller }) actor class _Plataforma() {
         return false;
     };
 
+    public shared query ({ caller }) func verAlumnos() : async [Alumno] {
+        assert esAdmin(caller);
+        Iter.toArray(Map.vals<Principal, Alumno>(alumnos));
+    };
+
     public query func statusPlatform(): async [{key: Text; value: Text}] {
         [
             {key = "Users"; value = Nat.toText(Map.size(usuarios))},
             {key = "Alumnos"; value = Nat.toText(Map.size(alumnos))}
         ]
-    };
-
-    public shared query ({ caller }) func verAlumnos() : async [Alumno] {
-        assert esAdmin(caller);
-        Iter.toArray(Map.vals<Principal, Alumno>(alumnos));
     };
 
     ///VER PERFIL DEL USUARIO///
