@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useCanister } from '@connect2ic/react';
 import '../styles/registroAlumnoStyles.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RegistroAlumno() {
   const [AII_backend] = useCanister('AII_backend');
@@ -12,7 +14,6 @@ function RegistroAlumno() {
     viveComunidadIndigena: false, folioCeneval: '', emailInstitucional: '', matricula: '', carrera: '', semestre: "",
     nivelDeIngles: '', certificacionDeIngles: false
   });
-  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -34,10 +35,10 @@ function RegistroAlumno() {
     try {
       const formToSend = { ...form, semestre: Number(form.semestre) };
       const response = await AII_backend.registrarseComoAlumno(formToSend);
-      setMessage(response);
+      toast.success(response);
     } catch (error) {
-      setMessage('Error al registrar alumno.');
-      console.error('Error al registrar alumno:', error);
+      toast.error('Error al registrar alumno.');
+      console.error('Error al registrar alumno:', error); // Puedes mantener esto para depuración adicional
     }
   };
 
@@ -170,7 +171,6 @@ function RegistroAlumno() {
         </div>
         <button type="submit" className="form-button">Registrar</button>
       </form>
-      {message && <p className="message">{message}</p>}
     </div>
   );
 }

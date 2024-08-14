@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/registroDocenteStyles.css';
 
 function RegistroDocente() {
@@ -10,7 +12,6 @@ function RegistroDocente() {
     telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', cedulaProfesional: '', materias: ['']
   });
   const [materiasDisponibles, setMateriasDisponibles] = useState([]);
-  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchMaterias = async () => {
@@ -18,6 +19,7 @@ function RegistroDocente() {
         const result = await AII_backend.verMaterias();
         setMateriasDisponibles(result);
       } catch (error) {
+        toast.error('Error al obtener las materias.');
         console.error('Error al obtener las materias:', error);
       }
     };
@@ -54,9 +56,9 @@ function RegistroDocente() {
     e.preventDefault();
     try {
       const response = await AII_backend.registrarseComoDocente(form);
-      setMessage(response);
+      toast.success(response);
     } catch (error) {
-      setMessage('Error al registrar docente.');
+      toast.error('Error al registrar docente.');
       console.error('Error al registrar docente:', error);
     }
   };
@@ -138,7 +140,7 @@ function RegistroDocente() {
         
         <button type="submit" className="form-button">Registrar</button>
       </form>
-      {message && <p className="message">{message}</p>}
+      <ToastContainer />
     </div>
   );
 }

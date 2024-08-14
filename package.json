@@ -25,6 +25,7 @@
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
     "react-bootstrap": "^2.10.4",
-    "react-router-dom": "^6.24.1"
+    "react-router-dom": "^6.24.1",
+    "react-toastify": "^10.0.5"
   }
 }

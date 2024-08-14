@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useCanister } from '@connect2ic/react';
 import '../styles/registroAdministrativoStyles.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RegistroAdministrativo() {
   const [AII_backend] = useCanister('AII_backend');
@@ -9,7 +11,6 @@ function RegistroAdministrativo() {
     curp: '', genero: '', lugarNacimiento: '', estadoCivil: '', emailPersonal: '', direcciones: [''],
     telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', cedulaProfesional: ''
   });
-  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,9 +31,13 @@ function RegistroAdministrativo() {
     e.preventDefault();
     try {
       const response = await AII_backend.registrarseComoAdministrativo(form);
-      setMessage(response);
+      if (response.startsWith('Error:')) {
+        toast.error(response); // Mostrar mensaje de error
+      } else {
+        toast.success(response); // Mostrar mensaje de éxito
+      }
     } catch (error) {
-      setMessage('Error al registrar administrativo.');
+      toast.error('Error al registrar administrativo.');
       console.error('Error al registrar administrativo:', error);
     }
   };
@@ -47,7 +52,6 @@ function RegistroAdministrativo() {
           <input type="text" name="apellidoMaterno" value={form.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
           <select name="tipoSanguineo" value={form.tipoSanguineo} onChange={handleChange} required>
             <option value="">Seleccione Tipo Sanguíneo</option>
-            <option value="A+">A+</option>
             <option value="A-">A-</option>
             <option value="B+">B+</option>
             <option value="B-">B-</option>
@@ -101,7 +105,7 @@ function RegistroAdministrativo() {
         
         <button type="submit" className="form-button">Registrar</button>
       </form>
-      {message && <p className="message">{message}</p>}
+      <ToastContainer /> {/* Container para mostrar los toasts */}
     </div>
   );
 }

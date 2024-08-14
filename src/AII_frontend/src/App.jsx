@@ -25,6 +25,8 @@ import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
 import './styles/commonStyles.css';
 import { UserProvider, useUser } from './UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import * as AII_backend from "declarations/AII_backend";
 
 const client = createClient({
@@ -82,7 +84,7 @@ function AppRoutes() {
             }
             navigate('/inicio');
           } else {
-            console.log('Usuario no registrado. Favor de registrarse.');
+            console.log('Usuario no registrado.'); // No mostrar toast en carga inicial
           }
         } catch (error) {
           console.error('Error al verificar si el usuario está registrado:', error);
@@ -92,7 +94,10 @@ function AppRoutes() {
       }
     };
 
-    checkUser();
+    // Verificar si la ruta requiere autenticación antes de llamar a checkUser
+    if (location.pathname !== '/') {
+      checkUser();
+    }
   }, [isConnected, principal, setPrincipal, navigate, location, AII_backend, setRol]);
 
   return (
@@ -128,6 +133,7 @@ function App() {
       <Connect2ICProvider client={client}>
         <Router>
           <AppRoutes />
+          <ToastContainer />
         </Router>
       </Connect2ICProvider>
     </UserProvider>
