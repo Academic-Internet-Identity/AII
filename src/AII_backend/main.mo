@@ -88,7 +88,7 @@ shared ({ caller }) actor class _Plataforma() {
         result;
     };
 
-    func _esDocente(p: Principal) : Bool {
+    func esDocente(p: Principal) : Bool {
         switch (Map.get(docentes, phash, p)) {
             case null { false };
             case _ { true };
@@ -293,36 +293,39 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func verAdministrativosIngresantes() : async [(Principal, RegistroAdministrativoForm)] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.entries<Principal, RegistroAdministrativoForm>(administrativosIngresantes));
     };
 
     public shared query ({ caller }) func verDocentesIngresantes() : async [(Principal, RegistroDocenteForm)] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.entries<Principal, RegistroDocenteForm>(docentesIngresantes));
     };
 
     public shared query ({ caller }) func verAdministrativos() : async [Administrativo] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.vals<Principal, Administrativo>(administrativos));
     };
 
     public shared query ({ caller }) func verDocentes() : async [Docente] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.vals<Principal, Docente>(docentes));
     };
 
+    ////////////funcion desconocida alan??/////////
     func _enArray<T>(a : [T], e : T, equal : (T, T) -> Bool) : Bool {
         for (i in a.vals()) { if (equal(i, e)) { return true } };
         return false;
     };
+    ////////////////////////////////////////////
 
     public shared query ({ caller }) func verAlumnos() : async [Alumno] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.vals<Principal, Alumno>(alumnos));
     };
 
     public query func statusPlatform(): async [{key: Text; value: Text}] {
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         [
             {key = "Users"; value = Nat.toText(Map.size(usuarios))},
             {key = "Alumnos"; value = Nat.toText(Map.size(alumnos))}
@@ -342,19 +345,19 @@ shared ({ caller }) actor class _Plataforma() {
     ///FIN DE VER PERFIL DEL USUARIO/// 
 
     public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat) : async Text {
-        //assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         let nuevaMateria : Materia = { nombre; codigo; creditos };
         ignore Map.put<Text, Materia>(materias, thash, codigo, nuevaMateria);
         return "Materia agregada exitosamente";
     };
 
     public shared query ({ caller }) func verMaterias() : async [Materia] {
-        //assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
         Iter.toArray(Map.vals<Text, Materia>(materias));
     };
 
     public shared ({ caller }) func agregarHorario(codigoMateria: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         let materia = Map.get<Text, Materia>(materias, thash, codigoMateria);
         switch materia {
             case null { return "Materia no encontrada"; };
@@ -371,13 +374,13 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func verHorarios(codigoMateria: Text) : async ?[Horario] {
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         Map.get<Text, [Horario]>(horarios, thash, codigoMateria);
     };
 
     public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Principal, nuevoNivel: Text, certificacion: Bool) : async Text {
         // Verificar que el que llama la función es un administrador
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
 
         // Buscar al alumno en el mapa usando el principal especificado
         let alumno = Map.get<Principal, Alumno>(alumnos, Map.phash, alumnoId);
@@ -395,7 +398,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     // Función para crear un nuevo grupo
     public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
-        assert esAdmin(caller); // Solo un administrador puede crear grupos
+        assert ( esAdmin(caller) or esAdministrativo(caller));
 
         let nuevoGrupo : Grupo = {
             id;
@@ -411,7 +414,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     // Función para agregar un alumno a un grupo
     public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, alumnoId: Principal, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
-        assert esAdmin(caller); // Solo un administrador puede agregar alumnos a grupos
+        assert ( esAdmin(caller) or esAdministrativo(caller));
 
         let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
         switch grupo {
@@ -436,7 +439,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     // Función para listar los alumnos de un grupo
     public shared query ({ caller }) func listarAlumnosDeGrupo(grupoId: Text) : async ?[RegistroGrupo] {
-        assert esAdmin(caller); // Solo un administrador puede listar alumnos
+        assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
 
         let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
         switch grupo {
