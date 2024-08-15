@@ -22,6 +22,7 @@
     "@dfinity/principal": "^2.0.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
     "react-bootstrap": "^2.10.4",

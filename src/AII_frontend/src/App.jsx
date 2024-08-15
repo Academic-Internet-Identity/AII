@@ -28,6 +28,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as AII_backend from "declarations/AII_backend";
+import GestionarGrupos from './components/GestionarGrupos';
 
 const client = createClient({
   canisters: {
@@ -122,6 +123,7 @@ function AppRoutes() {
         <Route path="/agregar-materia" element={<AgregarMateria />} />
         <Route path="/listar-materias" element={<ListarMaterias />} />
         <Route path="/mi-perfil" element={<MiPerfil/>}/>
+        <Route path="/gestionar-grupos" element={<GestionarGrupos/>}/> 
       </Routes>
     </>
   );
