@@ -10,20 +10,21 @@ module {
     };
 
     public type RegistroGrupo = {
-        alumno: Principal; // Principal del alumno
+        alumno: Text; // Cambiado a Text para almacenar la matrícula del alumno
         nombre: Text; // Nombre del alumno
         calificaciones: Calificaciones; // Calificaciones del alumno
         cuatrimestre: Text; // Cuatrimestre
         materia: Text; // Materia
     };
 
+
     public type Grupo = {
         id: Text; // ID del grupo
         nombre: Text; // Nombre del grupo
-        materia: Text; // Materia del grupo
         cuatrimestre: Text; // Cuatrimestre
         alumnos: [RegistroGrupo]; // Lista de registros de alumnos en el grupo
     };
+
 
     public type Rol = {
         #Admin;
@@ -213,8 +214,9 @@ module {
         dia: Text;
         horaInicio: Text;
         horaFin: Text;
-        materia: Materia;
+        grupoId: Text;  // Identificador del grupo asociado
     };
+
 
     public type Timestamp = Nat64;
 

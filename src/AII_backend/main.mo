@@ -47,6 +47,8 @@ shared ({ caller }) actor class _Plataforma() {
 
     stable let usuarios = Map.new<Principal, Usuario>();
     stable let alumnos = Map.new<Principal, Alumno>();
+    stable let alumnoMat = Map.new<Text, Alumno>();
+
     stable let admins = Set.new<Principal>();
 
     stable let administrativos = Map.new<Principal, Administrativo>();
@@ -194,10 +196,14 @@ shared ({ caller }) actor class _Plataforma() {
                             matricula = solicitud.matricula;
                             carrera = solicitud.carrera;
                             semestre = solicitud.semestre;
-                            nivelDeIngles = solicitud.nivelDeIngles; // Asignar nivel de inglés
-                            certificacionDeIngles = solicitud.certificacionDeIngles; // Asignar certificación de inglés
+                            nivelDeIngles = solicitud.nivelDeIngles;
+                            certificacionDeIngles = solicitud.certificacionDeIngles;
                         };
+
+                        // Añadir a ambos mapas
                         ignore Map.put<Principal, Alumno>(alumnos, Map.phash, solicitante, nuevoAlumno);
+                        ignore Map.put<Text, Alumno>(alumnoMat, thash, nuevoAlumno.matricula, nuevoAlumno);
+
                         ignore Map.put<Principal, Usuario>(usuarios, Map.phash, solicitante, {usuario with rol = #Alumno});
                         return "A" # Nat.toText(actualAid);
                     };
@@ -205,6 +211,7 @@ shared ({ caller }) actor class _Plataforma() {
             };
         };
     };
+
 
 
 
@@ -334,8 +341,22 @@ shared ({ caller }) actor class _Plataforma() {
 
     ///VER PERFIL DEL USUARIO///
     public shared ({ caller }) func getMyAlumno() : async ?Alumno {
-        Map.get(alumnos, phash, caller);
+        // Buscar en el mapa alumnos usando Principal como clave
+        let alumnoPorPrincipal = Map.get(alumnos, phash, caller);
+        if (alumnoPorPrincipal != null) {
+            return alumnoPorPrincipal;
+        };
+
+        // Alternativamente, buscar en el mapa alumnoMat usando la matrícula
+        let usuario = Map.get(usuarios, phash, caller);
+        switch usuario {
+            case null { return null; };
+            case (?usuario) {
+                return Map.get(alumnoMat, thash, usuario.uid);
+            };
+        };
     };
+
     public shared ({ caller }) func getMyDocente() : async ?Docente {
         Map.get(docentes, phash, caller);
     };
@@ -356,54 +377,60 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Text, Materia>(materias));
     };
 
-    public shared ({ caller }) func agregarHorario(codigoMateria: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
+    public shared ({ caller }) func agregarHorario(grupoId: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
         assert ( esAdmin(caller) or esAdministrativo(caller));
-        let materia = Map.get<Text, Materia>(materias, thash, codigoMateria);
-        switch materia {
-            case null { return "Materia no encontrada"; };
-            case (?materia) {
-                let nuevoHorario : Horario = { dia; horaInicio; horaFin; materia };
-                let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, codigoMateria)) {
+
+        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+        switch grupo {
+            case null { return "Grupo no encontrado"; };
+            case (?grupo) {
+                let nuevoHorario : Horario = { dia; horaInicio; horaFin; grupoId };
+                let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, grupoId)) {
                     case null { []; };
                     case (?h) { h };
                 };
-                ignore Map.put<Text, [Horario]>(horarios, thash, codigoMateria, Array.append(horariosExistentes, [nuevoHorario]));
+                ignore Map.put<Text, [Horario]>(horarios, thash, grupoId, Array.append(horariosExistentes, [nuevoHorario]));
                 return "Horario agregado exitosamente";
             };
         };
     };
 
-    public shared query ({ caller }) func verHorarios(codigoMateria: Text) : async ?[Horario] {
-        assert ( esAdmin(caller) or esAdministrativo(caller));
-        Map.get<Text, [Horario]>(horarios, thash, codigoMateria);
+
+    public shared query ({ caller }) func verHorarios(grupoId: Text) : async ?[Horario] {
+        assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
+        Map.get<Text, [Horario]>(horarios, thash, grupoId);
     };
 
-    public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Principal, nuevoNivel: Text, certificacion: Bool) : async Text {
-        // Verificar que el que llama la función es un administrador
-        assert ( esAdmin(caller) or esAdministrativo(caller));
 
-        // Buscar al alumno en el mapa usando el principal especificado
-        let alumno = Map.get<Principal, Alumno>(alumnos, Map.phash, alumnoId);
-        switch alumno {
+    public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Text, nuevoNivel: Text) : async Text {
+        // Verificar que el que llama la función es un administrador o administrativo
+        assert (esAdmin(caller) or esAdministrativo(caller));
+
+        // Buscar al alumno en el mapa alumnoMat usando la matrícula especificada
+        let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
+        switch alumnoOpt {
             case null { return "El alumno especificado no está registrado"; };
             case (?alumno) {
-                // Crear un nuevo registro de alumno con el nivel de inglés actualizado
-                let alumnoActualizado = { alumno with nivelDeIngles = nuevoNivel; certificacionDeIngles = certificacion };
-                // Guardar el registro actualizado en el mapa
-                ignore Map.put<Principal, Alumno>(alumnos, Map.phash, alumnoId, alumnoActualizado);
-                return "Nivel de inglés y certificación actualizados exitosamente";
+                // Actualizar en el mapa alumnoMat
+                let alumnoActualizado = { alumno with nivelDeIngles = nuevoNivel };
+                ignore Map.put<Text, Alumno>(alumnoMat, thash, alumnoId, alumnoActualizado);
+
+                // También actualizar en el mapa alumnos, usando Principal como clave
+                let principalId = alumnoActualizado.principalID;
+                ignore Map.put<Principal, Alumno>(alumnos, phash, principalId, alumnoActualizado);
+
+                return "Nivel de inglés actualizado exitosamente";
             };
         };
     };
 
     // Función para crear un nuevo grupo
-    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
+    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, cuatrimestre: Text) : async Text {
         assert ( esAdmin(caller) or esAdministrativo(caller));
 
         let nuevoGrupo : Grupo = {
             id;
             nombre;
-            materia;
             cuatrimestre;
             alumnos = []; // Inicialmente, el grupo no tiene alumnos
         };
@@ -412,8 +439,9 @@ shared ({ caller }) actor class _Plataforma() {
         return "Grupo creado exitosamente";
     };
 
+
     // Función para agregar un alumno a un grupo
-    public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, alumnoId: Principal, nombre: Text, materia: Text, cuatrimestre: Text) : async Text {
+    public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, matricula: Text, nombre: Text, cuatrimestre: Text) : async Text {
         assert ( esAdmin(caller) or esAdministrativo(caller));
 
         let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
@@ -421,11 +449,11 @@ shared ({ caller }) actor class _Plataforma() {
             case null { return "El grupo especificado no existe"; };
             case (?grupo) {
                 let nuevoRegistro : RegistroGrupo = {
-                    alumno = alumnoId;
+                    alumno = matricula; // Usar la matrícula en lugar de Principal
                     nombre;
                     calificaciones = { p1 = null; p2 = null; p3 = null; final = null }; // Inicialmente sin calificaciones
                     cuatrimestre;
-                    materia;
+                    materia = ""; // Este campo puede ser eliminado o asignado como necesario
                 };
 
                 // Actualizar el grupo con el nuevo alumno
@@ -436,6 +464,35 @@ shared ({ caller }) actor class _Plataforma() {
             };
         };
     };
+
+
+
+    public shared ({ caller }) func modificarCertificacionDeIngles(alumnoId: Text, nuevoCertificado: Bool) : async Text {
+        // Verificar que el que llama la función es un administrador o administrativo
+        assert (esAdmin(caller) or esAdministrativo(caller));
+
+        // Buscar al alumno en el mapa usando la matrícula especificada
+        let alumno = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
+        switch alumno {
+            case null { return "El alumno especificado no está registrado"; };
+            case (?alumno) {
+                // Actualizar en el mapa alumnoMat
+                let alumnoActualizado = { alumno with certificacionDeIngles = nuevoCertificado };
+                ignore Map.put<Text, Alumno>(alumnoMat, thash, alumnoId, alumnoActualizado);
+
+                // También actualizar en el mapa alumnos, usando Principal como clave
+                let principalId = alumnoActualizado.principalID;
+                ignore Map.put<Principal, Alumno>(alumnos, phash, principalId, alumnoActualizado);
+
+                return "Certificación de inglés actualizada exitosamente";
+            };
+        };
+    };
+
+
+
+
+
 
     // Función para listar los alumnos de un grupo
     public shared query ({ caller }) func listarAlumnosDeGrupo(grupoId: Text) : async ?[RegistroGrupo] {
@@ -449,6 +506,16 @@ shared ({ caller }) actor class _Plataforma() {
             };
         };
     };
+
+    public shared query ({ caller }) func verGrupos() : async [Grupo] {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
+        Iter.toArray(Map.vals<Text, Grupo>(grupos));
+    };
+
+
+
+    
+
 
     
 
