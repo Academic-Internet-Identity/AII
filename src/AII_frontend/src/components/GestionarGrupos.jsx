@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/gestionarGruposStyles.css';  /* Importa los estilos aquí */
+import '../styles/gestionarGruposStyles.css';
 
 function GestionarGrupos() {
   const [AII_backend] = useCanister('AII_backend');
@@ -10,12 +10,12 @@ function GestionarGrupos() {
   const [grupo, setGrupo] = useState({
     id: '',
     nombre: '',
-    materia: '',
     cuatrimestre: '',
   });
   const [alumno, setAlumno] = useState({
     id: '',
     nombre: '',
+    cuatrimestre: '',
   });
   const [alumnos, setAlumnos] = useState([]);
 
@@ -31,13 +31,13 @@ function GestionarGrupos() {
 
   // Función para crear un grupo
   const handleCrearGrupo = async () => {
-    const { id, nombre, materia, cuatrimestre } = grupo;
-    if (!id || !nombre || !materia || !cuatrimestre) {
+    const { id, nombre, cuatrimestre } = grupo;
+    if (!id || !nombre || !cuatrimestre) {
       toast.error('Todos los campos son obligatorios para crear un grupo.');
       return;
     }
     try {
-      const response = await AII_backend.crearGrupo(id, nombre, materia, cuatrimestre);
+      const response = await AII_backend.crearGrupo(id, nombre, cuatrimestre);
       toast.success(response);
       resetFields(); // Reiniciar los campos después de crear el grupo
     } catch (error) {
@@ -48,14 +48,14 @@ function GestionarGrupos() {
 
   // Función para agregar un alumno a un grupo
   const handleAgregarAlumno = async () => {
-    const { id, nombre, materia, cuatrimestre } = grupo;
+    const { id, cuatrimestre } = grupo;
     const { id: alumnoId, nombre: nombreAlumno } = alumno;
-    if (!id || !alumnoId || !nombreAlumno || !materia || !cuatrimestre) {
+    if (!id || !alumnoId || !nombreAlumno || !cuatrimestre) {
       toast.error('Todos los campos son obligatorios para agregar un alumno.');
       return;
     }
     try {
-      const response = await AII_backend.agregarAlumnoAGrupo(id, alumnoId, nombreAlumno, materia, cuatrimestre);
+      const response = await AII_backend.agregarAlumnoAGrupo(id, alumnoId, nombreAlumno, cuatrimestre);
       toast.success(response);
       resetFields(); // Reiniciar los campos después de agregar un alumno
     } catch (error) {
@@ -86,8 +86,8 @@ function GestionarGrupos() {
 
   // Reiniciar los campos del formulario
   const resetFields = () => {
-    setGrupo({ id: '', nombre: '', materia: '', cuatrimestre: '' });
-    setAlumno({ id: '', nombre: '' });
+    setGrupo({ id: '', nombre: '', cuatrimestre: '' });
+    setAlumno({ id: '', nombre: '', cuatrimestre: '' });
     setAlumnos([]);
   };
 
@@ -105,10 +105,6 @@ function GestionarGrupos() {
             <div className="form-group">
               <label>Nombre del Grupo:</label>
               <input type="text" name="nombre" value={grupo.nombre} onChange={(e) => handleInputChange(e, 'grupo')} />
-            </div>
-            <div className="form-group">
-              <label>Materia:</label>
-              <input type="text" name="materia" value={grupo.materia} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
             <div className="form-group">
               <label>Cuatrimestre:</label>
@@ -134,10 +130,6 @@ function GestionarGrupos() {
               <input type="text" name="nombre" value={alumno.nombre} onChange={(e) => handleInputChange(e, 'alumno')} />
             </div>
             <div className="form-group">
-              <label>Materia:</label>
-              <input type="text" name="materia" value={grupo.materia} onChange={(e) => handleInputChange(e, 'grupo')} />
-            </div>
-            <div className="form-group">
               <label>Cuatrimestre:</label>
               <input type="text" name="cuatrimestre" value={grupo.cuatrimestre} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
@@ -156,8 +148,20 @@ function GestionarGrupos() {
 
             {alumnos.length > 0 && (
               <ul className="alumnos-list">
-                {alumnos.map((alumno, index) => (
-                  <li key={index}>{alumno.nombre} - {alumno.materia} - {alumno.cuatrimestre}</li>
+                {alumnos[0].map((alumno, index) => (
+                  <li key={index}>
+                    <strong>Nombre:</strong> {alumno.nombre} <br />
+                    <strong>Matrícula:</strong> {alumno.alumno} <br />
+                    <strong>Cuatrimestre:</strong> {alumno.cuatrimestre} <br />
+                    <strong>Materia:</strong> {alumno.materia || 'No asignada'} <br />
+                    <strong>Calificaciones:</strong>
+                    <ul>
+                      <li><strong>P1:</strong> {alumno.calificaciones.p1 || 'Sin calificación'}</li>
+                      <li><strong>P2:</strong> {alumno.calificaciones.p2 || 'Sin calificación'}</li>
+                      <li><strong>P3:</strong> {alumno.calificaciones.p3 || 'Sin calificación'}</li>
+                      <li><strong>Final:</strong> {alumno.calificaciones.final || 'Sin calificación'}</li>
+                    </ul>
+                  </li>
                 ))}
               </ul>
             )}
