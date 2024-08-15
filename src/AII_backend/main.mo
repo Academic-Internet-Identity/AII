@@ -513,6 +513,49 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
 
+    public shared ({ caller }) func actualizarCalificaciones(grupoId: Text, matricula: Text, parcial: Text, calificacion: Nat) : async Text {
+        // Verificar que el que llama la función es un administrador, administrativo o docente
+        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
+
+        // Buscar el grupo en el mapa de grupos
+        let grupoOpt = Map.get<Text, Grupo>(grupos, thash, grupoId);
+        switch grupoOpt {
+            case null { return "El grupo especificado no existe"; };
+            case (?grupo) {
+                // Buscar el registro del alumno dentro del grupo
+                var alumnoEncontrado : Bool = false;
+                let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
+                    if (registro.alumno == matricula) {
+                        alumnoEncontrado := true;
+                        // Actualizar la calificación según el parcial especificado
+                        let calificacionesActualizadas = switch (parcial) {
+                            case ("p1") { { registro.calificaciones with p1 = ?calificacion }; };
+                            case ("p2") { { registro.calificaciones with p2 = ?calificacion }; };
+                            case ("p3") { { registro.calificaciones with p3 = ?calificacion }; };
+                            case ("final") { { registro.calificaciones with final = ?calificacion }; };
+                            case _ { registro.calificaciones };
+                        };
+                        { registro with calificaciones = calificacionesActualizadas };
+                    } else {
+                        registro;
+                    }
+                });
+
+                if (not alumnoEncontrado) {
+                    return "El alumno especificado no está en este grupo";
+                };
+
+                // Actualizar el grupo con la nueva lista de alumnos
+                let grupoActualizado = { grupo with alumnos = alumnosActualizados };
+                ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+
+                return "Calificación actualizada exitosamente";
+            };
+        };
+    };
+
+
+
 
     
 
