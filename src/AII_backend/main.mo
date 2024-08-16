@@ -32,6 +32,8 @@ shared ({ caller }) actor class _Plataforma() {
 
     stable var actualUid : Nat = 0;
     stable var actualAid : Nat = 0;
+    stable var actualGid : Nat = 0;
+
 
     stable var grupos = Map.new<Text, Grupo>(); // Mapa de grupos por ID
 
@@ -44,6 +46,12 @@ shared ({ caller }) actor class _Plataforma() {
         actualAid += 1;
         "A" # Nat.toText(actualAid);
     };
+
+    func generarGid() : Text {
+        actualGid += 1;
+        "G" # Nat.toText(actualGid);
+    };
+
 
     stable let usuarios = Map.new<Principal, Usuario>();
     stable let alumnos = Map.new<Principal, Alumno>();
@@ -425,19 +433,21 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     // Función para crear un nuevo grupo
-    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, cuatrimestre: Text) : async Text {
-        assert ( esAdmin(caller) or esAdministrativo(caller));
+    public shared ({ caller }) func crearGrupo(nombre: Text, cuatrimestre: Text) : async Text {
+        assert (esAdmin(caller) or esAdministrativo(caller));
 
+        let nuevoGrupoId = generarGid();
         let nuevoGrupo : Grupo = {
-            id;
+            id = nuevoGrupoId;
             nombre;
             cuatrimestre;
             alumnos = []; // Inicialmente, el grupo no tiene alumnos
         };
 
-        ignore Map.put<Text, Grupo>(grupos, thash, id, nuevoGrupo);
-        return "Grupo creado exitosamente";
+        ignore Map.put<Text, Grupo>(grupos, thash, nuevoGrupoId, nuevoGrupo);
+        return "Grupo creado exitosamente con ID: " # nuevoGrupoId;
     };
+
 
 
     // Función para agregar un alumno a un grupo
