@@ -13,9 +13,7 @@ function GestionarGrupos() {
     cuatrimestre: '',
   });
   const [alumno, setAlumno] = useState({
-    id: '',
-    nombre: '',
-    cuatrimestre: '',
+    matricula: '',
   });
   const [alumnos, setAlumnos] = useState([]);
 
@@ -36,8 +34,16 @@ function GestionarGrupos() {
       toast.error('Todos los campos son obligatorios para crear un grupo.');
       return;
     }
+
+    // Convertir cuatrimestre a tipo Nat (número)
+    const cuatrimestreNum = Number(cuatrimestre);
+    if (isNaN(cuatrimestreNum)) {
+      toast.error('El cuatrimestre debe ser un número válido.');
+      return;
+    }
+
     try {
-      const response = await AII_backend.crearGrupo(id, nombre, cuatrimestre);
+      const response = await AII_backend.crearGrupo(id, nombre, cuatrimestreNum);
       toast.success(response);
       resetFields(); // Reiniciar los campos después de crear el grupo
     } catch (error) {
@@ -48,14 +54,14 @@ function GestionarGrupos() {
 
   // Función para agregar un alumno a un grupo
   const handleAgregarAlumno = async () => {
-    const { id, cuatrimestre } = grupo;
-    const { id: alumnoId, nombre: nombreAlumno } = alumno;
-    if (!id || !alumnoId || !nombreAlumno || !cuatrimestre) {
-      toast.error('Todos los campos son obligatorios para agregar un alumno.');
+    const { id } = grupo;
+    const { matricula } = alumno;
+    if (!id || !matricula) {
+      toast.error('El ID del grupo y la matrícula del alumno son obligatorios para agregar un alumno.');
       return;
     }
     try {
-      const response = await AII_backend.agregarAlumnoAGrupo(id, alumnoId, nombreAlumno, cuatrimestre);
+      const response = await AII_backend.agregarAlumnoAGrupo(id, matricula);
       toast.success(response);
       resetFields(); // Reiniciar los campos después de agregar un alumno
     } catch (error) {
@@ -87,7 +93,7 @@ function GestionarGrupos() {
   // Reiniciar los campos del formulario
   const resetFields = () => {
     setGrupo({ id: '', nombre: '', cuatrimestre: '' });
-    setAlumno({ id: '', nombre: '', cuatrimestre: '' });
+    setAlumno({ matricula: '' });
     setAlumnos([]);
   };
 
@@ -122,16 +128,8 @@ function GestionarGrupos() {
               <input type="text" name="id" value={grupo.id} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
             <div className="form-group">
-              <label>ID del Alumno:</label>
-              <input type="text" name="id" value={alumno.id} onChange={(e) => handleInputChange(e, 'alumno')} />
-            </div>
-            <div className="form-group">
-              <label>Nombre del Alumno:</label>
-              <input type="text" name="nombre" value={alumno.nombre} onChange={(e) => handleInputChange(e, 'alumno')} />
-            </div>
-            <div className="form-group">
-              <label>Cuatrimestre:</label>
-              <input type="text" name="cuatrimestre" value={grupo.cuatrimestre} onChange={(e) => handleInputChange(e, 'grupo')} />
+              <label>Matrícula del Alumno:</label>
+              <input type="text" name="matricula" value={alumno.matricula} onChange={(e) => handleInputChange(e, 'alumno')} />
             </div>
             <button onClick={handleAgregarAlumno}>Agregar Alumno al Grupo</button>
           </div>

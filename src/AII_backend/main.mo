@@ -158,7 +158,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     public shared ({ caller }) func aprobarRegistroDeAlumno(solicitante : Principal) : async Text {
         Debug.print("Approving student registration for: " # Principal.toText(solicitante));
-        assert esAdmin(caller); // Solo un administrador puede aprobar
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         let usuario = Map.get<Principal, Usuario>(usuarios, Map.phash, solicitante);
         switch usuario {
             case null { return "El usuario no está registrado"; };
@@ -232,7 +232,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     public shared ({ caller }) func aprobarRegistroDeAdministrativo(solicitante : Principal) : async Text {
         Debug.print("Approving administrative registration for: " # Principal.toText(solicitante));
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         let usuario = Map.get<Principal, Usuario>(usuarios, Map.phash, solicitante);
         switch usuario {
             case null { return "El usuario no está registrado"; };
@@ -271,7 +271,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     public shared ({ caller }) func aprobarRegistroDeDocente(solicitante : Principal) : async Text {
         Debug.print("Approving teacher registration for: " # Principal.toText(solicitante));
-        assert esAdmin(caller);
+        assert ( esAdmin(caller) or esAdministrativo(caller));
         let usuario = Map.get<Principal, Usuario>(usuarios, Map.phash, solicitante);
         switch usuario {
             case null { return "El usuario no está registrado"; };
@@ -424,49 +424,6 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
-    // Función para crear un nuevo grupo
-    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, cuatrimestre: Text) : async Text {
-        assert ( esAdmin(caller) or esAdministrativo(caller));
-
-        let nuevoGrupo : Grupo = {
-            id;
-            nombre;
-            cuatrimestre;
-            alumnos = []; // Inicialmente, el grupo no tiene alumnos
-        };
-
-        ignore Map.put<Text, Grupo>(grupos, thash, id, nuevoGrupo);
-        return "Grupo creado exitosamente";
-    };
-
-
-    // Función para agregar un alumno a un grupo
-    public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, matricula: Text, nombre: Text, cuatrimestre: Text) : async Text {
-        assert ( esAdmin(caller) or esAdministrativo(caller));
-
-        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
-        switch grupo {
-            case null { return "El grupo especificado no existe"; };
-            case (?grupo) {
-                let nuevoRegistro : RegistroGrupo = {
-                    alumno = matricula; // Usar la matrícula en lugar de Principal
-                    nombre;
-                    calificaciones = { p1 = null; p2 = null; p3 = null; final = null }; // Inicialmente sin calificaciones
-                    cuatrimestre;
-                    materia = ""; // Este campo puede ser eliminado o asignado como necesario
-                };
-
-                // Actualizar el grupo con el nuevo alumno
-                let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
-                ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
-
-                return "Alumno agregado al grupo exitosamente";
-            };
-        };
-    };
-
-
-
     public shared ({ caller }) func modificarCertificacionDeIngles(alumnoId: Text, nuevoCertificado: Bool) : async Text {
         // Verificar que el que llama la función es un administrador o administrativo
         assert (esAdmin(caller) or esAdministrativo(caller));
@@ -489,10 +446,55 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
+// Función para crear un nuevo grupo
+    public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, cuatrimestre: Nat) : async Text {
+        assert ( esAdmin(caller) or esAdministrativo(caller));
 
+        let nuevoGrupo : Grupo = {
+            id;
+            nombre;
+            cuatrimestre;
+            alumnos = []; // Inicialmente, el grupo no tiene alumnos
+        };
 
+        ignore Map.put<Text, Grupo>(grupos, thash, id, nuevoGrupo);
+        return "Grupo creado exitosamente";
+    };
 
+ public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, matricula: Text) : async Text {
+    assert ( esAdmin(caller) or esAdministrativo(caller));
 
+    let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+    switch grupo {
+        case null { return "El grupo especificado no existe"; };
+        case (?grupo) {
+            let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, matricula);
+            switch alumnoOpt {
+                case null { return "El alumno especificado no existe"; };
+                case (?alumno) {
+                    // Verificar si el cuatrimestre del alumno coincide con el del grupo
+                    if (alumno.semestre != grupo.cuatrimestre) {
+                        return "El cuatrimestre del alumno no coincide con el del grupo";
+                    };
+
+                    let nuevoRegistro : RegistroGrupo = {
+                        alumno = matricula;
+                        nombre = alumno.nombre; // Usa el nombre del alumno registrado
+                        calificaciones = { p1 = null; p2 = null; p3 = null; final = null }; // Inicialmente sin calificaciones
+                        cuatrimestre = grupo.cuatrimestre; // Usar el cuatrimestre del grupo
+                        materia = ""; // Este campo puede ser eliminado o asignado como necesario
+                    };
+
+                    // Actualizar el grupo con el nuevo alumno
+                    let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
+                    ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+
+                    return "Alumno agregado al grupo exitosamente";
+                };
+            };
+        };
+    };
+};
 
     // Función para listar los alumnos de un grupo
     public shared query ({ caller }) func listarAlumnosDeGrupo(grupoId: Text) : async ?[RegistroGrupo] {
