@@ -89,8 +89,8 @@ function NavBar() {
             {rol === 'Profesor' && (
               <>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}
             {rol === 'Administrativo' && (
@@ -111,6 +111,7 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>
                 </NavDropdown>
+                <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/gestionar-grupos">Gestionar Grupos</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>

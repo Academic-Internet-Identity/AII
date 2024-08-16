@@ -30,6 +30,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as AII_backend from "declarations/AII_backend";
 import GestionarGrupos from './components/GestionarGrupos';
 import InglesManagement from './components/InglesManagement';
+import HorariosManagement from './components/HorariosManagement';
 
 const client = createClient({
   canisters: {
@@ -126,6 +127,7 @@ function AppRoutes() {
         <Route path="/mi-perfil" element={<MiPerfil/>}/>
         <Route path="/gestionar-grupos" element={<GestionarGrupos/>}/> 
         <Route path="/ingles" element={<InglesManagement />} />
+        <Route path="/horarios" element={<HorariosManagement />} />
       </Routes>
     </>
   );

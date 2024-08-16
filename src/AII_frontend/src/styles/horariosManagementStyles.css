@@ -1,0 +1,113 @@
+.horarios-management-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #00385d;  /* Fondo azul oscuro */
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+.horarios-management-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #00385d;
+}
+
+.horarios-management-container h2 {
+    margin-bottom: 20px;
+    color: #fff; /* Blanco para que contraste bien con el fondo */
+}
+
+.horarios-management-instruction {
+    margin-bottom: 20px;
+    color: #ffcc00; /* Texto amarillo para destacar la instrucción */
+}
+
+.horarios-management-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.horarios-management-form-group label {
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.horarios-management-input-text,
+.horarios-management-input-time {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.horarios-management-button {
+    background-color: #006bb3;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.horarios-management-button:hover {
+    background-color: #005b99;
+}
+
+.horarios-management-list {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.horarios-table {
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #00385d;
+    color: #fff;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.horarios-table th,
+.horarios-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+.horarios-table th {
+    background-color: #005b99;
+    color: #fff;
+}
+
+.horarios-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.horarios-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+}
+
+.horarios-table tr:hover {
+    background-color: #1A91DA;
+}
+
+.horarios-table td {
+    text-align: center;
+}
