@@ -514,6 +514,11 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Text, Grupo>(grupos));
     };
 
+    public shared query ({ caller }) func verGrupo(grupoId: Text) : async ?Grupo {
+        assert(esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
+        Map.get<Text, Grupo>(grupos, thash, grupoId);
+    };
+
 
     public shared ({ caller }) func actualizarCalificaciones(grupoId: Text, matricula: Text, parcial: Text, calificacion: Nat) : async Text {
         // Verificar que el que llama la función es un administrador, administrativo o docente
