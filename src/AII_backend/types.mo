@@ -1,3 +1,4 @@
+import Nat "mo:base/Nat";
 module {
     public type Uid = Text; // Usuario id
     public type Aid = Text; // Alumno id
@@ -13,7 +14,7 @@ module {
         alumno: Text; // Cambiado a Text para almacenar la matrícula del alumno
         nombre: Text; // Nombre del alumno
         calificaciones: Calificaciones; // Calificaciones del alumno
-        cuatrimestre: Text; // Cuatrimestre
+        cuatrimestre: Nat; // Cuatrimestre
         materia: Text; // Materia
     };
 
@@ -21,7 +22,7 @@ module {
     public type Grupo = {
         id: Text; // ID del grupo
         nombre: Text; // Nombre del grupo
-        cuatrimestre: Text; // Cuatrimestre
+        cuatrimestre: Nat; // Cuatrimestre
         alumnos: [RegistroGrupo]; // Lista de registros de alumnos en el grupo
     };
 

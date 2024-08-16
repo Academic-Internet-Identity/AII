@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
-import { Principal } from '@dfinity/principal'; // Cambiar la importación
-import '../styles/verAlumnosIngresantesStyles.css'; // Asegúrate de tener este archivo en la carpeta styles
+import { Principal } from '@dfinity/principal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/verAlumnosIngresantesStyles.css';
 
 function VerAlumnosIngresantes() {
   const [AII_backend] = useCanister('AII_backend');
@@ -12,8 +14,10 @@ function VerAlumnosIngresantes() {
     try {
       const result = await AII_backend.verAlumnosIngresantes();
       setAlumnosIngresantes(result);
+      toast.success('Alumnos ingresantes obtenidos correctamente.');
     } catch (error) {
       console.error('Error al obtener los alumnos ingresantes:', error);
+      toast.error('Error al obtener los alumnos ingresantes.');
     } finally {
       setLoading(false);
     }
@@ -28,10 +32,12 @@ function VerAlumnosIngresantes() {
       const principal = Principal.fromText(principalId);
       const response = await AII_backend.aprobarRegistroDeAlumno(principal);
       console.log(response);
+      toast.success('Alumno aprobado exitosamente.');
       // Actualiza la lista de alumnos ingresantes después de aprobar uno
       fetchAlumnosIngresantes();
     } catch (error) {
       console.error('Error al aprobar el registro del alumno:', error);
+      toast.error('Error al aprobar el registro del alumno.');
     }
   };
 
@@ -72,6 +78,7 @@ function VerAlumnosIngresantes() {
           </tbody>
         </table>
       )}
+      <ToastContainer />
     </div>
   );
 }
