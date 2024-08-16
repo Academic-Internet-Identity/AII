@@ -32,8 +32,6 @@ shared ({ caller }) actor class _Plataforma() {
 
     stable var actualUid : Nat = 0;
     stable var actualAid : Nat = 0;
-    stable var actualGid : Nat = 0;
-
 
     stable var grupos = Map.new<Text, Grupo>(); // Mapa de grupos por ID
 
@@ -46,12 +44,6 @@ shared ({ caller }) actor class _Plataforma() {
         actualAid += 1;
         "A" # Nat.toText(actualAid);
     };
-
-    func generarGid() : Text {
-        actualGid += 1;
-        "G" # Nat.toText(actualGid);
-    };
-
 
     stable let usuarios = Map.new<Principal, Usuario>();
     stable let alumnos = Map.new<Principal, Alumno>();
