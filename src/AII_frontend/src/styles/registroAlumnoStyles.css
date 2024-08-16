@@ -29,34 +29,34 @@ body, html {
   color: #00385d;
 }
 
-.form-group {
+.registro-alumno-form-group {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+.registro-alumno-form-group input,
+.registro-alumno-form-group textarea,
+.registro-alumno-form-group select {
   flex: 1 1 calc(33.333% - 20px);
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.checkbox-group {
+.registro-alumno-checkbox-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
 }
 
-.add-button-container {
+.registro-alumno-add-button-container {
   flex: 1 1 100%;
   text-align: right;
 }
 
-.add-button {
+.registro-alumno-add-button {
   background-color: #006bb3;
   color: #fff;
   border: none;
@@ -65,11 +65,11 @@ body, html {
   cursor: pointer;
 }
 
-.add-button:hover {
+.registro-alumno-add-button:hover {
   background-color: #005b99;
 }
 
-.form-button {
+.registro-alumno-form-button {
   background-color: #006bb3;
   color: #fff;
   border: none;
@@ -79,11 +79,11 @@ body, html {
   align-self: center;
 }
 
-.form-button:hover {
+.registro-alumno-form-button:hover {
   background-color: #005b99;
 }
 
-.message {
+.registro-alumno-message {
   color: #ff3333;
   margin-top: 20px;
 }

@@ -1,91 +1,91 @@
 body, html {
-    height: 100%;
-    margin: 0;
-    background-color: #00385d;
-  }
-  
-  .registro-docente-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #00385d;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .registro-docente-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 80%;
-    max-width: 1200px;
-    margin: auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    color: #00385d;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    flex: 1 1 calc(33.333% - 20px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #00385d;
-  }
-  
-  .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  
-  .add-button-container {
-    flex: 1 1 100%;
-    text-align: right;
-  }
-  
-  .add-button {
-    background-color: #006bb3;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .add-button:hover {
-    background-color: #005b99;
-  }
-  
-  .form-button {
-    background-color: #006bb3;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    align-self: center;
-  }
-  
-  .form-button:hover {
-    background-color: #005b99;
-  }
-  
-  .message {
-    color: #ff3333;
-    margin-top: 20px;
-  }
+  height: 100%;
+  margin: 0;
+  background-color: #00385d;
+}
+
+.registro-docente-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #00385d;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+.registro-docente-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 80%;
+  max-width: 1200px;
+  margin: auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  color: #00385d;
+}
+
+.registro-docente-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.registro-docente-form-group input,
+.registro-docente-form-group textarea,
+.registro-docente-form-group select {
+  flex: 1 1 calc(33.333% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #00385d;
+}
+
+.registro-docente-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.registro-docente-add-button-container {
+  flex: 1 1 100%;
+  text-align: right;
+}
+
+.registro-docente-add-button {
+  background-color: #006bb3;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registro-docente-add-button:hover {
+  background-color: #005b99;
+}
+
+.registro-docente-form-button {
+  background-color: #006bb3;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.registro-docente-form-button:hover {
+  background-color: #005b99;
+}
+
+.registro-docente-message {
+  color: #ff3333;
+  margin-top: 20px;
+}

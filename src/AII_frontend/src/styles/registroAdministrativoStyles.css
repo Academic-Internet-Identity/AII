@@ -29,15 +29,15 @@ body, html {
   color: #00385d;
 }
 
-.form-group {
+.registro-admin-form-group {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+.registro-admin-form-group input,
+.registro-admin-form-group textarea,
+.registro-admin-form-group select {
   flex: 1 1 calc(33.333% - 20px);
   padding: 10px;
   border: 1px solid #ccc;
@@ -46,19 +46,19 @@ body, html {
   color: #00385d;
 }
 
-.checkbox-group {
+.registro-admin-checkbox-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
 }
 
-.add-button-container {
+.registro-admin-add-button-container {
   flex: 1 1 100%;
   text-align: right;
 }
 
-.add-button {
+.registro-admin-add-button {
   background-color: #006bb3;
   color: #fff;
   border: none;
@@ -67,11 +67,11 @@ body, html {
   cursor: pointer;
 }
 
-.add-button:hover {
+.registro-admin-add-button:hover {
   background-color: #005b99;
 }
 
-.form-button {
+.registro-admin-form-button {
   background-color: #006bb3;
   color: #fff;
   border: none;
@@ -81,11 +81,11 @@ body, html {
   align-self: center;
 }
 
-.form-button:hover {
+.registro-admin-form-button:hover {
   background-color: #005b99;
 }
 
-.message {
+.registro-admin-message {
   color: #ff3333;
   margin-top: 20px;
 }

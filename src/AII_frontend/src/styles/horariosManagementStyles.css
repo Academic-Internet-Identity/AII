@@ -47,7 +47,8 @@
 }
 
 .horarios-management-input-text,
-.horarios-management-input-time {
+.horarios-management-input-time,
+.horarios-management-select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -71,7 +72,7 @@
 
 .horarios-management-list {
     width: 100%;
-    max-width: 600px;
+    max-width: 900px;
     margin-top: 20px;
 }
 
@@ -89,6 +90,7 @@
 .horarios-table td {
     padding: 12px 15px;
     border-bottom: 1px solid #2d2d2d;
+    text-align: center;
 }
 
 .horarios-table th {

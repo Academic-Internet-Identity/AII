@@ -216,6 +216,7 @@ module {
         horaInicio: Text;
         horaFin: Text;
         grupoId: Text;  // Identificador del grupo asociado
+        materia: Text;  // Materia asociada al horario
     };
 
 

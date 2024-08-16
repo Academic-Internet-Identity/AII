@@ -38,7 +38,7 @@ function RegistroAlumno() {
       toast.success(response);
     } catch (error) {
       toast.error('Error al registrar alumno.');
-      console.error('Error al registrar alumno:', error); // Puedes mantener esto para depuración adicional
+      console.error('Error al registrar alumno:', error);
     }
   };
 
@@ -46,7 +46,7 @@ function RegistroAlumno() {
     <div className="registro-alumno-container">
       <h2>Registrar Alumno</h2>
       <form className="registro-alumno-form" onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className="registro-alumno-form-group">
           <input type="text" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" required />
           <input type="text" name="apellidoPaterno" value={form.apellidoPaterno} onChange={handleChange} placeholder="Apellido Paterno" required />
           <input type="text" name="apellidoMaterno" value={form.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
@@ -84,19 +84,19 @@ function RegistroAlumno() {
           </select>
           <input type="email" name="emailPersonal" value={form.emailPersonal} onChange={handleChange} placeholder="Email Personal" required />
         </div>
-        <div className="form-group">
+        <div className="registro-alumno-form-group">
           {form.direcciones.map((direccion, index) => (
             <input key={index} type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
+          <div className="registro-alumno-add-button-container">
+            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
           </div>
           
           {form.telefonos.map((telefono, index) => (
             <input key={index} type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
+          <div className="registro-alumno-add-button-container">
+            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
           </div>
           
           <textarea name="detallesMedicos" value={form.detallesMedicos} onChange={handleChange} placeholder="Detalles Médicos" required />
@@ -105,15 +105,15 @@ function RegistroAlumno() {
           {form.escuelasProcedencia.map((escuela, index) => (
             <input key={index} type="text" value={escuela} onChange={(e) => handleArrayChange(e, index, 'escuelasProcedencia')} placeholder="Escuela de Procedencia" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('escuelasProcedencia')}>Agregar Escuela</button>
+          <div className="registro-alumno-add-button-container">
+            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('escuelasProcedencia')}>Agregar Escuela</button>
           </div>
           
           {form.ocupaciones.map((ocupacion, index) => (
             <input key={index} type="text" value={ocupacion} onChange={(e) => handleArrayChange(e, index, 'ocupaciones')} placeholder="Ocupación" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('ocupaciones')}>Agregar Ocupación</button>
+          <div className="registro-alumno-add-button-container">
+            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('ocupaciones')}>Agregar Ocupación</button>
           </div>
           
           <input type="text" name="tutorJefeFamilia" value={form.tutorJefeFamilia} onChange={handleChange} placeholder="Tutor o Jefe de Familia" required />
@@ -121,11 +121,11 @@ function RegistroAlumno() {
           {form.familiares.map((familiar, index) => (
             <input key={index} type="text" value={familiar} onChange={(e) => handleArrayChange(e, index, 'familiares')} placeholder="Familiar" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('familiares')}>Agregar Familiar</button>
+          <div className="registro-alumno-add-button-container">
+            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('familiares')}>Agregar Familiar</button>
           </div>
           
-          <div className="checkbox-group">
+          <div className="registro-alumno-checkbox-group">
             <label>
               <input type="checkbox" name="pertenenciaEtniaIndigena" checked={form.pertenenciaEtniaIndigena} onChange={handleChange} />
               Pertenencia a Etnia Indígena
@@ -162,14 +162,14 @@ function RegistroAlumno() {
             <option value="C1">C1</option>
             <option value="C2">C2</option>
           </select>
-          <div className="checkbox-group">
+          <div className="registro-alumno-checkbox-group">
             <label>
               <input type="checkbox" name="certificacionDeIngles" checked={form.certificacionDeIngles} onChange={handleChange} />
               Certificación de Inglés
             </label>
           </div>
         </div>
-        <button type="submit" className="form-button">Registrar</button>
+        <button type="submit" className="registro-alumno-form-button">Registrar</button>
       </form>
       <ToastContainer />
     </div>
@@ -177,4 +177,3 @@ function RegistroAlumno() {
 }
 
 export default RegistroAlumno;
-

@@ -46,7 +46,7 @@ function RegistroAdministrativo() {
     <div className="registro-admin-container">
       <h2>Solicitar Registro como Administrativo</h2>
       <form className="registro-admin-form" onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className="registro-admin-form-group">
           <input type="text" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" required />
           <input type="text" name="apellidoPaterno" value={form.apellidoPaterno} onChange={handleChange} placeholder="Apellido Paterno" required />
           <input type="text" name="apellidoMaterno" value={form.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
@@ -83,19 +83,19 @@ function RegistroAdministrativo() {
           </select>
           <input type="email" name="emailPersonal" value={form.emailPersonal} onChange={handleChange} placeholder="Email Personal" required />
         </div>
-        <div className="form-group">
+        <div className="registro-admin-form-group">
           {form.direcciones.map((direccion, index) => (
             <input key={index} type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
+          <div className="registro-admin-add-button-container">
+            <button type="button" className="registro-admin-add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
           </div>
           
           {form.telefonos.map((telefono, index) => (
             <input key={index} type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
           ))}
-          <div className="add-button-container">
-            <button type="button" className="add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
+          <div className="registro-admin-add-button-container">
+            <button type="button" className="registro-admin-add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
           </div>
           
           <textarea name="detallesMedicos" value={form.detallesMedicos} onChange={handleChange} placeholder="Detalles Médicos" required />
@@ -103,7 +103,7 @@ function RegistroAdministrativo() {
           <input type="text" name="cedulaProfesional" value={form.cedulaProfesional} onChange={handleChange} placeholder="Cédula Profesional" required />
         </div>
         
-        <button type="submit" className="form-button">Registrar</button>
+        <button type="submit" className="registro-admin-form-button">Registrar</button>
       </form>
       <ToastContainer />
     </div>
