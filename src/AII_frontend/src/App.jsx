@@ -29,6 +29,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as AII_backend from "declarations/AII_backend";
 import GestionarGrupos from './components/GestionarGrupos';
+import InglesManagement from './components/InglesManagement';
 
 const client = createClient({
   canisters: {
@@ -124,6 +125,7 @@ function AppRoutes() {
         <Route path="/listar-materias" element={<ListarMaterias />} />
         <Route path="/mi-perfil" element={<MiPerfil/>}/>
         <Route path="/gestionar-grupos" element={<GestionarGrupos/>}/> 
+        <Route path="/ingles" element={<InglesManagement />} />
       </Routes>
     </>
   );

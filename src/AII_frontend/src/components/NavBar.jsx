@@ -90,6 +90,7 @@ function NavBar() {
               <>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
               </>
             )}
             {rol === 'Administrativo' && (
@@ -106,9 +107,12 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/ver-docentes">Ver Docentes</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/aprobar-docente">Aprobar Docente</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>
+                <NavDropdown title={<span className="materias-dropdown">Materias</span>} id="materias-nav-dropdown" className="submenu-right">
+                  <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>
+                </NavDropdown>
                 <NavDropdown.Item as={Link} to="/gestionar-grupos">Gestionar Grupos</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}

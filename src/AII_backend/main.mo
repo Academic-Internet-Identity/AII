@@ -373,7 +373,6 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func verMaterias() : async [Materia] {
-        assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
         Iter.toArray(Map.vals<Text, Materia>(materias));
     };
 
@@ -404,7 +403,7 @@ shared ({ caller }) actor class _Plataforma() {
 
     public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Text, nuevoNivel: Text) : async Text {
         // Verificar que el que llama la función es un administrador o administrativo
-        assert (esAdmin(caller) or esAdministrativo(caller));
+        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
 
         // Buscar al alumno en el mapa alumnoMat usando la matrícula especificada
         let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);

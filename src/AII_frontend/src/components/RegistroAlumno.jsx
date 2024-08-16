@@ -171,6 +171,7 @@ function RegistroAlumno() {
         </div>
         <button type="submit" className="form-button">Registrar</button>
       </form>
+      <ToastContainer />
     </div>
   );
 }

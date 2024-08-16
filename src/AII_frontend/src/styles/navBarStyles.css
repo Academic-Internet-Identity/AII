@@ -25,9 +25,11 @@
   content: none; /* Elimina el icono de flecha */
 }
 
+/* Estilos compartidos por los submenús */
 .alumnos-dropdown,
 .administrativos-dropdown,
-.docentes-dropdown {
+.docentes-dropdown,
+.materias-dropdown {  /* Añadir aquí la clase materias-dropdown */
   color: #000 !important; /* Asegura que el texto sea negro */
 }
 

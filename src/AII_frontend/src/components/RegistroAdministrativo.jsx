@@ -105,7 +105,7 @@ function RegistroAdministrativo() {
         
         <button type="submit" className="form-button">Registrar</button>
       </form>
-      <ToastContainer /> {/* Container para mostrar los toasts */}
+      <ToastContainer />
     </div>
   );
 }
