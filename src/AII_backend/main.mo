@@ -395,7 +395,32 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
+    public shared ({ caller }) func eliminarHorario(grupoId: Text, materia: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
+        assert (esAdmin(caller) or esAdministrativo(caller));
 
+        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+        switch grupo {
+            case null { return "Grupo no encontrado"; };
+            case (?grupo) {
+                let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, grupoId)) {
+                    case null { []; };
+                    case (?h) { h };
+                };
+
+                // Filtrar los horarios que NO coinciden con los criterios proporcionados
+                let horariosActualizados = Array.filter<Horario>(horariosExistentes, func (horario) : Bool {
+                    return not (horario.materia == materia and horario.dia == dia and horario.horaInicio == horaInicio and horario.horaFin == horaFin);
+                });
+
+                if (Array.size(horariosExistentes) == Array.size(horariosActualizados)) {
+                    return "No se encontró un horario que coincida con los criterios proporcionados";
+                };
+
+                ignore Map.put<Text, [Horario]>(horarios, thash, grupoId, horariosActualizados);
+                return "Horario eliminado exitosamente";
+            };
+        };
+    };
 
     public shared query ({ caller }) func verHorarios(grupoId: Text) : async ?[Horario] {
         assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
@@ -521,6 +546,33 @@ shared ({ caller }) actor class _Plataforma() {
         Map.get<Text, Grupo>(grupos, thash, grupoId);
     };
 
+    public shared query ({ caller }) func getMyGrupo() : async ?Grupo {
+        // Obtener el alumno asociado al `caller`
+        let alumnoOpt = Map.get(alumnos, phash, caller);
+
+        // Verificar si el alumno existe
+        switch alumnoOpt {
+            case null {
+                return null; // No se encontró el alumno asociado al `caller`
+            };
+            case (?alumno) {
+                // Recorrer todos los grupos para encontrar en cuál está el alumno
+                for ((_, grupo) in Map.entries(grupos)) {
+                    // Buscar al alumno en la lista de alumnos del grupo
+                    let alumnoEncontrado = Array.find<RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : Bool {
+                        registro.alumno == alumno.matricula
+                    });
+
+                    // Si se encuentra el alumno en el grupo, devolver el grupo
+                    if (alumnoEncontrado != null) {
+                        return ?grupo;
+                    };
+                };
+                // Si no se encuentra en ningún grupo, devolver null
+                return null;
+            };
+        };
+    };
 
     public shared ({ caller }) func actualizarCalificaciones(grupoId: Text, matricula: Text, parcial: Text, calificacion: Nat) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));

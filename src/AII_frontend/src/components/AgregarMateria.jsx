@@ -1,23 +1,23 @@
 // src/components/AgregarMateria.jsx
 import React, { useState } from 'react';
 import { useCanister } from '@connect2ic/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/agregarMateriaStyles.css';
 
 const AgregarMateria = () => {
   const [nombre, setNombre] = useState('');
   const [codigo, setCodigo] = useState('');
   const [creditos, setCreditos] = useState('');
-  const [mensaje, setMensaje] = useState('');
   const [AII_backend] = useCanister('AII_backend');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await AII_backend.agregarMateria(nombre, codigo, parseInt(creditos));
-      setMensaje(response);
+      toast.success(response);
     } catch (error) {
-      console.error('Error al agregar materia:', error);
-      setMensaje('Error al agregar materia.');
+      toast.error('Error al agregar materia.');
     }
   };
 
@@ -56,7 +56,7 @@ const AgregarMateria = () => {
         </div>
         <button type="submit" className="materia-form-button">Agregar Materia</button>
       </form>
-      {mensaje && <p className="materia-message">{mensaje}</p>}
+      <ToastContainer />
     </div>
   );
 };

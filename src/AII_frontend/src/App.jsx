@@ -31,6 +31,7 @@ import * as AII_backend from "declarations/AII_backend";
 import GestionarGrupos from './components/GestionarGrupos';
 import InglesManagement from './components/InglesManagement';
 import HorariosManagement from './components/HorariosManagement';
+import MiHorario from './components/MiHorario';
 
 const client = createClient({
   canisters: {
@@ -128,6 +129,7 @@ function AppRoutes() {
         <Route path="/gestionar-grupos" element={<GestionarGrupos/>}/> 
         <Route path="/ingles" element={<InglesManagement />} />
         <Route path="/horarios" element={<HorariosManagement />} />
+        <Route path="/mi-horario" element={<MiHorario />} />
       </Routes>
     </>
   );

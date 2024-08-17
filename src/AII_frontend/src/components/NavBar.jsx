@@ -1,3 +1,5 @@
+// NavBar.jsx
+
 import React, { useEffect } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -82,7 +84,7 @@ function NavBar() {
             )}
             {rol === 'Alumno' && (
               <>
-                <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mi-horario">Mi Horario</NavDropdown.Item> {/* Nuevo enlace */}
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}

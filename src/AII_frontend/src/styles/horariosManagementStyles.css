@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #00385d;  /* Fondo azul oscuro */
+    background-color: #00385d;
     color: #fff;
     text-align: center;
     padding: 20px;
@@ -25,12 +25,12 @@
 
 .horarios-management-container h2 {
     margin-bottom: 20px;
-    color: #fff; /* Blanco para que contraste bien con el fondo */
+    color: #fff;
 }
 
 .horarios-management-instruction {
     margin-bottom: 20px;
-    color: #ffcc00; /* Texto amarillo para destacar la instrucción */
+    color: #ffcc00;
 }
 
 .horarios-management-form-group {
@@ -38,6 +38,7 @@
     flex-direction: column;
     gap: 10px;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .horarios-management-form-group label {
@@ -55,6 +56,20 @@
     border-radius: 5px;
 }
 
+.horarios-management-time-label {
+    position: absolute;
+    top: 35px;
+    right: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+.horarios-management-buttons {
+    display: flex;
+    gap: 20px; /* Aumentar el espacio entre los botones */
+    margin-top: 15px;
+}
+
 .horarios-management-button {
     background-color: #006bb3;
     color: #fff;
@@ -68,6 +83,14 @@
 
 .horarios-management-button:hover {
     background-color: #005b99;
+}
+
+.horarios-management-button.eliminar {
+    background-color: #e74c3c; /* Rojo para el botón de eliminar */
+}
+
+.horarios-management-button.eliminar:hover {
+    background-color: #c0392b; /* Tono más oscuro para el hover del botón de eliminar */
 }
 
 .horarios-management-list {
@@ -91,6 +114,7 @@
     padding: 12px 15px;
     border-bottom: 1px solid #2d2d2d;
     text-align: center;
+    white-space: nowrap; /* Asegura que el texto se mantenga en una línea */
 }
 
 .horarios-table th {
@@ -108,8 +132,4 @@
 
 .horarios-table tr:hover {
     background-color: #1A91DA;
-}
-
-.horarios-table td {
-    text-align: center;
 }

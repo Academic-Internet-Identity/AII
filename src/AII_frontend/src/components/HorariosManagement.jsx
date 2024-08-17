@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/horariosManagementStyles.css';  // Importa la hoja de estilos para horarios
+import '../styles/horariosManagementStyles.css';
 
 function HorariosManagement() {
   const [AII_backend] = useCanister('AII_backend');
@@ -15,12 +15,14 @@ function HorariosManagement() {
   const [materiasDisponibles, setMateriasDisponibles] = useState([]);
 
   const horas = [
-    "8:00 a 9:00", "9:00 a 10:00", "10:00 a 11:00", "11:00 a 12:00", 
-    "12:00 a 13:00", "15:00 a 16:00", "16:00 a 17:00", "17:00 a 18:00"
+    "07:00 a 08:00", "08:00 a 09:00", "09:00 a 10:00", "10:00 a 11:00", "11:00 a 12:00", 
+    "12:00 a 13:00", "13:00 a 14:00", "14:00 a 15:00", "15:00 a 16:00", 
+    "16:00 a 17:00", "17:00 a 18:00", "18:00 a 19:00", "19:00 a 20:00",
+    "20:00 a 21:00"
   ];
+
   const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-  // Cargar materias disponibles desde el backend
   useEffect(() => {
     const fetchMaterias = async () => {
       try {
@@ -28,17 +30,14 @@ function HorariosManagement() {
         setMateriasDisponibles(result);
       } catch (error) {
         toast.error('Error al obtener las materias.');
-        console.error('Error al obtener las materias:', error);
       }
     };
     fetchMaterias();
   }, [AII_backend]);
 
-  // Cargar los horarios de un grupo específico
   const cargarHorarios = async (grupoId) => {
     try {
       const horariosData = await AII_backend.verHorarios(grupoId);
-      console.log('Horarios Data:', horariosData); // Log para depuración
       if (horariosData && horariosData.length > 0) {
         const horariosConMaterias = horariosData[0].map(h => {
           const materiaEncontrada = materiasDisponibles.find(m => m.codigo === h.materia);
@@ -51,29 +50,61 @@ function HorariosManagement() {
       }
     } catch (error) {
       toast.error('Error al cargar los horarios.');
-      console.error('Error al cargar los horarios:', error);
     }
   };
 
-  // Recargar horarios tras añadir o modificar un horario
   const handleAgregarHorario = async () => {
     try {
+      if (!grupoId || !materia || !dia || !horaInicio || !horaFin) {
+        toast.error('Todos los campos son obligatorios.');
+        return;
+      }
+
       const selectedMateria = materiasDisponibles.find(m => m.nombre === materia);
       if (!selectedMateria) {
         toast.error('Seleccione una materia válida.');
         return;
       }
 
+      if (!horas.some(h => h.startsWith(horaInicio))) {
+        toast.error('Hora de inicio fuera del rango.');
+        return;
+      }
+
+      if (!horas.some(h => h.endsWith(horaFin))) {
+        toast.error('Hora de fin fuera del rango.');
+        return;
+      }
+
       const response = await AII_backend.agregarHorario(grupoId, selectedMateria.codigo, dia, horaInicio, horaFin);
       toast.success(response);
-      await cargarHorarios(grupoId); // Asegurar que los horarios se recarguen después de agregar
+      await cargarHorarios(grupoId);
     } catch (error) {
       toast.error('Error al agregar el horario.');
-      console.error('Error al agregar el horario:', error);
     }
   };
 
-  // Este efecto asegura que los horarios se carguen cada vez que cambien las materias disponibles o el grupoId
+  const handleEliminarHorario = async () => {
+    try {
+      if (!grupoId || !materia || !dia || !horaInicio || !horaFin) {
+        toast.error('Todos los campos son obligatorios.');
+        return;
+      }
+
+      const selectedMateria = materiasDisponibles.find(m => m.nombre === materia);
+      if (!selectedMateria) {
+        toast.error('Seleccione una materia válida.');
+        return;
+      }
+
+      const response = await AII_backend.eliminarHorario(grupoId, selectedMateria.codigo, dia, horaInicio, horaFin);
+      toast.success(response);
+      await cargarHorarios(grupoId);
+    } catch (error) {
+      toast.error('Error al eliminar el horario.');
+    }
+  };
+
   useEffect(() => {
     if (grupoId && materiasDisponibles.length > 0) {
       cargarHorarios(grupoId);
@@ -84,7 +115,6 @@ function HorariosManagement() {
     cargarHorarios(grupoId);
   };
 
-  // Renderizar la materia en la tabla de horarios
   const renderHorario = (dia, hora) => {
     const [horaInicio] = hora.split(' a ');
     const horarioEncontrado = horarios.filter(h => h.dia === dia && h.horaInicio === horaInicio);
@@ -98,7 +128,6 @@ function HorariosManagement() {
   return (
     <div className="horarios-management-container">
       <h2>Gestión de Horarios</h2>
-      <p className="horarios-management-instruction">Ingrese el ID del grupo y seleccione una materia para agregar o ver horarios.</p>
       <form className="horarios-management-form">
         <div className="horarios-management-form-group">
           <label>ID del Grupo:</label>
@@ -108,6 +137,7 @@ function HorariosManagement() {
             value={grupoId}
             onChange={(e) => setGrupoId(e.target.value)}
             placeholder="Ingrese el ID del grupo"
+            required
           />
         </div>
         <div className="horarios-management-form-group">
@@ -139,26 +169,33 @@ function HorariosManagement() {
           </select>
         </div>
         <div className="horarios-management-form-group">
-          <label>Hora de Inicio:</label>
+          <label>Hora de Inicio: <span className="horarios-management-time-label">(24 horas)</span></label>
           <input
             type="time"
             className="horarios-management-input-time"
             value={horaInicio}
             onChange={(e) => setHoraInicio(e.target.value)}
+            required
           />
         </div>
         <div className="horarios-management-form-group">
-          <label>Hora de Fin:</label>
+          <label>Hora de Fin: <span className="horarios-management-time-label">(24 horas)</span></label>
           <input
             type="time"
             className="horarios-management-input-time"
             value={horaFin}
             onChange={(e) => setHoraFin(e.target.value)}
+            required
           />
         </div>
-        <button type="button" className="horarios-management-button" onClick={handleAgregarHorario}>
-          Agregar Horario
-        </button>
+        <div className="horarios-management-buttons">
+          <button type="button" className="horarios-management-button" onClick={handleAgregarHorario}>
+            Agregar Horario
+          </button>
+          <button type="button" className="horarios-management-button eliminar" onClick={handleEliminarHorario}>
+            Eliminar Horario
+          </button>
+        </div>
       </form>
 
       <div className="horarios-management-list">
