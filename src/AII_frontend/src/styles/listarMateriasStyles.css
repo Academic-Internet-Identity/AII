@@ -7,7 +7,7 @@
     min-height: 100vh;
 }
 
-.materias-table {
+.listar-materias-table {
     border: 1px solid #2d2d2d;
     border-radius: 10px;
     overflow: hidden;
@@ -19,35 +19,94 @@
     max-width: 100%;
 }
 
-.materias-table th,
-.materias-table td {
+.listar-materias-table th,
+.listar-materias-table td {
     padding: 12px 15px;
     border-bottom: 1px solid #2d2d2d;
 }
 
-.materias-table th {
+.listar-materias-table th {
     background-color: #00385d;
     color: #fff;
 }
 
-.materias-table tr:nth-child(even) {
+.listar-materias-table tr:nth-child(even) {
     background-color: #1a1a1a;
 }
 
-.materias-table tr:nth-child(odd) {
+.listar-materias-table tr:nth-child(odd) {
     background-color: #2a2a2a;
 }
 
-.materias-table tr:hover {
+.listar-materias-table tr:hover {
     background-color: #1A91DA;
 }
 
-.materias-table td {
+.listar-materias-table td {
     text-align: center;
 }
 
-.table-heading {
+.listar-materias-table-heading {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+/* Botón de eliminar */
+.listar-materias-eliminar-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.listar-materias-eliminar-button:hover {
+    background-color: #c0392b;
+}
+
+/* Modal styles */
+.listar-materias-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.listar-materias-modal-content {
+    background-color: #2c3e50;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Botones del modal */
+.listar-materias-confirm-button, .listar-materias-cancel-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.listar-materias-confirm-button:hover {
+    background-color: #2980b9;
+}
+
+.listar-materias-cancel-button:hover {
+    background-color: #95a5a6;
 }
