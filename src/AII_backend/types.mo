@@ -13,9 +13,13 @@ module {
     public type RegistroGrupo = {
         alumno: Text; // Cambiado a Text para almacenar la matrícula del alumno
         nombre: Text; // Nombre del alumno
-        calificaciones: Calificaciones; // Calificaciones del alumno
         cuatrimestre: Nat; // Cuatrimestre
-        materia: Text; // Materia
+        materias: [MateriaRegistro]; // Lista de materias con sus calificaciones
+    };
+
+    public type MateriaRegistro = {
+        materia: Text; // Nombre o código de la materia
+        calificaciones: Calificaciones; // Calificaciones de la materia
     };
 
 

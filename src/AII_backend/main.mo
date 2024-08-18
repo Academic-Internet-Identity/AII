@@ -5,11 +5,11 @@ import Map "mo:map/Map";
 import { thash; phash } "mo:map/Map";
 import Text "mo:base/Text";
 import Set "mo:map/Set";
-import Debug "mo:base/Debug"; // Import Debug for logging
+import Debug "mo:base/Debug";
 import Types "./types";
 import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
-import Array "mo:base/Array"; // Import Array module
+import Array "mo:base/Array";
 
 shared ({ caller }) actor class _Plataforma() {
 
@@ -19,8 +19,8 @@ shared ({ caller }) actor class _Plataforma() {
     public type Alumno = Types.Alumno;
     public type Administrativo = Types.Administrativo;
     public type Docente = Types.Docente;
-    public type Uid = Types.Uid; // Usuario id
-    public type Aid = Types.Aid; // Alumno id
+    public type Uid = Types.Uid;
+    public type Aid = Types.Aid;
     public type Materia = Types.Materia;
     public type Horario = Types.Horario;
     public type Grupo = Types.Grupo;
@@ -29,6 +29,7 @@ shared ({ caller }) actor class _Plataforma() {
     public type RegistroAlumnoForm = Types.RegistroAlumnoForm;
     public type RegistroAdministrativoForm = Types.RegistroAdministrativoForm;
     public type RegistroDocenteForm = Types.RegistroDocenteForm;
+    public type MateriaRegistro = Types.MateriaRegistro;
 
     stable var actualUid : Nat = 0;
     stable var actualAid : Nat = 0;
@@ -67,7 +68,7 @@ shared ({ caller }) actor class _Plataforma() {
         Map.get(usuarios, phash, caller);
     };
 
-        ///////////Seccion para verificar roles//////////
+    ///////////Seccion para verificar roles//////////
 
     func _esUsuario(p : Principal) : Bool {
         return switch (Map.get<Principal, Usuario>(usuarios, Map.phash, p)) {
@@ -104,7 +105,7 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
-        ///////////Fin Seccion para verificar roles//////////
+    ///////////Fin Seccion para verificar roles//////////
 
     public shared ({ caller }) func agregarAdmin(p : Principal) : async Bool {
         assert esAdmin(caller) and _esUsuario(p);
@@ -211,9 +212,6 @@ shared ({ caller }) actor class _Plataforma() {
             };
         };
     };
-
-
-
 
     public shared ({ caller }) func registrarseComoAdministrativo(_init : RegistroAdministrativoForm) : async Text {
         assert not Principal.isAnonymous(caller);
@@ -372,16 +370,16 @@ shared ({ caller }) actor class _Plataforma() {
         return "Materia agregada exitosamente";
     };
 
-    public shared ({ caller }) func eliminarMateria(codigo: Text) : async Text {
-        // Step 1: Check if the caller has the right permissions
+public shared ({ caller }) func eliminarMateria(codigo: Text) : async Text {
+        // Verificar si el usuario tiene los permisos correctos
         assert (esAdmin(caller) or esAdministrativo(caller));
     
-        // Step 2: Remove the subject from the materias map
+        // Eliminar la materia del mapa de materias
         let materiaOpt = Map.remove<Text, Materia>(materias, thash, codigo);
         switch materiaOpt {
             case null { return "La materia especificada no existe"; };
-            case (?_) { // Replace `materia` with `_`
-                // Step 3: Remove the subject from schedules
+            case (?_) {
+                // Eliminar la materia de los horarios
                 for (grupoHorario in Map.entries<Text, [Horario]>(horarios)) {
                     let (grupoId, listaHorarios) = grupoHorario;
                     let horariosActualizados = Array.filter<Horario>(listaHorarios, func(horario) : Bool {
@@ -392,46 +390,62 @@ shared ({ caller }) actor class _Plataforma() {
                     }
                 };
 
-                // Step 4: Remove the subject from teachers
-                for (docente in Map.entries<Principal, Docente>(docentes)) {
-                    let (principalId, doc) = docente;
-                    let materiasActualizadas = Array.filter<Text>(doc.materias, func(materiaId) : Bool {
-                        materiaId != codigo
+                // Eliminar la materia de los registros de los alumnos en los grupos
+                for (grupo in Map.entries<Text, Grupo>(grupos)) {
+                    let (grupoId, grupoData) = grupo;
+                    let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupoData.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
+                        let materiasActualizadas = Array.filter<MateriaRegistro>(registro.materias, func (materiaRegistro: MateriaRegistro) : Bool {
+                            materiaRegistro.materia != codigo
+                        });
+                        { registro with materias = materiasActualizadas };
                     });
-                    if (Array.size(materiasActualizadas) < Array.size(doc.materias)) {
-                        let docenteActualizado = { doc with materias = materiasActualizadas };
-                        ignore Map.put<Principal, Docente>(docentes, phash, principalId, docenteActualizado);
-                    }
+                    ignore Map.put<Text, Grupo>(grupos, thash, grupoId, { grupoData with alumnos = alumnosActualizados });
                 };
 
-                // Return success message
                 return "Materia eliminada exitosamente";
             };
         };
     };
 
-
     public shared query ({ caller }) func verMaterias() : async [Materia] {
         Iter.toArray(Map.vals<Text, Materia>(materias));
     };
 
-    public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
-        assert ( esAdmin(caller) or esAdministrativo(caller));
+public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
+    assert (esAdmin(caller) or esAdministrativo(caller));
 
-        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
-        switch grupo {
-            case null { return "Grupo no encontrado"; };
-            case (?grupo) {
-                let nuevoHorario : Horario = { dia; horaInicio; horaFin; grupoId; materia };
-                let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, grupoId)) {
-                    case null { []; };
-                    case (?h) { h };
-                };
-                ignore Map.put<Text, [Horario]>(horarios, thash, grupoId, Array.append(horariosExistentes, [nuevoHorario]));
-                return "Horario agregado exitosamente";
+    let grupoOpt = Map.get<Text, Grupo>(grupos, thash, grupoId);
+    switch grupoOpt {
+        case null { return "Grupo no encontrado"; };
+        case (?grupo) {
+            let nuevoHorario : Horario = { dia; horaInicio; horaFin; grupoId; materia };
+            let horariosExistentes = switch (Map.get<Text, [Horario]>(horarios, thash, grupoId)) {
+                case null { []; };
+                case (?h) { h };
             };
+            ignore Map.put<Text, [Horario]>(horarios, thash, grupoId, Array.append(horariosExistentes, [nuevoHorario]));
+
+            // Actualizar las materias de los alumnos en este grupo
+            let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
+                // Añadir la nueva materia si no está ya presente
+                if (Array.find<MateriaRegistro>(registro.materias, func (mat: MateriaRegistro) : Bool { mat.materia == materia }) == null) {
+                    let nuevoRegistroMateria: MateriaRegistro = {
+                        materia = materia;
+                        calificaciones = { p1 = null; p2 = null; p3 = null; final = null };
+                    };
+                    { registro with materias = Array.append(registro.materias, [nuevoRegistroMateria]) };
+                } else {
+                    registro;
+                }
+            });
+
+            let grupoActualizado = { grupo with alumnos = alumnosActualizados };
+            ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+
+            return "Horario y materias de alumnos actualizados exitosamente";
         };
     };
+};
 
     public shared ({ caller }) func eliminarHorario(grupoId: Text, materia: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller));
@@ -445,7 +459,6 @@ shared ({ caller }) actor class _Plataforma() {
                     case (?h) { h };
                 };
 
-                // Filtrar los horarios que NO coinciden con los criterios proporcionados
                 let horariosActualizados = Array.filter<Horario>(horariosExistentes, func (horario) : Bool {
                     return not (horario.materia == materia and horario.dia == dia and horario.horaInicio == horaInicio and horario.horaFin == horaFin);
                 });
@@ -461,27 +474,20 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func verHorarios(grupoId: Text) : async ?[Horario] {
-        assert ( esAdmin(caller) or esAdministrativo(caller) or esDocente(caller) or esAlumno(caller));
+        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller) or esAlumno(caller));
         Map.get<Text, [Horario]>(horarios, thash, grupoId);
     };
 
-
     public shared ({ caller }) func actualizarNivelDeIngles(alumnoId: Text, nuevoNivel: Text) : async Text {
-        // Verificar que el que llama la función es un administrador o administrativo
         assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
 
-        // Buscar al alumno en el mapa alumnoMat usando la matrícula especificada
         let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
         switch alumnoOpt {
             case null { return "El alumno especificado no está registrado"; };
             case (?alumno) {
-                // Actualizar en el mapa alumnoMat
                 let alumnoActualizado = { alumno with nivelDeIngles = nuevoNivel };
                 ignore Map.put<Text, Alumno>(alumnoMat, thash, alumnoId, alumnoActualizado);
-
-                // También actualizar en el mapa alumnos, usando Principal como clave
-                let principalId = alumnoActualizado.principalID;
-                ignore Map.put<Principal, Alumno>(alumnos, phash, principalId, alumnoActualizado);
+                ignore Map.put<Principal, Alumno>(alumnos, phash, alumnoActualizado.principalID, alumnoActualizado);
 
                 return "Nivel de inglés actualizado exitosamente";
             };
@@ -489,28 +495,21 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared ({ caller }) func modificarCertificacionDeIngles(alumnoId: Text, nuevoCertificado: Bool) : async Text {
-        // Verificar que el que llama la función es un administrador o administrativo
         assert (esAdmin(caller) or esAdministrativo(caller));
 
-        // Buscar al alumno en el mapa usando la matrícula especificada
         let alumno = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
         switch alumno {
             case null { return "El alumno especificado no está registrado"; };
             case (?alumno) {
-                // Actualizar en el mapa alumnoMat
                 let alumnoActualizado = { alumno with certificacionDeIngles = nuevoCertificado };
                 ignore Map.put<Text, Alumno>(alumnoMat, thash, alumnoId, alumnoActualizado);
-
-                // También actualizar en el mapa alumnos, usando Principal como clave
-                let principalId = alumnoActualizado.principalID;
-                ignore Map.put<Principal, Alumno>(alumnos, phash, principalId, alumnoActualizado);
+                ignore Map.put<Principal, Alumno>(alumnos, phash, alumnoActualizado.principalID, alumnoActualizado);
 
                 return "Certificación de inglés actualizada exitosamente";
             };
         };
     };
 
-// Función para crear un nuevo grupo
     public shared ({ caller }) func crearGrupo(id: Text, nombre: Text, cuatrimestre: Nat) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller));
 
@@ -518,49 +517,56 @@ shared ({ caller }) actor class _Plataforma() {
             id;
             nombre;
             cuatrimestre;
-            alumnos = []; // Inicialmente, el grupo no tiene alumnos
+            alumnos = [];
         };
 
         ignore Map.put<Text, Grupo>(grupos, thash, id, nuevoGrupo);
         return "Grupo creado exitosamente";
     };
 
+ public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, matricula: Text) : async Text {
+    assert (esAdmin(caller) or esAdministrativo(caller));
 
-    public shared ({ caller }) func agregarAlumnoAGrupo(grupoId: Text, matricula: Text) : async Text {
-        assert (esAdmin(caller) or esAdministrativo(caller));
+    let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
+    switch grupo {
+        case null { return "El grupo especificado no existe"; };
+        case (?grupo) {
+            let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, matricula);
+            switch alumnoOpt {
+                case null { return "El alumno especificado no existe"; };
+                case (?alumno) {
+                    if (alumno.semestre != grupo.cuatrimestre) {
+                        return "El cuatrimestre del alumno no coincide con el del grupo";
+                    };
 
-        let grupo = Map.get<Text, Grupo>(grupos, thash, grupoId);
-        switch grupo {
-            case null { return "El grupo especificado no existe"; };
-            case (?grupo) {
-                let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, matricula);
-                switch alumnoOpt {
-                    case null { return "El alumno especificado no existe"; };
-                    case (?alumno) {
-                        if (alumno.semestre != grupo.cuatrimestre) {
-                            return "El cuatrimestre del alumno no coincide con el del grupo";
+                    // Generar los registros de materias para el alumno
+                    let materiasGrupo = Map.get<Text, [Horario]>(horarios, thash, grupoId);
+                    switch (materiasGrupo) {
+                        case null { return "Por favor crea un horario para el grupo espesificado antes de agregar alumnos."; };
+                        case (?materias) {
+                            let registrosMaterias = Array.map<Horario, MateriaRegistro>(materias, func(horario) : MateriaRegistro {
+                                { materia = horario.materia; calificaciones = { p1 = null; p2 = null; p3 = null; final = null } }
+                            });
+
+                            let nuevoRegistro : RegistroGrupo = {
+                                alumno = matricula;
+                                nombre = alumno.nombre;
+                                cuatrimestre = grupo.cuatrimestre;
+                                materias = registrosMaterias;
+                            };
+
+                            let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
+                            ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+
+                            return "Alumno agregado al grupo exitosamente";
                         };
-
-                        let nuevoRegistro : RegistroGrupo = {
-                            alumno = matricula;
-                            nombre = alumno.nombre;
-                            calificaciones = { p1 = null; p2 = null; p3 = null; final = null };
-                            cuatrimestre = grupo.cuatrimestre;
-                            materia = ""; // Este campo puede ser eliminado o asignado como necesario
-                        };
-
-                        let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
-                        ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
-
-                        return "Alumno agregado al grupo exitosamente";
                     };
                 };
             };
         };
     };
+};
 
-
-    // Función para listar los alumnos de un grupo
     public shared query ({ caller }) func listarAlumnosDeGrupo(grupoId: Text) : async ?[RegistroGrupo] {
         assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
 
@@ -573,7 +579,6 @@ shared ({ caller }) actor class _Plataforma() {
         };
     };
 
-
     public shared query ({ caller }) func verGrupos() : async [Grupo] {
         assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
         Iter.toArray(Map.vals<Text, Grupo>(grupos));
@@ -585,36 +590,27 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     public shared query ({ caller }) func getMyGrupo() : async ?Grupo {
-        // Obtener el alumno asociado al `caller`
         let alumnoOpt = Map.get(alumnos, phash, caller);
 
-        // Verificar si el alumno existe
         switch alumnoOpt {
             case null {
-                return null; // No se encontró el alumno asociado al `caller`
+                return null;
             };
             case (?alumno) {
-                // Recorrer todos los grupos para encontrar en cuál está el alumno
                 for ((_, grupo) in Map.entries(grupos)) {
-                    // Buscar al alumno en la lista de alumnos del grupo
                     let alumnoEncontrado = Array.find<RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : Bool {
                         registro.alumno == alumno.matricula
                     });
 
-                    // Si se encuentra el alumno en el grupo, devolver el grupo
                     if (alumnoEncontrado != null) {
                         return ?grupo;
                     };
                 };
-                // Si no se encuentra en ningún grupo, devolver null
                 return null;
             };
         };
     };
 
-
-
-    // Función para reinscribir un alumno al siguiente cuatrimestre
     public shared ({ caller }) func reinscribirAlumno(alumnoId: Text, nuevoGrupoId: ?Text) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller));
 
@@ -622,124 +618,123 @@ shared ({ caller }) actor class _Plataforma() {
         switch alumnoOpt {
             case null { return "El alumno especificado no está registrado"; };
             case (?alumno) {
-                // Incrementar el cuatrimestre
                 let alumnoActualizado = { alumno with semestre = alumno.semestre + 1 };
                 ignore Map.put<Text, Alumno>(alumnoMat, thash, alumnoId, alumnoActualizado);
                 ignore Map.put<Principal, Alumno>(alumnos, phash, alumnoActualizado.principalID, alumnoActualizado);
 
-                // Si se proporciona un nuevo grupo, mover el alumno a ese grupo
                 switch nuevoGrupoId {
                     case (?nuevoGrupo) {
                         let grupoOpt = Map.get<Text, Grupo>(grupos, thash, nuevoGrupo);
                         switch grupoOpt {
                             case null { return "El nuevo grupo especificado no existe"; };
                             case (?grupo) {
-                                // Remover el alumno del grupo anterior si es necesario
-                                // Agregar el alumno al nuevo grupo
                                 let nuevoRegistro: RegistroGrupo = {
                                     alumno = alumno.matricula;
                                     nombre = alumno.nombre;
-                                    calificaciones = { p1 = null; p2 = null; p3 = null; final = null };
                                     cuatrimestre = alumnoActualizado.semestre;
-                                    materia = "";
+                                    materias = [];
                                 };
                                 let grupoActualizado = { grupo with alumnos = Array.append(grupo.alumnos, [nuevoRegistro]) };
                                 ignore Map.put<Text, Grupo>(grupos, thash, nuevoGrupo, grupoActualizado);
                             };
                         };
                     };
-                    case null {}; // No hacer nada si no se especifica un nuevo grupo
+                    case null {};
                 };
                 return "Alumno reinscrito exitosamente";
             };
         };
     };
 
-    // Función para actualizar calificaciones por materia
-    public shared ({ caller }) func actualizarCalificacionPorMateria(alumnoId: Text, materia: Text, parcial: Text, calificacion: Nat) : async Text {
-        assert (esAdmin(caller) or esDocente(caller));
+    // public shared ({ caller }) func actualizarCalificacionPorMateria(alumnoId: Text, materia: Text, parcial: Text, calificacion: Nat) : async Text {
+    //     assert (esAdmin(caller) or esDocente(caller));
 
-        let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
-        switch alumnoOpt {
-            case null { return "El alumno especificado no está registrado"; };
-            case (?_) {
-                let grupoOpt = Map.get<Text, Grupo>(grupos, thash, alumnoId);
-                switch grupoOpt {
-                    case null { return "El grupo especificado no existe"; };
-                    case (?grupo) {
-                        var alumnoEncontrado: Bool = false;
-                        let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
-                            if (registro.alumno == alumnoId and registro.materia == materia) {
-                                alumnoEncontrado := true;
-                                let calificacionesActualizadas = switch (parcial) {
-                                    case ("p1") { { registro.calificaciones with p1 = ?calificacion }; };
-                                    case ("p2") { { registro.calificaciones with p2 = ?calificacion }; };
-                                    case ("p3") { { registro.calificaciones with p3 = ?calificacion }; };
-                                    case ("final") { { registro.calificaciones with final = ?calificacion }; };
-                                    case _ { registro.calificaciones };
-                                };
-                                { registro with calificaciones = calificacionesActualizadas };
-                            } else {
-                                registro;
-                            }
-                        });
+    //     let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
+    //     switch alumnoOpt {
+    //         case null { return "El alumno especificado no está registrado"; };
+    //         case (?_) {
+    //             let grupoOpt = Map.get<Text, Grupo>(grupos, thash, alumnoId);
+    //             switch grupoOpt {
+    //                 case null { return "El grupo especificado no existe"; };
+    //                 case (?grupo) {
+    //                     var alumnoEncontrado: Bool = false;
+    //                     let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
+    //                         if (registro.alumno == alumnoId) {
+    //                             let materiasActualizadas = Array.map<MateriaRegistro, MateriaRegistro>(registro.materias, func (materiaRegistro: MateriaRegistro) : MateriaRegistro {
+    //                                 if (materiaRegistro.materia == materia) {
+    //                                     alumnoEncontrado := true;
+    //                                     let calificacionesActualizadas = switch (parcial) {
+    //                                         case ("p1") { { materiaRegistro.calificaciones with p1 = ?calificacion }; };
+    //                                         case ("p2") { { materiaRegistro.calificaciones with p2 = ?calificacion }; };
+    //                                         case ("p3") { { materiaRegistro.calificaciones with p3 = ?calificacion }; };
+    //                                         case ("final") { { materiaRegistro.calificaciones with final = ?calificacion }; };
+    //                                         case _ { materiaRegistro.calificaciones };
+    //                                     };
+    //                                     { materiaRegistro with calificaciones = calificacionesActualizadas };
+    //                                 } else {
+    //                                     materiaRegistro;
+    //                                 }
+    //                             });
+    //                             { registro with materias = materiasActualizadas };
+    //                         } else {
+    //                             registro;
+    //                         }
+    //                     });
 
-                        if (not alumnoEncontrado) {
-                            return "No se encontró la materia especificada para el alumno";
-                        };
+    //                     if (not alumnoEncontrado) {
+    //                         return "No se encontró la materia especificada para el alumno";
+    //                     };
 
-                        let grupoActualizado = { grupo with alumnos = alumnosActualizados };
-                        ignore Map.put<Text, Grupo>(grupos, thash, alumnoId, grupoActualizado);
-                        return "Calificación actualizada exitosamente para la materia especificada";
-                    };
-                };
+    //                     let grupoActualizado = { grupo with alumnos = alumnosActualizados };
+    //                     ignore Map.put<Text, Grupo>(grupos, thash, alumnoId, grupoActualizado);
+    //                     return "Calificación actualizada exitosamente para la materia especificada";
+    //                 };
+    //             };
+    //         };
+    //     };
+    // };
+
+public shared ({ caller }) func actualizarCalificacionPorMateria(grupoId: Text, alumnoId: Text, materia: Text, parcial: Text, calificacion: Nat) : async Text {
+    assert (esAdmin(caller) or esDocente(caller));
+
+    let grupoOpt = Map.get<Text, Grupo>(grupos, thash, grupoId);
+    switch grupoOpt {
+        case null { return "El grupo especificado no existe"; };
+        case (?grupo) {
+            var alumnoEncontrado: Bool = false;
+            let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
+                if (registro.alumno == alumnoId) {
+                    let materiasActualizadas = Array.map<MateriaRegistro, MateriaRegistro>(registro.materias, func (materiaRegistro: MateriaRegistro) : MateriaRegistro {
+                        if (materiaRegistro.materia == materia) {
+                            alumnoEncontrado := true;
+                            let calificacionesActualizadas = switch (parcial) {
+                                case ("p1") { { materiaRegistro.calificaciones with p1 = ?calificacion }; };
+                                case ("p2") { { materiaRegistro.calificaciones with p2 = ?calificacion }; };
+                                case ("p3") { { materiaRegistro.calificaciones with p3 = ?calificacion }; };
+                                case ("final") { { materiaRegistro.calificaciones with final = ?calificacion }; };
+                                case _ { materiaRegistro.calificaciones };
+                            };
+                            { materiaRegistro with calificaciones = calificacionesActualizadas };
+                        } else {
+                            materiaRegistro;
+                        }
+                    });
+                    { registro with materias = materiasActualizadas };
+                } else {
+                    registro;
+                }
+            });
+
+            if (not alumnoEncontrado) {
+                return "No se encontró la materia especificada para el alumno";
             };
+
+            let grupoActualizado = { grupo with alumnos = alumnosActualizados };
+            ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
+            return "Calificación actualizada exitosamente para la materia especificada";
         };
     };
-
-    public shared ({ caller }) func actualizarCalificaciones(grupoId: Text, matricula: Text, parcial: Text, calificacion: Nat) : async Text {
-        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
-
-        let grupoOpt = Map.get<Text, Grupo>(grupos, thash, grupoId);
-        switch grupoOpt {
-            case null { return "El grupo especificado no existe"; };
-            case (?grupo) {
-                var alumnoEncontrado : Bool = false;
-                let alumnosActualizados = Array.map<RegistroGrupo, RegistroGrupo>(grupo.alumnos, func (registro: RegistroGrupo) : RegistroGrupo {
-                    if (registro.alumno == matricula) {
-                        alumnoEncontrado := true;
-                        let calificacionesActualizadas = switch (parcial) {
-                            case ("p1") { { registro.calificaciones with p1 = ?calificacion }; };
-                            case ("p2") { { registro.calificaciones with p2 = ?calificacion }; };
-                            case ("p3") { { registro.calificaciones with p3 = ?calificacion }; };
-                            case ("final") { { registro.calificaciones with final = ?calificacion }; };
-                            case _ { registro.calificaciones };
-                        };
-                        { registro with calificaciones = calificacionesActualizadas };
-                    } else {
-                        registro;
-                    }
-                });
-
-                if (not alumnoEncontrado) {
-                    return "El alumno especificado no está en este grupo";
-                };
-
-                let grupoActualizado = { grupo with alumnos = alumnosActualizados };
-                ignore Map.put<Text, Grupo>(grupos, thash, grupoId, grupoActualizado);
-
-                return "Calificación actualizada exitosamente";
-            };
-        };
-    };
-
-
-
-    
-
-
-    
-
+};
 
 
 
@@ -825,5 +820,5 @@ shared ({ caller }) actor class _Plataforma() {
         "\", \"nombre\": \"" # alumno.nombre #
         "\", \"semestre\": " # Nat.toText(alumno.semestre) #
         "}"
-        }
+    }
 };

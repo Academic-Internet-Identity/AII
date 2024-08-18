@@ -7,14 +7,25 @@ import '../styles/gestionarCalificacionesStyles.css';
 function GestionarCalificaciones() {
   const [AII_backend] = useCanister('AII_backend');
   const [grupos, setGrupos] = useState([]);
-  const [selectedGrupo, setSelectedGrupo] = useState('');
   const [alumnos, setAlumnos] = useState([]);
+  const [materias, setMaterias] = useState([]);
+  const [selectedGrupo, setSelectedGrupo] = useState('');
   const [selectedAlumno, setSelectedAlumno] = useState('');
   const [selectedMateria, setSelectedMateria] = useState('');
   const [selectedParcial, setSelectedParcial] = useState('');
   const [calificacion, setCalificacion] = useState('');
 
   useEffect(() => {
+    const fetchMaterias = async () => {
+      try {
+        const materiasResult = await AII_backend.verMaterias();
+        setMaterias(materiasResult);
+      } catch (error) {
+        toast.error('Error al cargar las materias.');
+        console.error('Error al cargar las materias:', error);
+      }
+    };
+
     const fetchGruposYAlumnos = async () => {
       try {
         const gruposResult = await AII_backend.verGrupos();
@@ -25,6 +36,7 @@ function GestionarCalificaciones() {
       }
     };
 
+    fetchMaterias();
     fetchGruposYAlumnos();
   }, [AII_backend]);
 
@@ -47,18 +59,31 @@ function GestionarCalificaciones() {
   }, [selectedGrupo, grupos]);
 
   const handleActualizarCalificacion = async () => {
-    if (!selectedAlumno || !selectedMateria || !selectedParcial || !calificacion) {
+    if (!selectedGrupo || !selectedAlumno || !selectedMateria || !selectedParcial || !calificacion) {
       toast.error('Todos los campos son obligatorios.');
       return;
     }
 
     try {
-      const response = await AII_backend.actualizarCalificacionPorMateria(selectedAlumno, selectedMateria, selectedParcial, parseInt(calificacion));
+      console.log('Enviando datos al backend:', {
+        grupoId: selectedGrupo,
+        alumnoId: selectedAlumno,
+        materia: selectedMateria,
+        parcial: selectedParcial,
+        calificacion: parseInt(calificacion),
+      });
+
+      const response = await AII_backend.actualizarCalificacionPorMateria(selectedGrupo, selectedAlumno, selectedMateria, selectedParcial, parseInt(calificacion));
       toast.success(response);
     } catch (error) {
       console.error('Error al actualizar la calificación:', error);
       toast.error('Error al actualizar la calificación.');
     }
+  };
+
+  const obtenerNombreMateria = (codigoMateria) => {
+    const materia = materias.find(m => m.codigo === codigoMateria);
+    return materia ? materia.nombre : 'Nombre desconocido';
   };
 
   return (
@@ -92,8 +117,8 @@ function GestionarCalificaciones() {
           >
             <option value="">Selecciona un Alumno</option>
             {alumnos.map((alumno) => (
-              <option key={alumno.matricula} value={alumno.matricula}>
-                {alumno.nombre} ({alumno.matricula})
+              <option key={alumno.alumno} value={alumno.alumno}>
+                {alumno.nombre} ({alumno.alumno})
               </option>
             ))}
           </select>
@@ -108,9 +133,9 @@ function GestionarCalificaciones() {
             disabled={!selectedAlumno}
           >
             <option value="">Selecciona una Materia</option>
-            {alumnos.find(a => a.matricula === selectedAlumno)?.materias?.map((materia) => (
-              <option key={materia.codigo} value={materia.codigo}>
-                {materia.nombre} (ID: {materia.codigo})
+            {alumnos.find(a => a.alumno === selectedAlumno)?.materias?.map((materia) => (
+              <option key={materia.materia} value={materia.materia}>
+                {obtenerNombreMateria(materia.materia)} (ID: {materia.materia})
               </option>
             ))}
           </select>

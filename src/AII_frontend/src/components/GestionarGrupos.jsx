@@ -19,7 +19,6 @@ function GestionarGrupos() {
   const [alumnos, setAlumnos] = useState([]);
   const [grupos, setGrupos] = useState([]);
 
-  // Manejo de los cambios en los campos de entrada
   const handleInputChange = (e, type = 'grupo') => {
     const { name, value } = e.target;
     if (type === 'grupo') {
@@ -29,7 +28,6 @@ function GestionarGrupos() {
     }
   };
 
-  // Función para crear un grupo
   const handleCrearGrupo = async () => {
     const { id, nombre, cuatrimestre } = grupo;
     if (!id || !nombre || !cuatrimestre) {
@@ -46,14 +44,13 @@ function GestionarGrupos() {
     try {
       const response = await AII_backend.crearGrupo(id, nombre, cuatrimestreNum);
       toast.success(response);
-      resetFields(); // Reiniciar los campos después de crear el grupo
+      resetFields(); 
     } catch (error) {
       toast.error('Error al crear el grupo.');
       console.error('Error al crear el grupo:', error);
     }
   };
 
-  // Función para agregar un alumno a un grupo
   const handleAgregarAlumno = async () => {
     const { id } = grupo;
     const { matricula } = alumno;
@@ -64,14 +61,13 @@ function GestionarGrupos() {
     try {
       const response = await AII_backend.agregarAlumnoAGrupo(id, matricula);
       toast.success(response);
-      resetFields(); // Reiniciar los campos después de agregar un alumno
+      resetFields(); 
     } catch (error) {
       toast.error('Error al agregar el alumno al grupo.');
       console.error('Error al agregar el alumno al grupo:', error);
     }
   };
 
-  // Función para listar los alumnos de un grupo
   const handleListarAlumnos = async () => {
     if (!grupo.id) {
       toast.error('El ID del grupo es obligatorio para listar los alumnos.');
@@ -79,40 +75,42 @@ function GestionarGrupos() {
     }
 
     try {
-      // Obtener la información del grupo usando el ID
       const grupoData = await AII_backend.verGrupo(grupo.id);
 
       console.log('Respuesta del backend para grupo:', grupoData);
 
       if (grupoData && grupoData[0]) {
-        // Actualizar el estado con la información del grupo
+        console.log('Grupo encontrado:', grupoData[0]);
+
         setGrupo({
           id: grupoData[0].id,
           nombre: grupoData[0].nombre,
           cuatrimestre: grupoData[0].cuatrimestre.toString(),
         });
 
-        // Obtener y mostrar la lista de alumnos del grupo
         const alumnosList = grupoData[0].alumnos;
+
         if (alumnosList && alumnosList.length > 0) {
-          // Modificar la lista de alumnos para manejar las calificaciones
-          const alumnosConCalificaciones = alumnosList.map(alumno => ({
-            ...alumno,
-            calificaciones: {
-              p1: Array.isArray(alumno.calificaciones.p1) && alumno.calificaciones.p1.length === 0 
-                  ? 'Sin calificación' 
-                  : alumno.calificaciones.p1,
-              p2: Array.isArray(alumno.calificaciones.p2) && alumno.calificaciones.p2.length === 0 
-                  ? 'Sin calificación' 
-                  : alumno.calificaciones.p2,
-              p3: Array.isArray(alumno.calificaciones.p3) && alumno.calificaciones.p3.length === 0 
-                  ? 'Sin calificación' 
-                  : alumno.calificaciones.p3,
-              final: Array.isArray(alumno.calificaciones.final) && alumno.calificaciones.final.length === 0 
-                     ? 'Sin calificación' 
-                     : alumno.calificaciones.final,
-            }
-          }));
+          const alumnosConCalificaciones = alumnosList.map(alumno => {
+            const materiasConCalificaciones = alumno.materias.map(materia => {
+              const { p1, p2, p3, final } = materia.calificaciones;
+
+              return {
+                ...materia,
+                calificaciones: {
+                  p1: p1.length > 0 ? p1.toString() : 'Sin calificación',
+                  p2: p2.length > 0 ? p2.toString() : 'Sin calificación',
+                  p3: p3.length > 0 ? p3.toString() : 'Sin calificación',
+                  final: final.length > 0 ? final.toString() : 'Sin calificación',
+                }
+              };
+            });
+
+            return {
+              ...alumno,
+              materias: materiasConCalificaciones,
+            };
+          });
 
           setAlumnos(alumnosConCalificaciones);
           toast.success('Alumnos listados correctamente.');
@@ -128,7 +126,6 @@ function GestionarGrupos() {
     }
   };
 
-  // Función para obtener y listar los grupos
   const fetchGrupos = async () => {
     try {
       const gruposList = await AII_backend.verGrupos();
@@ -139,21 +136,18 @@ function GestionarGrupos() {
     }
   };
 
-  // Llamar a fetchGrupos cuando se selecciona la opción "Agregar Alumno a Grupo"
   useEffect(() => {
     if (currentAction === 'agregar') {
       fetchGrupos();
     }
   }, [currentAction]);
 
-  // Reiniciar los campos del formulario
   const resetFields = () => {
     setGrupo({ id: '', nombre: '', cuatrimestre: '' });
     setAlumno({ matricula: '' });
     setAlumnos([]);
   };
 
-  // Renderizado del formulario basado en la acción seleccionada
   const renderForm = () => {
     switch (currentAction) {
       case 'crear':
@@ -190,7 +184,6 @@ function GestionarGrupos() {
               </div>
               <button onClick={handleAgregarAlumno}>Agregar Alumno al Grupo</button>
             </div>
-            {/* Sección para mostrar los grupos existentes */}
             <div className="grupos-list p-3 rounded ml-3" style={{ backgroundColor: '#00385d', maxHeight: '400px', overflowY: 'scroll', minWidth: '250px' }}>
               <h4 style={{ color: '#ffffff' }}>Grupos Existentes</h4>
               {grupos.length > 0 ? (
@@ -226,17 +219,15 @@ function GestionarGrupos() {
               <button onClick={handleListarAlumnos}>Listar Alumnos</button>
             </div>
 
-            {/* Información del grupo */}
             {grupo.nombre && grupo.cuatrimestre && (
               <div className="grupo-info">
                 <h4>Información del Grupo</h4>
                 <p><strong>ID:</strong> {grupo.id}</p>
                 <p><strong>Nombre:</strong> {grupo.nombre}</p>
-                <p><strong>Cuatrimestre:</strong> {grupo.cuatrimestre}</p>  {/* Convertir Nat a Text */}
+                <p><strong>Cuatrimestre:</strong> {grupo.cuatrimestre}</p>  
               </div>
             )}
 
-            {/* Tabla de alumnos debajo del formulario */}
             <div className="alumnos-table-container">
               <h4 className="table-heading">Alumnos del Grupo</h4>
               {alumnos.length > 0 ? (
@@ -255,16 +246,18 @@ function GestionarGrupos() {
                   </thead>
                   <tbody>
                     {alumnos.map((alumno, index) => (
-                      <tr key={index}>
-                        <td>{alumno.nombre}</td>
-                        <td>{alumno.alumno}</td>
-                        <td>{alumno.cuatrimestre.toString()}</td>  {/* Convertir Nat a Text */}
-                        <td>{alumno.materia || 'No asignada'}</td>
-                        <td>{alumno.calificaciones.p1 !== null && alumno.calificaciones.p1.length === 0 ? 'Sin calificación' : alumno.calificaciones.p1.toString()}</td>
-                        <td>{alumno.calificaciones.p2 !== null && alumno.calificaciones.p2.length === 0 ? 'Sin calificación' : alumno.calificaciones.p2.toString()}</td>
-                        <td>{alumno.calificaciones.p3 !== null && alumno.calificaciones.p3.length === 0 ? 'Sin calificación' : alumno.calificaciones.p3.toString()}</td>
-                        <td>{alumno.calificaciones.final !== null && alumno.calificaciones.final.length === 0 ? 'Sin calificación' : alumno.calificaciones.final.toString()}</td>
-                      </tr>
+                      alumno.materias.map((materia, matIndex) => (
+                        <tr key={`${index}-${matIndex}`}>
+                          <td>{alumno.nombre}</td>
+                          <td>{alumno.alumno}</td>
+                          <td>{alumno.cuatrimestre.toString()}</td>  
+                          <td>{materia.materia || 'No asignada'}</td>
+                          <td>{materia.calificaciones.p1}</td>
+                          <td>{materia.calificaciones.p2}</td>
+                          <td>{materia.calificaciones.p3}</td>
+                          <td>{materia.calificaciones.final}</td>
+                        </tr>
+                      ))
                     ))}
                   </tbody>
 
