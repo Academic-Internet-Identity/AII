@@ -657,12 +657,12 @@ shared ({ caller }) actor class _Plataforma() {
 
     // Función para actualizar calificaciones por materia
     public shared ({ caller }) func actualizarCalificacionPorMateria(alumnoId: Text, materia: Text, parcial: Text, calificacion: Nat) : async Text {
-        assert (esAdmin(caller) or esAdministrativo(caller) or esDocente(caller));
+        assert (esAdmin(caller) or esDocente(caller));
 
         let alumnoOpt = Map.get<Text, Alumno>(alumnoMat, thash, alumnoId);
         switch alumnoOpt {
             case null { return "El alumno especificado no está registrado"; };
-            case (?alumno) {
+            case (?_) {
                 let grupoOpt = Map.get<Text, Grupo>(grupos, thash, alumnoId);
                 switch grupoOpt {
                     case null { return "El grupo especificado no existe"; };

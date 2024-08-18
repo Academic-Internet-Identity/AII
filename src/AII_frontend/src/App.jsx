@@ -32,6 +32,8 @@ import GestionarGrupos from './components/GestionarGrupos';
 import InglesManagement from './components/InglesManagement';
 import HorariosManagement from './components/HorariosManagement';
 import MiHorario from './components/MiHorario';
+import ReinscribirAlumno from './components/ReinscribirAlumno';
+import GestionarCalificaciones from './components/GestionarCalificaciones';
 
 const client = createClient({
   canisters: {
@@ -130,6 +132,8 @@ function AppRoutes() {
         <Route path="/ingles" element={<InglesManagement />} />
         <Route path="/horarios" element={<HorariosManagement />} />
         <Route path="/mi-horario" element={<MiHorario />} />
+        <Route path="/reinscripcion" element={<ReinscribirAlumno />}/>
+        <Route path="/gestionar-calificaciones" element={<GestionarCalificaciones />}/>
       </Routes>
     </>
   );
