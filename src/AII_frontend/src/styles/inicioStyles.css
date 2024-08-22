@@ -1,54 +1,86 @@
-/* src/styles/inicioStyles.css */
-
 body, html {
   height: 100%;
   margin: 0;
-  padding: 0;
-  background-color: #004b72; /* Fondo oscuro para toda la página */
+  background-color: #00385d;
+  overflow-y: auto; /* Asegurar que el body permita scroll */
 }
 
-.main-content {
+.login-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh; /* Ajusta la altura mínima para ocupar toda la pantalla */
-  padding: 2rem;
-  background-color: #004b72; /* Fondo oscuro para el contenido */
-}
-
-h1 {
-  color: #ffffff; /* Color blanco para el título */
-  font-size: 2.5rem; /* Tamaño de fuente más grande para el título */
+  align-items: center;
+  min-height: 100vh; /* Permitir que el contenedor crezca si es necesario */
+  background-color: #00385d;
+  color: #fff;
   text-align: center;
-  margin-bottom: 1rem;
+  padding: 20px;
+  box-sizing: border-box; /* Asegura que el padding se incluya en el tamaño total */
+  overflow-y: auto; /* Permitir scroll si el contenido es mayor que el contenedor */
 }
 
-.principal-text {
-  color: #ffffff; /* Color blanco para el texto del principal */
-  font-size: 1.2rem; /* Tamaño de fuente más grande para el texto del principal */
-  margin-bottom: 2rem;
-  text-align: center;
+.login-logo {
+  width: 80%;
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 20px;
+  object-fit: contain;
 }
 
-.button-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem; /* Espaciado entre los botones */
+.login-container h1 {
+  margin-bottom: 20px;
+  color: #fff;
+  font-size: 1.8rem;
 }
 
-.nav-link .button {
-  background-color: #1DA1F2; /* Azul Twitter para los botones */
-  color: #ffffff;
+.login-container button {
+  background-color: #fff;
+  color: #00385d;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  text-align: center;
   font-size: 1rem;
 }
 
-.nav-link .button:hover {
-  background-color: #1A91DA; /* Azul más claro al pasar el ratón */
-  transition: background-color 0.3s;
+.login-container button:hover {
+  background-color: #f0f0f0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 20px;
+}
+
+.form-input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.form-button {
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Media queries para ajustar landscape (horizontal) */
+@media screen and (orientation: landscape) {
+  .login-container {
+    min-height: auto; /* Eliminar restricción de altura */
+    height: auto; /* Permitir altura automática */
+  }
+
+  /* Asegurar que el logo se ajuste bien en landscape */
+  .login-logo {
+    max-width: 200px; /* Reducir un poco el tamaño máximo del logo */
+  }
 }
