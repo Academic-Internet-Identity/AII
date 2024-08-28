@@ -2,6 +2,7 @@ body, html {
   height: 100%;
   margin: 0;
   background-color: #00385d;
+  overflow-y: auto;
 }
 
 .registro-docente-container {
@@ -20,13 +21,14 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 80%;
+  width: 100%;
   max-width: 1200px;
   margin: auto;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   color: #00385d;
+  box-sizing: border-box;
 }
 
 .registro-docente-form-group {
@@ -44,6 +46,8 @@ body, html {
   border-radius: 5px;
   font-size: 1rem;
   color: #00385d;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .registro-docente-checkbox-group {
@@ -88,4 +92,28 @@ body, html {
 .registro-docente-message {
   color: #ff3333;
   margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .registro-docente-form-group input,
+  .registro-docente-form-group textarea,
+  .registro-docente-form-group select {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .registro-docente-form-group input,
+  .registro-docente-form-group textarea,
+  .registro-docente-form-group select {
+    flex: 1 1 100%;
+  }
+
+  .registro-docente-add-button-container {
+    text-align: left;
+  }
+
+  .registro-docente-form-button {
+    width: 100%;
+  }
 }

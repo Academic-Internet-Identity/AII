@@ -1,4 +1,3 @@
-/* Estilo base */
 body, html {
   height: 100%;
   margin: 0;
@@ -41,12 +40,12 @@ body, html {
 .registro-alumno-form-group input,
 .registro-alumno-form-group textarea,
 .registro-alumno-form-group select {
-  flex: 1 1 calc(33.333% - 20px); /* 3 elementos por fila en pantallas grandes */
+  flex: 1 1 calc(33.333% - 20px);
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  width: 100%; /* Asegurar que el campo ocupe todo el ancho disponible */
+  width: 100%;
 }
 
 .registro-alumno-checkbox-group {
@@ -93,28 +92,26 @@ body, html {
   margin-top: 20px;
 }
 
-/* Media queries para pantallas medianas (tablets) */
 @media screen and (max-width: 768px) {
   .registro-alumno-form-group input,
   .registro-alumno-form-group textarea,
   .registro-alumno-form-group select {
-    flex: 1 1 calc(50% - 20px); /* 2 elementos por fila en pantallas medianas */
+    flex: 1 1 calc(50% - 20px);
   }
 }
 
-/* Media queries para pantallas pequeñas (móviles) */
 @media screen and (max-width: 480px) {
   .registro-alumno-form-group input,
   .registro-alumno-form-group textarea,
   .registro-alumno-form-group select {
-    flex: 1 1 100%; /* 1 elemento por fila en pantallas pequeñas */
+    flex: 1 1 100%;
   }
 
   .registro-alumno-add-button-container {
-    text-align: left; /* Alinear botones a la izquierda en pantallas pequeñas */
+    text-align: left;
   }
 
   .registro-alumno-form-button {
-    width: 100%; /* Asegurar que el botón de submit ocupe todo el ancho en móviles */
+    width: 100%;
   }
 }
