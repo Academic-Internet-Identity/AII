@@ -2,6 +2,7 @@ body, html {
   height: 100%;
   margin: 0;
   background-color: #00385d;
+  overflow-y: auto;
 }
 
 .registro-admin-container {
@@ -20,13 +21,14 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 80%;
+  width: 100%;
   max-width: 1200px;
   margin: auto;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   color: #00385d;
+  box-sizing: border-box;
 }
 
 .registro-admin-form-group {
@@ -44,6 +46,8 @@ body, html {
   border-radius: 5px;
   font-size: 1rem;
   color: #00385d;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .registro-admin-checkbox-group {
@@ -88,4 +92,28 @@ body, html {
 .registro-admin-message {
   color: #ff3333;
   margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .registro-admin-form-group input,
+  .registro-admin-form-group textarea,
+  .registro-admin-form-group select {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .registro-admin-form-group input,
+  .registro-admin-form-group textarea,
+  .registro-admin-form-group select {
+    flex: 1 1 100%;
+  }
+
+  .registro-admin-add-button-container {
+    text-align: left;
+  }
+
+  .registro-admin-form-button {
+    width: 100%;
+  }
 }
