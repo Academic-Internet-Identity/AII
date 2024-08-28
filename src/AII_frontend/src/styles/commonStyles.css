@@ -58,8 +58,8 @@ button:hover {
 
 .main-content {
   padding: 20px;
-  background-color: #004b72; /* Un color más claro para el contenido */
-  min-height: calc(100vh - 40px); /* Ajusta la altura para ocupar todo el viewport */
+  background-color: #00385d;
+  min-height: calc(100vh - 40px); 
 }
 
 h1, h2, h3, h4, h5, h6 {
