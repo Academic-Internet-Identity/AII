@@ -2,6 +2,7 @@ body, html {
   height: 100%;
   margin: 0;
   background-color: #00385d;
+  overflow: hidden;
 }
 
 .login-container {
@@ -13,10 +14,12 @@ body, html {
   background-color: #00385d;
   color: #fff;
   text-align: center;
+  padding: 0 20px;
 }
 
 .login-logo {
-  height: 30%; /* Ajusta el tamaño según sea necesario */
+  max-width: 80%;
+  height: auto;
   margin-bottom: 20px;
 }
 
@@ -41,7 +44,8 @@ body, html {
 .login-form {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   margin-top: 20px;
 }
 
@@ -49,11 +53,11 @@ body, html {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  margin-bottom: 10px; /* Agrega margen inferior para espacio uniforme */
+  margin-bottom: 10px;
 }
 
 .form-button {
-  margin-bottom: 10px; /* Agrega margen inferior para espacio uniforme */
+  margin-bottom: 10px;
 }
 
 .error-message {
