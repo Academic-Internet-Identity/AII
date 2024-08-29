@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
-import '../styles/consultaAlumnosStyles.css'; // Asegúrate de importar el archivo de estilos correcto
+import '../styles/consultaAlumnosStyles.css';
 
 function ConsultaAlumnos() {
   const [alumnos, setAlumnos] = useState([]);

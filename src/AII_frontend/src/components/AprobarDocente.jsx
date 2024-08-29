@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { Principal } from '@dfinity/principal';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/aprobarDocenteStyles.css';
 
 function AprobarDocente() {
@@ -13,8 +15,10 @@ function AprobarDocente() {
     try {
       const result = await AII_backend.verDocentesIngresantes();
       setDocentesIngresantes(result);
+      toast.success('Docentes ingresantes obtenidos correctamente.');
     } catch (error) {
       console.error('Error al obtener los docentes ingresantes:', error);
+      toast.error('Error al obtener los docentes ingresantes.');
     } finally {
       setLoading(false);
     }
@@ -27,11 +31,12 @@ function AprobarDocente() {
   const aprobarDocente = async (principalId) => {
     try {
       const principal = Principal.fromText(principalId);
-      const response = await AII_backend.aprobarRegistroDeDocente(principal);
-      console.log(response);
+      await AII_backend.aprobarRegistroDeDocente(principal);
+      toast.success('Docente aprobado exitosamente.');
       fetchDocentesIngresantes();
     } catch (error) {
       console.error('Error al aprobar el registro del docente:', error);
+      toast.error('Error al aprobar el registro del docente.');
     }
   };
 
@@ -72,6 +77,7 @@ function AprobarDocente() {
           </tbody>
         </table>
       )}
+      <ToastContainer />
     </div>
   );
 }

@@ -1,20 +1,20 @@
-/* Archivo: src/styles/aprobarDocenteStyles.css */
 .aprobar-docente-container {
   padding: 1rem;
-  background-color: #004b72;
+  background-color: #00385d;
   color: #fff;
   min-height: 100vh;
+  overflow-x: auto; 
 }
 
 .docentes-table {
   border: 1px solid #2d2d2d;
   border-radius: 10px;
-  overflow: hidden;
+  overflow-x: auto; 
   background-color: #00385d;
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   color: #fff;
-  width: auto;
+  width: 100%;
   max-width: 100%;
 }
 
@@ -22,6 +22,8 @@
 .docentes-table td {
   padding: 12px 15px;
   border-bottom: 1px solid #2d2d2d;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .docentes-table th {
@@ -41,10 +43,6 @@
   background-color: #1A91DA;
 }
 
-.docentes-table td {
-  text-align: center;
-}
-
 .table-heading {
   text-align: center;
   margin-top: 20px;
@@ -62,4 +60,35 @@
 
 .approve-button:hover {
   background-color: #218838;
+}
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
+  .docentes-table th,
+  .docentes-table td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .approve-button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .docentes-table th,
+  .docentes-table td {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+
+  .approve-button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .table-heading {
+    font-size: 1.5rem;
+  }
 }

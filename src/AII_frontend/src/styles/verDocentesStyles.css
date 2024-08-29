@@ -1,65 +1,94 @@
-/* Archivo: src/styles/verDocentesStyles.css */
 .ver-docentes-container {
-    padding: 1rem;
-    background-color: #004b72;
-    color: #fff;
-    min-height: 100vh;
-  }
-  
-  .docentes-table {
-    border: 1px solid #2d2d2d;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #00385d;
-    margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    color: #fff;
-    width: auto;
-    max-width: 100%;
-  }
-  
+  padding: 1rem;
+  background-color: #00385d;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: auto;
+}
+
+.docentes-table {
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  overflow-x: auto;
+  background-color: #00385d;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  width: 100%;
+  max-width: 100%;
+}
+
+.docentes-table th,
+.docentes-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #2d2d2d;
+  text-align: center;
+  white-space: nowrap; /* Asegura que el contenido no se desborde en múltiples líneas */
+}
+
+.docentes-table th {
+  background-color: #00385d;
+  color: #fff;
+}
+
+.docentes-table tr:nth-child(even) {
+  background-color: #1a1a1a;
+}
+
+.docentes-table tr:nth-child(odd) {
+  background-color: #2a2a2a;
+}
+
+.docentes-table tr:hover {
+  background-color: #1A91DA;
+}
+
+.table-heading {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.details-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.details-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
   .docentes-table th,
   .docentes-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #2d2d2d;
+      padding: 8px;
+      font-size: 0.9rem;
   }
-  
-  .docentes-table th {
-    background-color: #00385d;
-    color: #fff;
-  }
-  
-  .docentes-table tr:nth-child(even) {
-    background-color: #1a1a1a;
-  }
-  
-  .docentes-table tr:nth-child(odd) {
-    background-color: #2a2a2a;
-  }
-  
-  .docentes-table tr:hover {
-    background-color: #1A91DA;
-  }
-  
-  .docentes-table td {
-    text-align: center;
-  }
-  
-  .table-heading {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
+
   .details-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
   }
-  
-  .details-button:hover {
-    background-color: #0056b3;
+}
+
+@media screen and (max-width: 480px) {
+  .docentes-table th,
+  .docentes-table td {
+      padding: 6px;
+      font-size: 0.8rem;
   }
+
+  .details-button {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+  }
+
+  .table-heading {
+      font-size: 1.5rem;
+  }
+}
