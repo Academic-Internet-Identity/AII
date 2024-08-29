@@ -1,71 +1,88 @@
-/* src/styles/agregarMateriaStyles.css */
-
+/* Estilo global */
 body, html {
-    height: 100%;
-    margin: 0;
-    background-color: #00385d;
-    color: #fff;
-  }
-  
-  .agregar-materia-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #00385d;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .agregar-materia-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 80%;
-    max-width: 1200px;
-    margin: auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    color: #00385d;
-  }
-  
-  .materia-form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .materia-form-group label {
-    flex: 1 1 100%;
-    text-align: left;
-    margin-bottom: 5px;
-  }
-  
+  height: 100%;
+  margin: 0;
+  background-color: #00385d;
+  color: #fff;
+}
+
+/* Contenedor principal */
+.agregar-materia-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #00385d;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Formulario */
+.agregar-materia-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  color: #00385d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Grupo de inputs */
+.materia-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Input general */
+.materia-form-input {
+  flex: 1 1 calc(33.333% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Botón del formulario */
+.materia-form-button {
+  background-color: #006bb3;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.materia-form-button:hover {
+  background-color: #005b99;
+}
+
+/* Responsividad para pantallas medianas */
+@media screen and (max-width: 768px) {
   .materia-form-input {
-    flex: 1 1 calc(33.333% - 20px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    flex: 1 1 calc(50% - 20px);
   }
-  
+}
+
+/* Responsividad para pantallas pequeñas */
+@media screen and (max-width: 480px) {
+  .materia-form-input {
+    flex: 1 1 100%;
+  }
+
   .materia-form-button {
-    background-color: #006bb3;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    align-self: center;
+    width: 100%;
+    padding: 15px 0;
   }
-  
-  .materia-form-button:hover {
-    background-color: #005b99;
+
+  .agregar-materia-form {
+    padding: 15px;
   }
-  
-  .materia-message {
-    color: #ff3333;
-    margin-top: 20px;
-  }
+}

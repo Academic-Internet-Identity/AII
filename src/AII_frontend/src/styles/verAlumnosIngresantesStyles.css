@@ -1,3 +1,4 @@
+/* Archivo: src/styles/verAlumnosIngresantesStyles.css */
 .ver-alumnos-ingresantes-container {
   padding: 1rem;
   background-color: #00385d;
@@ -20,8 +21,9 @@
 
 .alumnos-table th,
 .alumnos-table td {
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-bottom: 1px solid #2d2d2d;
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -64,33 +66,35 @@
 
 /* Media Queries para Responsividad */
 @media (max-width: 768px) {
-  .table-heading {
-    font-size: 1.5rem;
-  }
-
   .alumnos-table th,
   .alumnos-table td {
-    padding: 8px 10px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .table-heading {
+    font-size: 1.75rem;
   }
 
   .approve-button {
     padding: 8px 16px;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
-  .table-heading {
-    font-size: 1.25rem;
-  }
-
   .alumnos-table th,
   .alumnos-table td {
-    padding: 6px 8px;
-    font-size: 0.9rem;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .table-heading {
+    font-size: 1.5rem;
   }
 
   .approve-button {
     padding: 6px 12px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }

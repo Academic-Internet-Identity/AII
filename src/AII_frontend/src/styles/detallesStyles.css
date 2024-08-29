@@ -7,7 +7,7 @@ body, html {
 
 .detalles-dashboard {
   padding: 1rem;
-  background-color: #004b72;
+  background-color: #00385d;
   color: #fff;
   min-height: 100vh;
 }
@@ -16,7 +16,7 @@ body, html {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 20px;
-  color: #fff; /* Asegurarse que el texto del encabezado sea blanco */
+  color: #fff;
 }
 
 .dashboard-sections {
@@ -33,22 +33,22 @@ body, html {
   background-color: #00385d;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   width: 300px;
-  color: #fff; /* Asegurarse que el texto dentro de las secciones sea blanco */
+  color: #fff;
 }
 
 .dashboard-section h3 {
   text-align: center;
   margin-bottom: 10px;
-  color: #fff; /* Asegurarse que el texto del subencabezado sea blanco */
+  color: #fff;
 }
 
 .dashboard-section p {
   margin: 5px 0;
-  color: #fff; /* Asegurarse que el texto de los párrafos sea blanco */
+  color: #fff;
 }
 
 .dashboard-section p strong {
-  color: #fff; /* Asegurarse que el texto en negrita sea blanco */
+  color: #fff;
 }
 
 .add-button {

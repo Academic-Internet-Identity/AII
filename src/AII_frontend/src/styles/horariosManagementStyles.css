@@ -1,3 +1,4 @@
+/* Archivo: src/styles/horariosManagementStyles.css */
 .horarios-management-container {
     display: flex;
     flex-direction: column;
@@ -21,11 +22,13 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     color: #00385d;
+    font-size: 1rem;
 }
 
 .horarios-management-container h2 {
     margin-bottom: 20px;
     color: #fff;
+    font-size: 2rem;
 }
 
 .horarios-management-instruction {
@@ -45,28 +48,30 @@
     text-align: left;
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: 1rem;
 }
 
 .horarios-management-input-text,
 .horarios-management-input-time,
 .horarios-management-select {
     width: 100%;
-    padding: 10px;
+    padding: 12px 18px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 1rem;
 }
 
 .horarios-management-time-label {
     position: absolute;
     top: 35px;
     right: 10px;
-    font-size: 12px;
+    font-size: 0.85rem;
     color: #666;
 }
 
 .horarios-management-buttons {
     display: flex;
-    gap: 20px; /* Aumentar el espacio entre los botones */
+    gap: 20px;
     margin-top: 15px;
 }
 
@@ -74,11 +79,11 @@
     background-color: #006bb3;
     color: #fff;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 10px;
+    font-size: 1rem;
 }
 
 .horarios-management-button:hover {
@@ -86,11 +91,11 @@
 }
 
 .horarios-management-button.eliminar {
-    background-color: #e74c3c; /* Rojo para el botón de eliminar */
+    background-color: #e74c3c;
 }
 
 .horarios-management-button.eliminar:hover {
-    background-color: #c0392b; /* Tono más oscuro para el hover del botón de eliminar */
+    background-color: #c0392b;
 }
 
 .horarios-management-list {
@@ -111,10 +116,11 @@
 
 .horarios-table th,
 .horarios-table td {
-    padding: 12px 15px;
+    padding: 14px 18px;
     border-bottom: 1px solid #2d2d2d;
     text-align: center;
-    white-space: nowrap; /* Asegura que el texto se mantenga en una línea */
+    white-space: nowrap;
+    font-size: 1rem;
 }
 
 .horarios-table th {
@@ -132,4 +138,71 @@
 
 .horarios-table tr:hover {
     background-color: #1A91DA;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .horarios-management-form {
+        padding: 15px;
+        font-size: 0.95rem;
+    }
+
+    .horarios-management-form-group label {
+        font-size: 0.95rem;
+    }
+
+    .horarios-management-input-text,
+    .horarios-management-input-time,
+    .horarios-management-select {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+
+    .horarios-management-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .horarios-table th,
+    .horarios-table td {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    .horarios-management-container h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .horarios-management-form {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .horarios-management-form-group label {
+        font-size: 0.9rem;
+    }
+
+    .horarios-management-input-text,
+    .horarios-management-input-time,
+    .horarios-management-select {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+
+    .horarios-management-button {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+    }
+
+    .horarios-table th,
+    .horarios-table td {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .horarios-management-container h2 {
+        font-size: 1.5rem;
+    }
 }

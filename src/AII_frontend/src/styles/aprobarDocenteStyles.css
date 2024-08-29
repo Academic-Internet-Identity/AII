@@ -1,29 +1,31 @@
+/* Archivo: src/styles/aprobarDocenteStyles.css */
 .aprobar-docente-container {
   padding: 1rem;
   background-color: #00385d;
   color: #fff;
   min-height: 100vh;
-  overflow-x: auto; 
+  overflow-x: auto;
 }
 
 .docentes-table {
   border: 1px solid #2d2d2d;
   border-radius: 10px;
-  overflow-x: auto; 
+  overflow: hidden;
   background-color: #00385d;
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   color: #fff;
-  width: 100%;
+  width: auto;
   max-width: 100%;
+  min-width: 600px;
 }
 
 .docentes-table th,
 .docentes-table td {
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-bottom: 1px solid #2d2d2d;
+  font-size: 1rem;
   text-align: center;
-  white-space: nowrap;
 }
 
 .docentes-table th {
@@ -47,15 +49,16 @@
   text-align: center;
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: 2rem;
 }
 
 .approve-button {
   background-color: #28a745;
-  color: #fff;
+  color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .approve-button:hover {
@@ -63,32 +66,36 @@
 }
 
 /* Responsividad */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   .docentes-table th,
   .docentes-table td {
-    padding: 8px;
-    font-size: 0.9rem;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .table-heading {
+    font-size: 1.75rem;
   }
 
   .approve-button {
-    padding: 6px 10px;
-    font-size: 0.85rem;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 }
 
-@media screen and (max-width: 480px) {
+@media (max-width: 480px) {
   .docentes-table th,
   .docentes-table td {
-    padding: 6px;
-    font-size: 0.8rem;
-  }
-
-  .approve-button {
-    padding: 4px 8px;
-    font-size: 0.75rem;
+    padding: 10px 14px;
+    font-size: 0.85rem;
   }
 
   .table-heading {
     font-size: 1.5rem;
+  }
+
+  .approve-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
 }

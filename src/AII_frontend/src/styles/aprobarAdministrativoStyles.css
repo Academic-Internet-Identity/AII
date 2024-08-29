@@ -22,14 +22,15 @@
 
 .administrativos-table th,
 .administrativos-table td {
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-bottom: 1px solid #2d2d2d;
+  font-size: 1rem;
+  text-align: center;
 }
 
 .administrativos-table th {
   background-color: #00385d;
   color: #fff;
-  text-align: center;
 }
 
 .administrativos-table tr:nth-child(even) {
@@ -44,15 +45,11 @@
   background-color: #1A91DA;
 }
 
-.administrativos-table td {
-  text-align: center;
-}
-
 .table-heading {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .approve-button {
@@ -72,12 +69,12 @@
 @media (max-width: 768px) {
   .administrativos-table th,
   .administrativos-table td {
-    padding: 10px 12px;
-    font-size: 0.9rem;
+    padding: 12px 16px;
+    font-size: 0.95rem;
   }
 
   .table-heading {
-    font-size: 1.3rem;
+    font-size: 1.75rem;
   }
 
   .approve-button {
@@ -89,20 +86,16 @@
 @media (max-width: 480px) {
   .administrativos-table th,
   .administrativos-table td {
-    padding: 8px 10px;
-    font-size: 0.8rem;
+    padding: 10px 14px;
+    font-size: 0.85rem;
   }
 
   .table-heading {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .approve-button {
     padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .aprobar-administrativo-container {
-    padding: 0.5rem;
+    font-size: 0.85rem;
   }
 }
