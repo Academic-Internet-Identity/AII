@@ -1,3 +1,16 @@
+/* Archivo: src/styles/navBarStyles.css */
+
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  background-color: #343a40;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .nav-logo {
   max-height: 40px;
   margin-right: 10px;
@@ -8,7 +21,6 @@
   right: 0 !important;
 }
 
-/* Estilo que asegura que los submenús se desplieguen a la derecha */
 .submenu-right .dropdown-menu {
   left: 100% !important;
   top: 0 !important;
@@ -22,15 +34,14 @@
 }
 
 .submenu-right .dropdown-toggle::after {
-  content: none; /* Elimina el icono de flecha */
+  content: none;
 }
 
-/* Estilos compartidos por los submenús */
 .alumnos-dropdown,
 .administrativos-dropdown,
 .docentes-dropdown,
-.materias-dropdown {  /* Añadir aquí la clase materias-dropdown */
-  color: #000 !important; /* Asegura que el texto sea negro */
+.materias-dropdown {
+  color: #000 !important;
 }
 
 .submenu-right .dropdown-menu a {
@@ -40,12 +51,50 @@
   clear: both;
   font-weight: 400;
   color: #212529;
-  text-align: inherit;
+  text-align: left;
   background-color: transparent;
   border: 0;
+  font-size: 1rem;
 }
 
 .submenu-right .dropdown-menu a:hover {
   color: #fff;
   background-color: #007bff;
+}
+
+/* Responsividad para el navbar */
+@media (max-width: 768px) {
+  .custom-navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar .nav-link {
+    font-size: 1rem;
+  }
+
+  .submenu-right .dropdown-menu a {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-navbar {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .navbar .nav-link {
+    font-size: 1rem;
+  }
+
+  .submenu-right .dropdown-menu a {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .nav-logo {
+    max-height: 30px;
+  }
 }
