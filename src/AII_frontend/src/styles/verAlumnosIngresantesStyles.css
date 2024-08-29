@@ -3,7 +3,7 @@
   background-color: #00385d;
   color: #fff;
   min-height: 100vh;
-  overflow-x: auto; /* Permitir scroll horizontal solo en este contenedor */
+  overflow-x: auto;
 }
 
 .alumnos-table {

@@ -9,20 +9,20 @@
 .alumnos-table {
   border: 1px solid #2d2d2d;
   border-radius: 10px;
-  overflow-x: auto; /* Permitir scroll horizontal si es necesario */
+  overflow-x: auto;
   background-color: #00385d;
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   color: #fff;
-  width: 100%; /* Asegurar que ocupe todo el ancho disponible */
-  max-width: 100%; /* Asegurar que no exceda el ancho máximo */
+  width: 100%;
+  max-width: 100%;
 }
 
 .alumnos-table th,
 .alumnos-table td {
   padding: 12px 15px;
   border-bottom: 1px solid #2d2d2d;
-  text-align: center; /* Asegurar que el contenido esté centrado */
+  text-align: center;
 }
 
 .alumnos-table th {
@@ -61,29 +61,29 @@
   background-color: #005b99;
 }
 
-/* Media queries para pantallas pequeñas */
+
 @media screen and (max-width: 768px) {
   .alumnos-table th,
   .alumnos-table td {
-    padding: 10px 8px; /* Reducir padding para pantallas pequeñas */
+    padding: 10px 8px;
   }
 
   .details-button {
-    padding: 6px 10px; /* Reducir tamaño del botón en pantallas pequeñas */
+    padding: 6px 10px;
   }
 }
 
 @media screen and (max-width: 480px) {
   .alumnos-table th,
   .alumnos-table td {
-    padding: 8px 6px; /* Ajuste adicional de padding para pantallas muy pequeñas */
+    padding: 8px 6px;
   }
 
   .details-button {
-    padding: 5px 8px; /* Reducir más el tamaño del botón para pantallas muy pequeñas */
+    padding: 5px 8px;
   }
 
   .table-heading {
-    font-size: 1.2rem; /* Reducir el tamaño del texto del encabezado en pantallas pequeñas */
+    font-size: 1.2rem;
   }
 }
