@@ -56,6 +56,9 @@ function Inicio() {
   const handleConsultaAlumnosClick = () => {
     navigate('/consulta-alumnos');
   };
+  const handleFormularioServicios = () => {
+    navigate('/formulario-servicios');
+  };
 
   return (
     <div className="main-content">
@@ -67,6 +70,7 @@ function Inicio() {
           <button onClick={handleConsultaAlumnosClick} className="consulta-alumnos-button">
             Consultar Alumnos HTTP outcall
           </button>
+          <button onClick={handleFormularioServicios} className='consulta-alumnos-button'>Servicios Escolares</button>
         </>
       ) : (
         <p className="principal-text">No se ha encontrado el principal</p>
