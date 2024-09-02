@@ -12,6 +12,7 @@ function RegistroDocente() {
     telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', cedulaProfesional: '', materias: ['']
   });
   const [materiasDisponibles, setMateriasDisponibles] = useState([]);
+  const [selectedMaterias, setSelectedMaterias] = useState({});
 
   useEffect(() => {
     const fetchMaterias = async () => {
@@ -46,20 +47,48 @@ function RegistroDocente() {
     const newArray = [...form[field]];
     newArray.splice(index, 1);
     setForm({ ...form, [field]: newArray });
+
+    // Actualizar la lista de materias seleccionadas al eliminar una materia
+    if (field === 'materias') {
+      const updatedSelectedMaterias = { ...selectedMaterias };
+      delete updatedSelectedMaterias[index];
+      setSelectedMaterias(updatedSelectedMaterias);
+    }
   };
 
   const handleMateriaChange = (e, index) => {
-    const newArray = form.materias.slice();
-    newArray[index] = e.target.value;
+    const selectedValue = e.target.value;
+
+    const newArray = [...form.materias];
+    newArray[index] = selectedValue;
+
     setForm({ ...form, materias: newArray });
+
+    // Guardar la materia seleccionada
+    const updatedSelectedMaterias = { ...selectedMaterias, [index]: selectedValue };
+    setSelectedMaterias(updatedSelectedMaterias);
   };
 
   const addMateriaField = () => {
     setForm({ ...form, materias: [...form.materias, ''] });
   };
 
+  const getFilteredMaterias = (index) => {
+    const selectedValues = Object.values(selectedMaterias);
+    return materiasDisponibles.filter(
+      (materia) => !selectedValues.includes(materia.codigo) || selectedMaterias[index] === materia.codigo
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validar que al menos una materia esté seleccionada
+    if (form.materias.length === 0 || form.materias.some(m => m === '')) {
+      toast.warn('Debe seleccionar al menos una materia.');
+      return;
+    }
+
     try {
       const response = await AII_backend.registrarseComoDocente(form);
       toast.success(response);
@@ -137,9 +166,13 @@ function RegistroDocente() {
           
           {form.materias.map((materia, index) => (
             <div key={index} className="registro-docente-field-with-button">
-              <select value={materia} onChange={(e) => handleMateriaChange(e, index)} required>
+              <select
+                value={materia || ''}
+                onChange={(e) => handleMateriaChange(e, index)}
+                required
+              >
                 <option value="">Seleccione una Materia</option>
-                {materiasDisponibles.map((materia, idx) => (
+                {getFilteredMaterias(index).map((materia, idx) => (
                   <option key={idx} value={materia.codigo}>{materia.nombre}</option>
                 ))}
               </select>
