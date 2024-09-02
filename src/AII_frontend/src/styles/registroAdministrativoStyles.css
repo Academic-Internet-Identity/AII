@@ -50,6 +50,26 @@ body, html {
   width: 100%;
 }
 
+.registro-admin-field-with-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.registro-admin-remove-button {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registro-admin-remove-button:hover {
+  background-color: #e60000;
+}
+
 .registro-admin-checkbox-group {
   display: flex;
   flex-direction: column;

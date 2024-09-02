@@ -27,6 +27,12 @@ function RegistroAdministrativo() {
     setForm({ ...form, [field]: [...form[field], ''] });
   };
 
+  const removeArrayField = (index, field) => {
+    const newArray = [...form[field]];
+    newArray.splice(index, 1);
+    setForm({ ...form, [field]: newArray });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -85,14 +91,20 @@ function RegistroAdministrativo() {
         </div>
         <div className="registro-admin-form-group">
           {form.direcciones.map((direccion, index) => (
-            <input key={index} type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
+            <div key={index} className="registro-admin-field-with-button">
+              <input type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
+              <button type="button" className="registro-admin-remove-button" onClick={() => removeArrayField(index, 'direcciones')}>Eliminar</button>
+            </div>
           ))}
           <div className="registro-admin-add-button-container">
             <button type="button" className="registro-admin-add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
           </div>
           
           {form.telefonos.map((telefono, index) => (
-            <input key={index} type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
+            <div key={index} className="registro-admin-field-with-button">
+              <input type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
+              <button type="button" className="registro-admin-remove-button" onClick={() => removeArrayField(index, 'telefonos')}>Eliminar</button>
+            </div>
           ))}
           <div className="registro-admin-add-button-container">
             <button type="button" className="registro-admin-add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
