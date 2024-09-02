@@ -8,8 +8,8 @@ function RegistroAlumno() {
   const [AII_backend] = useCanister('AII_backend');
   const [form, setForm] = useState({
     nombre: '', apellidoPaterno: '', apellidoMaterno: '', tipoSanguineo: '', fechaNacimiento: '',
-    curp: '', genero: '', lugarNacimiento: '', estadoCivil: '', emailPersonal: '', direcciones: [''],
-    telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', escuelasProcedencia: [''], ocupaciones: [''],
+    curp: '', genero: '', lugarNacimiento: '', estadoCivil: '', emailPersonal: '', direccion: '',
+    telefonos: [''], detallesMedicos: '', numeroSeguroSocial: '', escuelaProcedencia: '', ocupaciones: [''],
     tutorJefeFamilia: '', familiares: [''], pertenenciaEtniaIndigena: false, hablaLenguaIndigena: false,
     viveComunidadIndigena: false, folioCeneval: '', emailInstitucional: '', matricula: '', carrera: '', semestre: "",
     nivelDeIngles: '', certificacionDeIngles: false
@@ -28,6 +28,12 @@ function RegistroAlumno() {
 
   const addArrayField = (field) => {
     setForm({ ...form, [field]: [...form[field], ''] });
+  };
+
+  const removeArrayField = (index, field) => {
+    const newArray = [...form[field]];
+    newArray.splice(index, 1);
+    setForm({ ...form, [field]: newArray });
   };
 
   const handleSubmit = async (e) => {
@@ -85,15 +91,13 @@ function RegistroAlumno() {
           <input type="email" name="emailPersonal" value={form.emailPersonal} onChange={handleChange} placeholder="Email Personal" required />
         </div>
         <div className="registro-alumno-form-group">
-          {form.direcciones.map((direccion, index) => (
-            <input key={index} type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
-          ))}
-          <div className="registro-alumno-add-button-container">
-            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
-          </div>
+          <input type="text" name="direccion" value={form.direccion} onChange={handleChange} placeholder="Dirección" required />
           
           {form.telefonos.map((telefono, index) => (
-            <input key={index} type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
+            <div key={index} className="registro-alumno-field-with-button">
+              <input type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
+              <button type="button" className="registro-alumno-remove-button" onClick={() => removeArrayField(index, 'telefonos')}>Eliminar</button>
+            </div>
           ))}
           <div className="registro-alumno-add-button-container">
             <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
@@ -102,15 +106,13 @@ function RegistroAlumno() {
           <textarea name="detallesMedicos" value={form.detallesMedicos} onChange={handleChange} placeholder="Detalles Médicos" required />
           <input type="text" name="numeroSeguroSocial" value={form.numeroSeguroSocial} onChange={handleChange} placeholder="Número de Seguro Social" required />
           
-          {form.escuelasProcedencia.map((escuela, index) => (
-            <input key={index} type="text" value={escuela} onChange={(e) => handleArrayChange(e, index, 'escuelasProcedencia')} placeholder="Escuela de Procedencia" required />
-          ))}
-          <div className="registro-alumno-add-button-container">
-            <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('escuelasProcedencia')}>Agregar Escuela</button>
-          </div>
+          <input type="text" name="escuelaProcedencia" value={form.escuelaProcedencia} onChange={handleChange} placeholder="Escuela de Procedencia" required />
           
           {form.ocupaciones.map((ocupacion, index) => (
-            <input key={index} type="text" value={ocupacion} onChange={(e) => handleArrayChange(e, index, 'ocupaciones')} placeholder="Ocupación" required />
+            <div key={index} className="registro-alumno-field-with-button">
+              <input type="text" value={ocupacion} onChange={(e) => handleArrayChange(e, index, 'ocupaciones')} placeholder="Ocupación" required />
+              <button type="button" className="registro-alumno-remove-button" onClick={() => removeArrayField(index, 'ocupaciones')}>Eliminar</button>
+            </div>
           ))}
           <div className="registro-alumno-add-button-container">
             <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('ocupaciones')}>Agregar Ocupación</button>
@@ -119,7 +121,10 @@ function RegistroAlumno() {
           <input type="text" name="tutorJefeFamilia" value={form.tutorJefeFamilia} onChange={handleChange} placeholder="Tutor o Jefe de Familia" required />
           
           {form.familiares.map((familiar, index) => (
-            <input key={index} type="text" value={familiar} onChange={(e) => handleArrayChange(e, index, 'familiares')} placeholder="Familiar" required />
+            <div key={index} className="registro-alumno-field-with-button">
+              <input type="text" value={familiar} onChange={(e) => handleArrayChange(e, index, 'familiares')} placeholder="Familiar" required />
+              <button type="button" className="registro-alumno-remove-button" onClick={() => removeArrayField(index, 'familiares')}>Eliminar</button>
+            </div>
           ))}
           <div className="registro-alumno-add-button-container">
             <button type="button" className="registro-alumno-add-button" onClick={() => addArrayField('familiares')}>Agregar Familiar</button>
