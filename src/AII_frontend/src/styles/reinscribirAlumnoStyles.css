@@ -1,56 +1,50 @@
+/* Contenedor principal */
 .reinscribir-alumno-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    padding: 1rem;
     background-color: #00385d;
     color: #fff;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+  
+  /* Título del formulario */
+  .reinscribir-heading {
     text-align: center;
-    padding: 20px;
-}
-
-.reinscribir-heading {
     margin-bottom: 20px;
-    color: #fff;
-    font-size: 24px;
-}
-
-.reinscribir-form {
+    font-size: 2rem;
+  }
+  
+  /* Formulario de reinscripción */
+  .reinscribir-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 80%;
-    max-width: 600px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    color: #00385d;
-}
-
-.reinscribir-form-group {
+    background-color: #00385d;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  
+  /* Grupos y campos de entrada */
+  .reinscribir-form-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     margin-bottom: 15px;
-    position: relative;
-}
-
-.reinscribir-form-group label {
-    text-align: left;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.reinscribir-select {
-    width: 100%;
+    align-items: center;
+  }
+  
+  /* Campo de entrada */
+  .reinscribir-input,
+  .reinscribir-select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.reinscribir-button {
+    color: #00385d;
+    width: 50%;
+    margin-bottom: 20px;
+  }
+  
+  /* Botón de reinscripción */
+  .reinscribir-button {
     background-color: #006bb3;
     color: #fff;
     border: none;
@@ -59,8 +53,83 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 10px;
-}
-
-.reinscribir-button:hover {
+    align-self: center;
+  }
+  
+  .reinscribir-button:hover {
     background-color: #005b99;
-}
+  }
+  
+  /* Tabla de alumnos */
+  .reinscribir-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #00385d;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .reinscribir-table th,
+  .reinscribir-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+    text-align: center;
+  }
+  
+  .reinscribir-table th {
+    background-color: #00385d;
+    color: #fff;
+  }
+  
+  .reinscribir-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .reinscribir-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+  }
+  
+  .reinscribir-table tr:hover {
+    background-color: #1A91DA;
+  }
+  
+  /* Responsividad */
+  @media screen and (max-width: 768px) {
+    .reinscribir-table th,
+    .reinscribir-table td {
+      padding: 10px 8px;
+    }
+  
+    .reinscribir-button {
+      padding: 8px 12px;
+      font-size: 1rem;
+    }
+  
+    .reinscribir-input,
+    .reinscribir-select {
+      width: 80%;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .reinscribir-table th,
+    .reinscribir-table td {
+      padding: 8px 6px;
+    }
+  
+    .reinscribir-button {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+  
+    .reinscribir-input,
+    .reinscribir-select {
+      width: 100%;
+    }
+  
+    .reinscribir-heading {
+      font-size: 1.8rem;
+    }
+  }
+  
