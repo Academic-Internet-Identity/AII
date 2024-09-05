@@ -156,15 +156,15 @@ function GestionarGrupos() {
             <h3>Crear Grupo</h3>
             <div className="form-group">
               <label>Grupo ID:</label>
-              <input type="text" name="id" value={grupo.id} onChange={(e) => handleInputChange(e, 'grupo')} />
+              <input placeholder='Ej. 01' type="text" name="id" value={grupo.id} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
             <div className="form-group">
               <label>Nombre del Grupo:</label>
-              <input type="text" name="nombre" value={grupo.nombre} onChange={(e) => handleInputChange(e, 'grupo')} />
+              <input placeholder='Ej. TIIA A' type="text" name="nombre" value={grupo.nombre} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
             <div className="form-group">
               <label>Cuatrimestre:</label>
-              <input type="text" name="cuatrimestre" value={grupo.cuatrimestre} onChange={(e) => handleInputChange(e, 'grupo')} />
+              <input placeholder='Ej. 6' type="text" name="cuatrimestre" value={grupo.cuatrimestre} onChange={(e) => handleInputChange(e, 'grupo')} />
             </div>
             <button onClick={handleCrearGrupo}>Crear Grupo</button>
           </div>
