@@ -1,151 +1,146 @@
 /* Contenedor principal */
 .listar-materias-container {
-    padding: 1rem;
-    background-color: #00385d;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: auto;
-  }
-  
-  /* Tabla de materias */
-  .listar-materias-table {
-    border: 1px solid #2d2d2d;
-    border-radius: 10px;
-    overflow-x: auto;
-    background-color: #00385d;
-    margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    color: #fff;
-    width: 100%;
-    max-width: 100%;
-  }
-  
+  padding: 1rem;
+  background-color: #00385d;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: auto;
+}
+
+/* Tabla de materias */
+.listar-materias-table {
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  overflow-x: auto;
+  background-color: #00385d;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  width: 100%;
+  max-width: 100%;
+}
+
+.listar-materias-table th,
+.listar-materias-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #2d2d2d;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.listar-materias-table th {
+  background-color: #00385d;
+  color: #fff;
+}
+
+.listar-materias-table tr:nth-child(even) {
+  background-color: #1a1a1a;
+}
+
+.listar-materias-table tr:nth-child(odd) {
+  background-color: #2a2a2a;
+}
+
+.listar-materias-table tr:hover {
+  background-color: #1A91DA;
+}
+
+/* Título de la tabla */
+.listar-materias-table-heading {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 2.2rem;
+}
+
+/* Botón de eliminar */
+.listar-materias-eliminar-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.listar-materias-eliminar-button:hover {
+  background-color: #c0392b;
+}
+
+/* Estilos del modal */
+.listar-materias-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.listar-materias-modal-content {
+  background-color: #2c3e50;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Botones del modal */
+.listar-materias-confirm-button, .listar-materias-cancel-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  margin: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.listar-materias-confirm-button:hover {
+  background-color: #2980b9;
+}
+
+.listar-materias-cancel-button:hover {
+  background-color: #95a5a6;
+}
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
   .listar-materias-table th,
   .listar-materias-table td {
-    padding: 14px 18px;  /* Aumenta ligeramente el padding */
-    border-bottom: 1px solid #2d2d2d;
-    text-align: center;
-    font-size: 1.2rem;  /* Aumenta la fuente */
+    padding: 12px 14px;
+    font-size: 1.1rem;
   }
-  
-  .listar-materias-table th {
-    background-color: #00385d;
-    color: #fff;
-  }
-  
-  .listar-materias-table tr:nth-child(even) {
-    background-color: #1a1a1a;
-  }
-  
-  .listar-materias-table tr:nth-child(odd) {
-    background-color: #2a2a2a;
-  }
-  
-  .listar-materias-table tr:hover {
-    background-color: #1A91DA;
-  }
-  
-  .listar-materias-table td {
-    text-align: center;
-  }
-  
-  /* Título de la tabla */
-  .listar-materias-table-heading {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 2.2rem; /* Aumenta un poco el tamaño de la fuente del título */
-  }
-  
-  /* Botón de eliminar */
+
   .listar-materias-eliminar-button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 20px; /* Aumenta el tamaño del botón */
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1.1rem; /* Aumenta la fuente del botón */
+    padding: 8px 16px;
+    font-size: 1rem;
   }
-  
-  .listar-materias-eliminar-button:hover {
-    background-color: #c0392b;
+}
+
+@media screen and (max-width: 480px) {
+  .listar-materias-table th,
+  .listar-materias-table td {
+    padding: 10px 12px;
+    font-size: 1rem;
   }
-  
-  /* Estilos del modal */
-  .listar-materias-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+
+  .listar-materias-eliminar-button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
-  
-  .listar-materias-modal-content {
-    background-color: #2c3e50;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    max-width: 400px;
-    width: 90%;
+
+  .listar-materias-table-heading {
+    font-size: 1.8rem;
   }
-  
-  /* Botones del modal */
-  .listar-materias-confirm-button, .listar-materias-cancel-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 12px 24px; /* Aumenta el tamaño de los botones del modal */
-    border-radius: 4px;
-    margin: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1.1rem; /* Aumenta la fuente de los botones */
-  }
-  
-  .listar-materias-confirm-button:hover {
-    background-color: #2980b9;
-  }
-  
-  .listar-materias-cancel-button:hover {
-    background-color: #95a5a6;
-  }
-  
-  /* Responsividad */
-  @media screen and (max-width: 768px) {
-    .listar-materias-table th,
-    .listar-materias-table td {
-      padding: 12px 14px;
-      font-size: 1.1rem; /* Aumenta la fuente */
-    }
-  
-    .listar-materias-eliminar-button {
-      padding: 8px 16px;
-      font-size: 1rem; /* Aumenta la fuente */
-    }
-  }
-  
-  @media screen and (max-width: 480px) {
-    .listar-materias-table th,
-    .listar-materias-table td {
-      padding: 10px 12px;
-      font-size: 1rem; /* Aumenta la fuente */
-    }
-  
-    .listar-materias-eliminar-button {
-      padding: 6px 12px;
-      font-size: 0.9rem; /* Aumenta la fuente */
-    }
-  
-    .listar-materias-table-heading {
-      font-size: 1.8rem; /* Aumenta el tamaño de la fuente del título */
-    }
-  }
-  
+}

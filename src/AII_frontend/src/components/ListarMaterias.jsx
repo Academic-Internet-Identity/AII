@@ -1,4 +1,3 @@
-// src/components/ListarMaterias.jsx
 import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,8 +8,8 @@ function ListarMaterias() {
   const [AII_backend] = useCanister('AII_backend');
   const [materias, setMaterias] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [materiaAEliminar, setMateriaAEliminar] = useState(null); // Materia seleccionada para eliminar
-  const [showConfirm, setShowConfirm] = useState(false); // Controla la visibilidad del cuadro de confirmación
+  const [materiaAEliminar, setMateriaAEliminar] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchMaterias = async () => {
@@ -33,13 +32,12 @@ function ListarMaterias() {
     try {
       const response = await AII_backend.eliminarMateria(codigo);
       toast.success(response);
-      // Elimina la materia del estado local
       setMaterias(materias.filter(materia => materia.codigo !== codigo));
     } catch (error) {
       console.error('Error al eliminar la materia:', error);
       toast.error('Error al eliminar la materia.');
     }
-    setShowConfirm(false); // Cierra el cuadro de confirmación
+    setShowConfirm(false);
   };
 
   const confirmarEliminar = (materia) => {
@@ -62,8 +60,10 @@ function ListarMaterias() {
       <table className="listar-materias-table">
         <thead>
           <tr>
-            <th>Nombre</th>
             <th>Código</th>
+            <th>Nombre</th>
+            <th>Carreras</th>
+            <th>Grado</th>
             <th>Créditos</th>
             <th>Acciones</th>
           </tr>
@@ -71,8 +71,10 @@ function ListarMaterias() {
         <tbody>
           {materias.map((materia, index) => (
             <tr key={index}>
-              <td>{materia.nombre}</td>
               <td>{materia.codigo}</td>
+              <td>{materia.nombre}</td>
+              <td>{materia.carreras.join(', ')}</td>
+              <td>{materia.grado.toString()}</td>
               <td>{materia.creditos.toString()}</td>
               <td>
                 <button
