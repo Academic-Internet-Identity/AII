@@ -34,19 +34,71 @@ body, html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
+/* Etiquetas de los campos */
+.materia-form-group label {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
 /* Grupo de inputs */
 .materia-form-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* Input general */
 .materia-form-input {
-  flex: 1 1 calc(33.333% - 20px);
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Sección de carreras */
+.materia-carreras-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Estilo del campo de carrera */
+.carrera-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botón para agregar una carrera */
+.add-carrera-button {
+  background-color: #006bb3;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.add-carrera-button:hover {
+  background-color: #005b99;
+}
+
+/* Botón para eliminar una carrera */
+.remove-carrera-button {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.remove-carrera-button:hover {
+  background-color: #e60000;
 }
 
 /* Botón del formulario */
@@ -62,13 +114,6 @@ body, html {
 
 .materia-form-button:hover {
   background-color: #005b99;
-}
-
-/* Responsividad para pantallas medianas */
-@media screen and (max-width: 768px) {
-  .materia-form-input {
-    flex: 1 1 calc(50% - 20px);
-  }
 }
 
 /* Responsividad para pantallas pequeñas */

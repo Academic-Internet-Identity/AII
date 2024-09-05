@@ -213,7 +213,8 @@ module {
         nombre: Text;
         codigo: Text;
         creditos: Nat;
-        carreras: [Text]; // Nuevo campo para almacenar las carreras a las que pertenece la materia
+        carreras: [Text];
+        grado: Nat;
     };
 
 

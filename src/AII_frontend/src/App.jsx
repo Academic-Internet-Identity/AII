@@ -16,7 +16,7 @@ import DetallesAlumno from './components/DetallesAlumno';
 import DetallesAdministrativo from './components/DetallesAdministrativo';
 import DetallesDocente from './components/DetallesDocente';
 import ConsultaAlumnos from './components/ConsultaAlumnos';
-import AgregarMateria from './components/AgregarMateria';
+import AgregarEditarMateria from './components/AgregarEditarMateria';
 import ListarMaterias from './components/ListarMaterias';
 import MiPerfil from './components/MiPerfil';
 import { Connect2ICProvider, useConnect, useCanister } from '@connect2ic/react';
@@ -126,7 +126,7 @@ function AppRoutes() {
         <Route path="/detalles-administrativo/:principal" element={<DetallesAdministrativo />} />
         <Route path="/detalles-docente/:principal" element={<DetallesDocente />} />
         <Route path="/consulta-alumnos" element={<ConsultaAlumnos />} />
-        <Route path="/agregar-materia" element={<AgregarMateria />} />
+        <Route path="/agregar-editar-materia" element={<AgregarEditarMateria />} />
         <Route path="/listar-materias" element={<ListarMaterias />} />
         <Route path="/mi-perfil" element={<MiPerfil/>}/>
         <Route path="/gestionar-grupos" element={<GestionarGrupos/>}/> 

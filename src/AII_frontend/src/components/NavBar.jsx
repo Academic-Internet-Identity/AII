@@ -113,7 +113,7 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/aprobar-docente">Aprobar Docente</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown title={<span className="materias-dropdown">Materias</span>} id="materias-nav-dropdown" className="submenu-right">
-                  <NavDropdown.Item as={Link} to="/agregar-materia">Agregar Materia</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/agregar-editar-materia">Agregar/Editar Materia</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/listar-materias">Listar Materias</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>

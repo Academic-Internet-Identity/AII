@@ -363,9 +363,9 @@ shared ({ caller }) actor class _Plataforma() {
     };
     ///FIN DE VER PERFIL DEL USUARIO/// 
 
-    public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat, carreras: [Text]) : async Text {
+    public shared ({ caller }) func agregarMateria(nombre: Text, codigo: Text, creditos: Nat, carreras: [Text], grado: Nat) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller));
-        let nuevaMateria : Materia = { nombre; codigo; creditos; carreras }; // Incluye las carreras
+        let nuevaMateria : Materia = { nombre; codigo; creditos; carreras; grado };
         ignore Map.put<Text, Materia>(materias, thash, codigo, nuevaMateria);
         return "Materia agregada exitosamente";
     };
