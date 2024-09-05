@@ -4,6 +4,65 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/registroDocenteStyles.css';
 
+// Función para extraer datos del CURP
+const extractCurpData = (curp) => {
+  if (curp.length !== 18) {
+    return null;
+  }
+
+  const year = curp.slice(4, 6);
+  const month = curp.slice(6, 8);
+  const day = curp.slice(8, 10);
+  const gender = curp[10];
+  const placeCode = curp.slice(11, 13);
+
+  const placeMap = {
+    AS: "Aguascalientes",
+    BC: "Baja California",
+    BS: "Baja California Sur",
+    CC: "Campeche",
+    CL: "Coahuila de Zaragoza",
+    CM: "Colima",
+    CS: "Chiapas",
+    CH: "Chihuahua",
+    DF: "Ciudad de México",
+    DG: "Durango",
+    GT: "Guanajuato",
+    GR: "Guerrero",
+    HG: "Hidalgo",
+    JC: "Jalisco",
+    MC: "México",
+    MN: "Michoacán de Ocampo",
+    MS: "Morelos",
+    NT: "Nayarit",
+    NL: "Nuevo León",
+    OC: "Oaxaca",
+    PL: "Puebla",
+    QT: "Querétaro",
+    QR: "Quintana Roo",
+    SP: "San Luis Potosí",
+    SL: "Sinaloa",
+    SR: "Sonora",
+    TC: "Tabasco",
+    TS: "Tamaulipas",
+    TL: "Tlaxcala",
+    VZ: "Veracruz",
+    YN: "Yucatán",
+    ZS: "Zacatecas",
+    NE: "Nacido en el Extranjero"
+  };
+
+  const birthYear = parseInt(year, 10) > 22 ? `19${year}` : `20${year}`;
+  const birthDate = `${birthYear}-${month}-${day}`;
+  const placeOfBirth = placeMap[placeCode] || "Lugar desconocido";
+
+  return {
+    birthDate,
+    gender: gender === "H" ? "Masculino" : "Femenino",
+    placeOfBirth,
+  };
+};
+
 function RegistroDocente() {
   const [AII_backend] = useCanister('AII_backend');
   const [form, setForm] = useState({
@@ -30,12 +89,39 @@ function RegistroDocente() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+    setForm({ 
+      ...form, 
+      [name]: type === 'checkbox' ? checked : value 
+    });
+
+    // Auto-completar campos basado en el CURP
+    if (name === 'curp' && value.length === 18) {
+      const curpData = extractCurpData(value);
+      if (curpData) {
+        setForm(prevForm => ({
+          ...prevForm,
+          fechaNacimiento: curpData.birthDate,
+          genero: curpData.gender,
+          lugarNacimiento: curpData.placeOfBirth
+        }));
+      }
+    }
   };
 
   const handleArrayChange = (e, index, field) => {
-    const newArray = [...form[field]];
-    newArray[index] = e.target.value;
+    const newArray = form[field].slice();
+    const newValue = e.target.value;
+
+    // Permitir el campo vacío y validar que contenga solo números si tiene contenido
+    if (field === 'telefonos') {
+      const isNumeric = newValue === '' || /^\d+$/.test(newValue);
+      if (!isNumeric) {
+        toast.error('El teléfono debe contener solo números.');
+        return;
+      }
+    }
+
+    newArray[index] = newValue;
     setForm({ ...form, [field]: newArray });
   };
 
@@ -48,7 +134,6 @@ function RegistroDocente() {
     newArray.splice(index, 1);
     setForm({ ...form, [field]: newArray });
 
-    // Actualizar la lista de materias seleccionadas al eliminar una materia
     if (field === 'materias') {
       const updatedSelectedMaterias = { ...selectedMaterias };
       delete updatedSelectedMaterias[index];
@@ -58,19 +143,12 @@ function RegistroDocente() {
 
   const handleMateriaChange = (e, index) => {
     const selectedValue = e.target.value;
-
     const newArray = [...form.materias];
     newArray[index] = selectedValue;
-
     setForm({ ...form, materias: newArray });
 
-    // Guardar la materia seleccionada
     const updatedSelectedMaterias = { ...selectedMaterias, [index]: selectedValue };
     setSelectedMaterias(updatedSelectedMaterias);
-  };
-
-  const addMateriaField = () => {
-    setForm({ ...form, materias: [...form.materias, ''] });
   };
 
   const getFilteredMaterias = (index) => {
@@ -82,8 +160,6 @@ function RegistroDocente() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validar que al menos una materia esté seleccionada
     if (form.materias.length === 0 || form.materias.some(m => m === '')) {
       toast.warn('Debe seleccionar al menos una materia.');
       return;
@@ -103,10 +179,17 @@ function RegistroDocente() {
       <h2>Registrar Docente</h2>
       <form className="registro-docente-form" onSubmit={handleSubmit}>
         <div className="registro-docente-form-group">
-          <input type="text" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" required />
-          <input type="text" name="apellidoPaterno" value={form.apellidoPaterno} onChange={handleChange} placeholder="Apellido Paterno" required />
-          <input type="text" name="apellidoMaterno" value={form.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
-          <select name="tipoSanguineo" value={form.tipoSanguineo} onChange={handleChange} required>
+          <label htmlFor="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Ej. Juan" required />
+          
+          <label htmlFor="apellidoPaterno">Apellido Paterno:</label>
+          <input type="text" id="apellidoPaterno" name="apellidoPaterno" value={form.apellidoPaterno} onChange={handleChange} placeholder="Ej. Pérez" required />
+          
+          <label htmlFor="apellidoMaterno">Apellido Materno:</label>
+          <input type="text" id="apellidoMaterno" name="apellidoMaterno" value={form.apellidoMaterno} onChange={handleChange} placeholder="Ej. López" required />
+          
+          <label htmlFor="tipoSanguineo">Tipo Sanguíneo:</label>
+          <select id="tipoSanguineo" name="tipoSanguineo" value={form.tipoSanguineo} onChange={handleChange} required>
             <option value="">Seleccione Tipo Sanguíneo</option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
@@ -117,15 +200,25 @@ function RegistroDocente() {
             <option value="O+">O+</option>
             <option value="O-">O-</option>
           </select>
-          <input type="date" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange} placeholder="Fecha de Nacimiento" required />
-          <input type="text" name="curp" value={form.curp} onChange={handleChange} placeholder="CURP" required />
-          <select name="genero" value={form.genero} onChange={handleChange} required>
+
+          <label htmlFor="curp">CURP:</label>
+          <input type="text" id="curp" name="curp" value={form.curp} onChange={handleChange} placeholder="Ej. AAPR630321HDFLRN00" required maxLength="18" />
+
+          <label htmlFor="fechaNacimiento">Fecha de Nacimiento:</label>
+          <input type="date" id="fechaNacimiento" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange} required />
+          
+          <label htmlFor="genero">Género:</label>
+          <select id="genero" name="genero" value={form.genero} onChange={handleChange} required>
             <option value="">Seleccione Género</option>
             <option value="Femenino">Femenino</option>
             <option value="Masculino">Masculino</option>
           </select>
-          <input type="text" name="lugarNacimiento" value={form.lugarNacimiento} onChange={handleChange} placeholder="Lugar de Nacimiento" required />
-          <select name="estadoCivil" value={form.estadoCivil} onChange={handleChange} required>
+
+          <label htmlFor="lugarNacimiento">Lugar de Nacimiento:</label>
+          <input type="text" id="lugarNacimiento" name="lugarNacimiento" value={form.lugarNacimiento} onChange={handleChange} placeholder="Ej. Aguascalientes" required />
+          
+          <label htmlFor="estadoCivil">Estado Civil:</label>
+          <select id="estadoCivil" name="estadoCivil" value={form.estadoCivil} onChange={handleChange} required>
             <option value="">Seleccione Estado Civil</option>
             <option value="soltero/a">Soltero/a</option>
             <option value="casado por lo civil">Casado por lo civil</option>
@@ -133,40 +226,47 @@ function RegistroDocente() {
             <option value="separado legalmente">Separado legalmente</option>
             <option value="viudo de matrimonio civil">Viudo de matrimonio civil</option>
             <option value="viudo de matrimonio religioso">Viudo de matrimonio religioso</option>
-            <option value="viudo de matrimonio civil y religioso">Viudo de matrimonio civil y religioso</option>
             <option value="vive en unión libre">Vive en unión libre</option>
-            <option value="separado de unión libre">Separado de unión libre</option>
-            <option value="viudo de unión libre">Viudo de unión libre</option>
           </select>
-          <input type="email" name="emailPersonal" value={form.emailPersonal} onChange={handleChange} placeholder="Email Personal" required />
+
+          <label htmlFor="emailPersonal">Email Personal:</label>
+          <input type="email" id="emailPersonal" name="emailPersonal" value={form.emailPersonal} onChange={handleChange} placeholder="Ej. ejemplo@correo.com" required />
         </div>
+
         <div className="registro-docente-form-group">
+          <label htmlFor="direccion">Dirección:</label>
           {form.direcciones.map((direccion, index) => (
             <div key={index} className="registro-docente-field-with-button">
-              <input type="text" value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Dirección" required />
+              <input type="text" id={`direccion${index}`} value={direccion} onChange={(e) => handleArrayChange(e, index, 'direcciones')} placeholder="Ej. Calle Falsa 123" required />
               <button type="button" className="registro-docente-remove-button" onClick={() => removeArrayField(index, 'direcciones')}>Eliminar</button>
             </div>
           ))}
           <div className="registro-docente-add-button-container">
             <button type="button" className="registro-docente-add-button" onClick={() => addArrayField('direcciones')}>Agregar Dirección</button>
           </div>
-          
+
+          <label htmlFor="telefono">Teléfono:</label>
           {form.telefonos.map((telefono, index) => (
             <div key={index} className="registro-docente-field-with-button">
-              <input type="text" value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Teléfono" required />
+              <input type="text" id={`telefono${index}`} value={telefono} onChange={(e) => handleArrayChange(e, index, 'telefonos')} placeholder="Ej. 4491234567" required />
               <button type="button" className="registro-docente-remove-button" onClick={() => removeArrayField(index, 'telefonos')}>Eliminar</button>
             </div>
           ))}
           <div className="registro-docente-add-button-container">
             <button type="button" className="registro-docente-add-button" onClick={() => addArrayField('telefonos')}>Agregar Teléfono</button>
           </div>
+
+          <label htmlFor="detallesMedicos">Detalles Médicos:</label>
+          <textarea id="detallesMedicos" name="detallesMedicos" value={form.detallesMedicos} onChange={handleChange} placeholder="Ej. Alergias, medicamentos, etc." required />
           
-          <textarea name="detallesMedicos" value={form.detallesMedicos} onChange={handleChange} placeholder="Detalles Médicos" required />
-          <input type="text" name="numeroSeguroSocial" value={form.numeroSeguroSocial} onChange={handleChange} placeholder="Número de Seguro Social" required />
+          <label htmlFor="numeroSeguroSocial">Número de Seguro Social:</label>
+          <input type="text" id="numeroSeguroSocial" name="numeroSeguroSocial" value={form.numeroSeguroSocial} onChange={handleChange} placeholder="Ej. 12345678901" required />
           
+          <label htmlFor="materia">Materias:</label>
           {form.materias.map((materia, index) => (
             <div key={index} className="registro-docente-field-with-button">
               <select
+                id={`materia${index}`}
                 value={materia || ''}
                 onChange={(e) => handleMateriaChange(e, index)}
                 required
@@ -180,10 +280,11 @@ function RegistroDocente() {
             </div>
           ))}
           <div className="registro-docente-add-button-container">
-            <button type="button" className="registro-docente-add-button" onClick={addMateriaField}>Agregar Materia</button>
+            <button type="button" className="registro-docente-add-button" onClick={addArrayField}>Agregar Materia</button>
           </div>
 
-          <input type="text" name="cedulaProfesional" value={form.cedulaProfesional} onChange={handleChange} placeholder="Cédula Profesional" required />
+          <label htmlFor="cedulaProfesional">Cédula Profesional:</label>
+          <input type="text" id="cedulaProfesional" name="cedulaProfesional" value={form.cedulaProfesional} onChange={handleChange} placeholder="Ej. 00000001" required />
         </div>
         
         <button type="submit" className="registro-docente-form-button">Registrar</button>

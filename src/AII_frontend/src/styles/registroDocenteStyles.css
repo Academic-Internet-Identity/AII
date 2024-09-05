@@ -1,3 +1,4 @@
+/* Estilo global del cuerpo y la raíz del documento */
 body, html {
   height: 100%;
   margin: 0;
@@ -5,6 +6,7 @@ body, html {
   overflow-y: auto;
 }
 
+/* Contenedor principal del formulario de registro de docentes */
 .registro-docente-container {
   display: flex;
   flex-direction: column;
@@ -17,12 +19,13 @@ body, html {
   padding: 20px;
 }
 
+/* Estilo del formulario de registro de docentes */
 .registro-docente-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
   margin: auto;
   background-color: #fff;
   padding: 20px;
@@ -31,57 +34,46 @@ body, html {
   box-sizing: border-box;
 }
 
+/* Estilo de los grupos de campos dentro del formulario */
 .registro-docente-form-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.registro-docente-form-group input,
-.registro-docente-form-group textarea,
-.registro-docente-form-group select {
-  flex: 1 1 calc(33.333% - 20px);
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #00385d;
-  box-sizing: border-box;
+  flex-direction: column; /* Alineación vertical para cada label y su campo */
+  gap: 10px;
   width: 100%;
 }
 
+/* Estilo de los labels (ahora estarán arriba del campo de entrada) */
+.registro-docente-form-group label {
+  text-align: left;
+  font-weight: bold; /* Hace que las etiquetas se vean más destacadas */
+}
+
+/* Estilo de los inputs, textareas y selects del formulario */
+.registro-docente-form-group input,
+.registro-docente-form-group textarea,
+.registro-docente-form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Agrupar direcciones, teléfonos y materias en filas individuales */
 .registro-docente-field-with-button {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
+  width: 100%; /* Asegurar que ocupen toda la fila */
 }
 
-.registro-docente-remove-button {
-  background-color: #ff3333;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.registro-docente-remove-button:hover {
-  background-color: #cc0000;
-}
-
-.registro-docente-checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-}
-
+/* Estilo de los contenedores de botones de añadir campo */
 .registro-docente-add-button-container {
   flex: 1 1 100%;
   text-align: right;
 }
 
+/* Estilo de los botones de añadir campo */
 .registro-docente-add-button {
   background-color: #006bb3;
   color: #fff;
@@ -95,6 +87,21 @@ body, html {
   background-color: #005b99;
 }
 
+/* Estilo de los botones de eliminar campo */
+.registro-docente-remove-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registro-docente-remove-button:hover {
+  background-color: #cc0000;
+}
+
+/* Estilo del botón de envío del formulario */
 .registro-docente-form-button {
   background-color: #006bb3;
   color: #fff;
@@ -109,27 +116,30 @@ body, html {
   background-color: #005b99;
 }
 
+/* Estilo de los grupos de checkboxes */
+.registro-docente-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* Mensaje de error en el formulario */
 .registro-docente-message {
   color: #ff3333;
   margin-top: 20px;
 }
 
+/* Estilos responsivos para pantallas más pequeñas */
 @media screen and (max-width: 768px) {
+  .registro-docente-form-group {
+    flex-direction: column;
+  }
+
   .registro-docente-form-group input,
   .registro-docente-form-group textarea,
   .registro-docente-form-group select {
-    flex: 1 1 calc(50% - 20px);
-  }
-  
-  .registro-docente-field-with-button {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .registro-docente-remove-button {
-    align-self: flex-end;
-    width: 100%;
-    text-align: center;
+    flex: 1 1 100%; /* Mantiene el ancho completo en pantallas pequeñas */
   }
 }
 
@@ -145,10 +155,6 @@ body, html {
   }
 
   .registro-docente-form-button {
-    width: 100%;
-  }
-
-  .registro-docente-remove-button {
     width: 100%;
   }
 }

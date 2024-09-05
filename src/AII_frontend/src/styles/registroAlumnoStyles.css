@@ -25,7 +25,7 @@ body, html {
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 900px; /* Ajustar el ancho máximo */
+  max-width: 900px;
   margin: auto;
   background-color: #fff;
   padding: 20px;
@@ -37,15 +37,14 @@ body, html {
 /* Estilo de los grupos de campos dentro del formulario */
 .registro-alumno-form-group {
   display: flex;
-  flex-direction: column; /* Alineación vertical para cada label y su campo */
+  flex-direction: column;
   gap: 10px;
   width: 100%;
 }
 
-/* Estilo de los labels (ahora estarán arriba del campo de entrada) */
 .registro-alumno-form-group label {
   text-align: left;
-  font-weight: bold; /* Hace que las etiquetas se vean más destacadas */
+  font-weight: bold;
 }
 
 /* Estilo de los inputs, textareas y selects del formulario */
@@ -64,7 +63,7 @@ body, html {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%; /* Asegurar que ocupen toda la fila */
+  width: 100%;
 }
 
 /* Estilo de los contenedores de botones de añadir campo */
@@ -139,7 +138,7 @@ body, html {
   .registro-alumno-form-group input,
   .registro-alumno-form-group textarea,
   .registro-alumno-form-group select {
-    flex: 1 1 100%; /* Mantiene el ancho completo en pantallas pequeñas */
+    flex: 1 1 100%;
   }
 }
 

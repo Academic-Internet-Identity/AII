@@ -1,3 +1,4 @@
+/* Estilo global del cuerpo y la raíz del documento */
 body, html {
   height: 100%;
   margin: 0;
@@ -5,6 +6,7 @@ body, html {
   overflow-y: auto;
 }
 
+/* Contenedor principal del formulario de registro de administrativos */
 .registro-admin-container {
   display: flex;
   flex-direction: column;
@@ -17,12 +19,13 @@ body, html {
   padding: 20px;
 }
 
+/* Estilo del formulario de registro de administrativos */
 .registro-admin-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
   margin: auto;
   background-color: #fff;
   padding: 20px;
@@ -31,25 +34,32 @@ body, html {
   box-sizing: border-box;
 }
 
+/* Estilo de los grupos de campos dentro del formulario */
 .registro-admin-form-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.registro-admin-form-group input,
-.registro-admin-form-group textarea,
-.registro-admin-form-group select {
-  flex: 1 1 calc(33.333% - 20px);
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #00385d;
-  box-sizing: border-box;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
 }
 
+/* Estilo de los labels */
+.registro-admin-form-group label {
+  text-align: left;
+  font-weight: bold;
+}
+
+/* Estilo de los inputs, textareas y selects */
+.registro-admin-form-group input,
+.registro-admin-form-group textarea,
+.registro-admin-form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Agrupar direcciones y teléfonos en filas individuales */
 .registro-admin-field-with-button {
   display: flex;
   align-items: center;
@@ -57,26 +67,7 @@ body, html {
   width: 100%;
 }
 
-.registro-admin-remove-button {
-  background-color: #ff4d4d;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.registro-admin-remove-button:hover {
-  background-color: #e60000;
-}
-
-.registro-admin-checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-}
-
+/* Estilo de los botones de añadir campo */
 .registro-admin-add-button-container {
   flex: 1 1 100%;
   text-align: right;
@@ -95,6 +86,21 @@ body, html {
   background-color: #005b99;
 }
 
+/* Estilo de los botones de eliminar campo */
+.registro-admin-remove-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registro-admin-remove-button:hover {
+  background-color: #cc0000;
+}
+
+/* Estilo del botón de envío del formulario */
 .registro-admin-form-button {
   background-color: #006bb3;
   color: #fff;
@@ -109,26 +115,20 @@ body, html {
   background-color: #005b99;
 }
 
-.registro-admin-message {
-  color: #ff3333;
-  margin-top: 20px;
-}
-
+/* Estilo responsivo para pantallas más pequeñas */
 @media screen and (max-width: 768px) {
-  .registro-admin-form-group input,
-  .registro-admin-form-group textarea,
-  .registro-admin-form-group select {
-    flex: 1 1 calc(50% - 20px);
+  .registro-admin-form-group {
+    flex-direction: column;
   }
-}
 
-@media screen and (max-width: 480px) {
   .registro-admin-form-group input,
   .registro-admin-form-group textarea,
   .registro-admin-form-group select {
     flex: 1 1 100%;
   }
+}
 
+@media screen and (max-width: 480px) {
   .registro-admin-add-button-container {
     text-align: left;
   }

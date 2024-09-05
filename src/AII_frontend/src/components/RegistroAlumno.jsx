@@ -225,7 +225,7 @@ function RegistroAlumno() {
           <label htmlFor="escuelaProcedencia">Escuelas de Procedencia:</label>
           {form.escuelasProcedencia.map((escuela, index) => (
             <div key={index} className="registro-alumno-field-with-button">
-              <input type="text" id={`escuela${index}`} value={escuela} onChange={(e) => handleArrayChange(e, index, 'escuelasProcedencia')} placeholder="Ej. Escuela Secundaria #1" required />
+              <input type="text" id={`escuela${index}`} value={escuela} onChange={(e) => handleArrayChange(e, index, 'escuelasProcedencia')} placeholder="Ej. Escuela Media Superior #1" required />
               <button type="button" className="registro-alumno-remove-button" onClick={() => removeArrayField(index, 'escuelasProcedencia')}>Eliminar</button>
             </div>
           ))}
@@ -280,7 +280,7 @@ function RegistroAlumno() {
           <input type="email" id="emailInstitucional" name="emailInstitucional" value={form.emailInstitucional} onChange={handleChange} placeholder="Ej. correo@institucional.com" required />
 
           <label htmlFor="matricula">Matrícula:</label>
-          <input type="text" id="matricula" name="matricula" value={form.matricula} onChange={handleChange} placeholder="Ej. 22030590" required />
+          <input type="text" id="matricula" name="matricula" value={form.matricula} onChange={handleChange} placeholder="Ej. 11042590" required />
 
           <label htmlFor="carrera">Carrera:</label>
           <select id="carrera" name="carrera" value={form.carrera} onChange={handleChange} required>
