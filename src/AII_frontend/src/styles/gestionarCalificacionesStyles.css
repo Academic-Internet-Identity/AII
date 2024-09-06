@@ -1,3 +1,4 @@
+/* Contenedor principal */
 .gestionar-calificaciones-container {
     display: flex;
     flex-direction: column;
@@ -8,50 +9,45 @@
     color: #fff;
     text-align: center;
     padding: 20px;
-}
-
-.gestionar-calificaciones-heading {
+  }
+  
+  /* Título */
+  .gestionar-calificaciones-heading {
     margin-bottom: 20px;
     color: #fff;
     font-size: 24px;
-}
-
-.gestionar-calificaciones-form {
+  }
+  
+  /* Formulario */
+  .gestionar-calificaciones-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 80%;
-    max-width: 600px;
+    max-width: 800px;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     color: #00385d;
-}
-
-.gestionar-calificaciones-form-group {
+  }
+  
+  .gestionar-calificaciones-form-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 15px;
-    position: relative;
-}
-
-.gestionar-calificaciones-form-group label {
-    text-align: left;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.gestionar-calificaciones-select,
-.gestionar-calificaciones-input {
+  }
+  
+  .gestionar-calificaciones-select,
+  .gestionar-calificaciones-input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.gestionar-calificaciones-button {
+  }
+  
+  .gestionar-calificaciones-button {
     background-color: #006bb3;
     color: #fff;
     border: none;
@@ -60,8 +56,73 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 10px;
-}
-
-.gestionar-calificaciones-button:hover {
+  }
+  
+  .gestionar-calificaciones-button:hover {
     background-color: #005b99;
-}
+  }
+  
+  /* Tabla de alumnos */
+  .alumnos-table {
+    margin-top: 20px;
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    background-color: #00385d;
+    color: #fff;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .alumnos-table th,
+  .alumnos-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+    text-align: center;
+  }
+  
+  .alumnos-table th {
+    background-color: #00385d;
+  }
+  
+  .alumnos-table tbody tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .alumnos-table tbody tr:nth-child(odd) {
+    background-color: #2a2a2a;
+  }
+  
+  .alumnos-table tbody tr:hover {
+    background-color: #1A91DA;
+  }
+  
+  .table-heading {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .gestionar-calificaciones-form {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .alumnos-table th,
+    .alumnos-table td {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .gestionar-calificaciones-form {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .alumnos-table th,
+    .alumnos-table td {
+      font-size: 0.85rem;
+    }
+  }  

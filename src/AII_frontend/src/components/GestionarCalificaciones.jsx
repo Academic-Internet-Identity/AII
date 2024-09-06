@@ -9,87 +9,169 @@ function GestionarCalificaciones() {
   const [grupos, setGrupos] = useState([]);
   const [alumnos, setAlumnos] = useState([]);
   const [materias, setMaterias] = useState([]);
+  const [materiasDetalle, setMateriasDetalle] = useState([]); // Detalle de todas las materias
   const [selectedGrupo, setSelectedGrupo] = useState('');
-  const [selectedAlumno, setSelectedAlumno] = useState('');
   const [selectedMateria, setSelectedMateria] = useState('');
-  const [selectedParcial, setSelectedParcial] = useState('');
-  const [calificacion, setCalificacion] = useState('');
+  const [calificaciones, setCalificaciones] = useState([]);
+  const [editableAlumno, setEditableAlumno] = useState(null); // Alumno actualmente editable
 
+  // Cargar grupos y materias al montar el componente
   useEffect(() => {
-    const fetchMaterias = async () => {
-      try {
-        const materiasResult = await AII_backend.verMaterias();
-        setMaterias(materiasResult);
-      } catch (error) {
-        toast.error('Error al cargar las materias.');
-        console.error('Error al cargar las materias:', error);
-      }
-    };
-
-    const fetchGruposYAlumnos = async () => {
+    const fetchGruposYMaterias = async () => {
       try {
         const gruposResult = await AII_backend.verGrupos();
         setGrupos(gruposResult);
+
+        // Obtener todas las materias del backend para tener los nombres y códigos
+        const materiasResult = await AII_backend.verMaterias();
+        setMateriasDetalle(materiasResult); // Guardar el detalle completo de las materias
       } catch (error) {
-        toast.error('Error al cargar los grupos.');
-        console.error('Error al cargar los grupos:', error);
+        toast.error('Error al cargar los grupos y materias.');
       }
     };
 
-    fetchMaterias();
-    fetchGruposYAlumnos();
+    fetchGruposYMaterias();
   }, [AII_backend]);
 
+  // Cargar alumnos y materias del grupo seleccionado
   useEffect(() => {
-    const fetchAlumnos = async () => {
+    const fetchAlumnosYMaterias = async () => {
       if (selectedGrupo) {
         try {
-          const grupo = grupos.find(g => g.id === selectedGrupo);
-          if (grupo) {
-            setAlumnos(grupo.alumnos);
+          // Obtener información del grupo seleccionado
+          const grupoData = await AII_backend.verGrupo(selectedGrupo);
+          console.log("Grupo Obtenido: ", grupoData);
+
+          if (grupoData && grupoData[0]) {
+            const alumnosList = grupoData[0].alumnos;
+
+            if (alumnosList && alumnosList.length > 0) {
+              const alumnosConCalificaciones = alumnosList.map(alumno => {
+                const materiasConCalificaciones = alumno.materias.map(materia => {
+                  const { p1, p2, p3, final } = materia.calificaciones;
+
+                  return {
+                    ...materia,
+                    calificaciones: {
+                      p1: p1?.length > 0 ? p1.toString() : 'Sin calificación',
+                      p2: p2?.length > 0 ? p2.toString() : 'Sin calificación',
+                      p3: p3?.length > 0 ? p3.toString() : 'Sin calificación',
+                      final: final?.length > 0 ? final.toString() : 'Sin calificación',
+                    },
+                  };
+                });
+
+                return {
+                  ...alumno,
+                  materias: materiasConCalificaciones,
+                };
+              });
+
+              setAlumnos(alumnosConCalificaciones);
+              toast.success('Alumnos listados correctamente.');
+
+              // Mapeamos las materias del grupo con los nombres reales desde materiasDetalle
+              const materiasDelGrupo = alumnosList[0].materias.map((materia) => {
+                const detalleMateria = materiasDetalle.find(
+                  (mat) => mat.codigo === materia.materia // Busca el nombre de la materia en el detalle
+                );
+                console.log('Materia encontrada: ', detalleMateria);
+
+                return {
+                  codigo: materia.materia,
+                  nombre: detalleMateria ? detalleMateria.nombre : 'Nombre no encontrado',
+                };
+              });
+              setMaterias(materiasDelGrupo);
+            } else {
+              toast.info('No se encontraron alumnos para este grupo.');
+            }
+          } else {
+            toast.error('Grupo no encontrado.');
           }
         } catch (error) {
-          toast.error('Error al cargar los alumnos.');
-          console.error('Error al cargar los alumnos:', error);
+          toast.error('Error al listar los alumnos del grupo.');
+          console.error('Error al listar los alumnos del grupo:', error);
         }
       }
     };
 
-    fetchAlumnos();
-  }, [selectedGrupo, grupos]);
+    fetchAlumnosYMaterias();
+  }, [selectedGrupo, materiasDetalle, AII_backend]);
 
-  const handleActualizarCalificacion = async () => {
-    if (!selectedGrupo || !selectedAlumno || !selectedMateria || !selectedParcial || !calificacion) {
-      toast.error('Todos los campos son obligatorios.');
-      return;
-    }
+  // Filtrar las calificaciones para la materia seleccionada
+  useEffect(() => {
+    if (selectedMateria && alumnos.length > 0) {
+      const calificacionesMateriaSeleccionada = alumnos.map(alumno => {
+        const materiaSeleccionada = alumno.materias.find(
+          (materia) => materia.materia === selectedMateria
+        );
 
-    try {
-      console.log('Enviando datos al backend:', {
-        grupoId: selectedGrupo,
-        alumnoId: selectedAlumno,
-        materia: selectedMateria,
-        parcial: selectedParcial,
-        calificacion: parseInt(calificacion),
+        return {
+          alumno: alumno.nombre,
+          p1: materiaSeleccionada?.calificaciones?.p1 || '',
+          p2: materiaSeleccionada?.calificaciones?.p2 || '',
+          p3: materiaSeleccionada?.calificaciones?.p3 || '',
+          final: materiaSeleccionada?.calificaciones?.final || '',
+        };
       });
 
-      const response = await AII_backend.actualizarCalificacionPorMateria(selectedGrupo, selectedAlumno, selectedMateria, selectedParcial, parseInt(calificacion));
-      toast.success(response);
-    } catch (error) {
-      console.error('Error al actualizar la calificación:', error);
-      toast.error('Error al actualizar la calificación.');
+      setCalificaciones(calificacionesMateriaSeleccionada);
+    } else {
+      setCalificaciones([]); // Si no hay materia seleccionada, no mostramos calificaciones
     }
+  }, [selectedMateria, alumnos]);
+
+  const handleCalificacionChange = (index, campo, valor) => {
+    const nuevasCalificaciones = [...calificaciones];
+    nuevasCalificaciones[index][campo] = valor;
+    setCalificaciones(nuevasCalificaciones);
   };
 
-  const obtenerNombreMateria = (codigoMateria) => {
-    const materia = materias.find(m => m.codigo === codigoMateria);
-    return materia ? materia.nombre : 'Nombre desconocido';
+  const handleActualizarCalificaciones = async () => {
+    for (const calificacion of calificaciones) {
+      try {
+        await AII_backend.actualizarCalificacionPorMateria(
+          selectedGrupo,
+          calificacion.alumno,
+          selectedMateria,
+          'p1',
+          parseInt(calificacion.p1)
+        );
+        await AII_backend.actualizarCalificacionPorMateria(
+          selectedGrupo,
+          calificacion.alumno,
+          selectedMateria,
+          'p2',
+          parseInt(calificacion.p2)
+        );
+        await AII_backend.actualizarCalificacionPorMateria(
+          selectedGrupo,
+          calificacion.alumno,
+          selectedMateria,
+          'p3',
+          parseInt(calificacion.p3)
+        );
+        await AII_backend.actualizarCalificacionPorMateria(
+          selectedGrupo,
+          calificacion.alumno,
+          selectedMateria,
+          'final',
+          parseInt(calificacion.final)
+        );
+        toast.success(`Calificaciones actualizadas para ${calificacion.alumno}`);
+      } catch (error) {
+        toast.error(`Error al actualizar las calificaciones para ${calificacion.alumno}`);
+      }
+    }
   };
 
   return (
     <div className="gestionar-calificaciones-container">
       <h2 className="gestionar-calificaciones-heading">Gestionar Calificaciones</h2>
-      <form className="gestionar-calificaciones-form">
+
+      {/* Formulario de selección de grupo y materia */}
+      <div className="gestionar-calificaciones-form">
         <div className="gestionar-calificaciones-form-group">
           <label htmlFor="grupo-select">Selecciona un Grupo:</label>
           <select
@@ -107,72 +189,82 @@ function GestionarCalificaciones() {
           </select>
         </div>
         <div className="gestionar-calificaciones-form-group">
-          <label htmlFor="alumno-select">Selecciona un Alumno:</label>
-          <select
-            id="alumno-select"
-            className="gestionar-calificaciones-select"
-            value={selectedAlumno}
-            onChange={(e) => setSelectedAlumno(e.target.value)}
-            disabled={!selectedGrupo}
-          >
-            <option value="">Selecciona un Alumno</option>
-            {alumnos.map((alumno) => (
-              <option key={alumno.alumno} value={alumno.alumno}>
-                {alumno.nombre} ({alumno.alumno})
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="gestionar-calificaciones-form-group">
           <label htmlFor="materia-select">Selecciona una Materia:</label>
           <select
             id="materia-select"
             className="gestionar-calificaciones-select"
             value={selectedMateria}
             onChange={(e) => setSelectedMateria(e.target.value)}
-            disabled={!selectedAlumno}
+            disabled={!selectedGrupo}
           >
             <option value="">Selecciona una Materia</option>
-            {alumnos.find(a => a.alumno === selectedAlumno)?.materias?.map((materia) => (
-              <option key={materia.materia} value={materia.materia}>
-                {obtenerNombreMateria(materia.materia)} (ID: {materia.materia})
+            {materias.map((materia) => (
+              <option key={materia.codigo} value={materia.codigo}>
+                {materia.codigo} - {materia.nombre} {/* Mostrar ID y nombre */}
               </option>
             ))}
           </select>
         </div>
-        <div className="gestionar-calificaciones-form-group">
-          <label htmlFor="parcial-select">Selecciona el Parcial:</label>
-          <select
-            id="parcial-select"
-            className="gestionar-calificaciones-select"
-            value={selectedParcial}
-            onChange={(e) => setSelectedParcial(e.target.value)}
-            disabled={!selectedMateria}
-          >
-            <option value="">Selecciona el Parcial</option>
-            <option value="p1">Primer Parcial</option>
-            <option value="p2">Segundo Parcial</option>
-            <option value="p3">Tercer Parcial</option>
-            <option value="final">Final</option>
-          </select>
-        </div>
-        <div className="gestionar-calificaciones-form-group">
-          <label htmlFor="calificacion-input">Calificación:</label>
-          <input
-            type="number"
-            id="calificacion-input"
-            className="gestionar-calificaciones-input"
-            value={calificacion}
-            onChange={(e) => setCalificacion(e.target.value)}
-            min="0"
-            max="100"
-            disabled={!selectedParcial}
-          />
-        </div>
-        <button type="button" className="gestionar-calificaciones-button" onClick={handleActualizarCalificacion}>
-          Actualizar Calificación
-        </button>
-      </form>
+
+      </div>
+
+      {/* Mostrar la tabla solo si se ha seleccionado un grupo y una materia */}
+      {selectedGrupo && selectedMateria && calificaciones.length > 0 && (
+        <>
+          <h4 className="table-heading">Calificaciones de Alumnos</h4>
+          <table className="alumnos-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th>P3</th>
+                <th>Final</th>
+              </tr>
+            </thead>
+            <tbody>
+              {calificaciones.map((calificacion, index) => (
+                <tr key={index}>
+                  <td>{calificacion.alumno}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={calificacion.p1}
+                      onChange={(e) => handleCalificacionChange(index, 'p1', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={calificacion.p2}
+                      onChange={(e) => handleCalificacionChange(index, 'p2', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={calificacion.p3}
+                      onChange={(e) => handleCalificacionChange(index, 'p3', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={calificacion.final}
+                      onChange={(e) => handleCalificacionChange(index, 'final', e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button className="gestionar-calificaciones-button" onClick={handleActualizarCalificaciones}>
+            Actualizar Calificaciones
+          </button>
+        </>
+      )}
+
       <ToastContainer />
     </div>
   );
