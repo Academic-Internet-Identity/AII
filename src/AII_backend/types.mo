@@ -218,6 +218,7 @@ module {
     };
 
 
+
     public type Horario = {
         dia: Text;
         horaInicio: Text;

@@ -51,6 +51,9 @@ shared ({ caller }) actor class _Plataforma() {
     stable let alumnoMat = Map.new<Text, Alumno>();
 
     stable let admins = Set.new<Principal>();
+    // Mapa para almacenar las carreras, usando el código de la carrera como clave
+    stable var carreras = Map.new<Text, Text>();  // clave: código, valor: nombre de la carrera
+
 
     stable let administrativos = Map.new<Principal, Administrativo>();
     stable let docentes = Map.new<Principal, Docente>();
@@ -106,6 +109,62 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     ///////////Fin Seccion para verificar roles//////////
+
+
+
+   
+
+    public shared ({ caller }) func agregarCarrera(codigo: Text, nombre: Text) : async Text {
+        assert (esAdmin(caller) or esAdministrativo(caller)); // Verificar permisos
+
+        if (Map.has<Text, Text>(carreras, thash, codigo)) {
+            return "Error: Ya existe una carrera con ese código.";
+        };
+        ignore Map.put<Text, Text>(carreras, thash, codigo, nombre);
+        return "Carrera agregada exitosamente";
+    };
+
+    public shared ({ caller }) func editarCarrera(codigo: Text, nuevoNombre: Text) : async Text {
+        assert (esAdmin(caller) or esAdministrativo(caller)); // Verificar permisos
+
+        let carreraOpt = Map.get<Text, Text>(carreras, thash, codigo);
+        switch carreraOpt {
+            case null { return "Error: No se encontró la carrera con el código proporcionado."; };
+            case (?_) {
+                ignore Map.put<Text, Text>(carreras, thash, codigo, nuevoNombre);
+                return "Carrera actualizada exitosamente";
+            };
+        };
+    };
+
+    public shared ({ caller }) func eliminarCarrera(codigo: Text) : async Text {
+        assert (esAdmin(caller) or esAdministrativo(caller)); // Verificar permisos
+
+        let carreraOpt = Map.remove<Text, Text>(carreras, thash, codigo);
+        switch carreraOpt {
+            case null { return "Error: No se encontró la carrera con el código proporcionado."; };
+            case (?_) { return "Carrera eliminada exitosamente"; };
+        };
+    };
+
+    public shared query func listarCarreras() : async [(Text, Text)] {
+        return Iter.toArray(Map.entries<Text, Text>(carreras));
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public shared ({ caller }) func agregarAdmin(p : Principal) : async Bool {
         assert esAdmin(caller) and _esUsuario(p);
@@ -297,6 +356,8 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.entries<Principal, RegistroAlumnoForm>(alumnosIngresantes));
     };
 
+
+
     public shared query ({ caller }) func verAdministrativosIngresantes() : async [(Principal, RegistroAdministrativoForm)] {
         assert ( esAdmin(caller) or esAdministrativo(caller));
         Iter.toArray(Map.entries<Principal, RegistroAdministrativoForm>(administrativosIngresantes));
@@ -447,6 +508,86 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
         };
     };
 };
+
+
+//NO FUNCIONA AUN, DA ERROR EN let materiaOpt = Map.get<Text, Materia>(materias, thash, horario.materia); :C
+
+/* public shared query ({ caller }) func verMateriasDeGrupoPorDocente(grupoId: Text) : async ?[Materia] {
+    // Verificar que el solicitante es un docente
+    assert esDocente(caller);
+
+    // Obtener los detalles del grupo solicitado
+    let grupoOpt = Map.get<Text, Grupo>(grupos, thash, grupoId);
+    switch grupoOpt {
+        case null { return null; };  // Si el grupo no existe, retornar null
+        case (?grupo) {
+            // Buscar los horarios asociados a este grupo
+            let horariosOpt = Map.get<Text, [Horario]>(horarios, thash, grupoId);
+            switch horariosOpt {
+                case null { return null; };  // Si no hay horarios asociados, retornar null
+                case (?horarios) {
+                    // Filtrar las materias que son impartidas por el docente actual (caller)
+                    let materiasDocente = Array.filter<Horario>(horarios, func (horario: Horario) : Bool {
+                        // Para cada horario, verificamos si el docente es el que solicita (caller)
+                        let docenteOpt = Map.get<Principal, Docente>(docentes, phash, caller);
+                        switch docenteOpt {
+                            case null { return false; };  // Si no se encuentra el docente, retornamos false
+                            case (?docente) {
+                                // Verificar si el docente imparte esta materia con Array.find
+                                Array.find<Text>(docente.materias, func (materiaDocente: Text) : Bool {
+                                    materiaDocente == horario.materia
+                                }) != null;
+                            };
+                        }
+                    });
+
+                    // Obtener las materias desde los horarios filtrados
+                    let materias = Array.map<Horario, Materia>(materiasDocente, func (horario: Horario) : Materia {
+                        // Obtener la materia desde el código almacenado en el horario
+                        let materiaOpt = Map.get<Text, Materia>(materias, thash, horario.materia);
+                        switch materiaOpt {
+                            case null {
+                                return {
+                                    nombre = "Nombre Desconocido";  // Valor por defecto si no se encuentra la materia
+                                    codigo = horario.materia;
+                                    creditos = 0;
+                                    carreras = [];
+                                };
+                            };
+                            case (?materia) { return materia; };
+                        }
+                    });
+
+                    return ?materias;
+                };
+            };
+        };
+    };
+}; */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public shared ({ caller }) func eliminarHorario(grupoId: Text, materia: Text, dia: Text, horaInicio: Text, horaFin: Text) : async Text {
         assert (esAdmin(caller) or esAdministrativo(caller));
