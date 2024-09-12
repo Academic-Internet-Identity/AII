@@ -1,0 +1,104 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #00385d;
+    overflow-y: auto;
+  }
+  
+  .servicios-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #00385d;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .servicios-form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  
+  .servicios-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    color: #00385d;
+    box-sizing: border-box;
+  }
+  
+  .servicios-form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .servicios-form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+    flex: 1 1 100%;
+  }
+  
+  .servicios-form-input, 
+  .servicios-form-select, 
+  .servicios-form-textarea {
+    flex: 1 1 calc(33.333% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #00385d;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  .servicios-form-textarea {
+    resize: vertical;
+    flex: 1 1 100%;
+  }
+  
+  .servicios-form-button {
+    background-color: #006bb3;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+  }
+  
+  .servicios-form-button:hover {
+    background-color: #005b99;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .servicios-form-group input,
+    .servicios-form-group textarea,
+    .servicios-form-group select {
+      flex: 1 1 calc(50% - 20px);
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .servicios-form-group input,
+    .servicios-form-group textarea,
+    .servicios-form-group select {
+      flex: 1 1 100%;
+    }
+  
+    .servicios-form-button {
+      width: 100%;
+    }
+  }  

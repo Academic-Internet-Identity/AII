@@ -1,0 +1,142 @@
+.ver-tramites-container {
+    padding: 1rem;
+    background-color: #00385d;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+  
+  .tramites-table {
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    overflow-x: auto;
+    background-color: #00385d;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .tramites-table th,
+  .tramites-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #2d2d2d;
+    text-align: center;
+  }
+  
+  .tramites-table th {
+    background-color: #00385d;
+    color: #fff;
+  }
+  
+  .tramites-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .tramites-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+  }
+  
+  .tramites-table tr:hover {
+    background-color: #1A91DA;
+  }
+  
+  .estado-tag {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .info-button {
+    background-color: #006bb3;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .info-button:hover {
+    background-color: #005b99;
+  }
+  
+  .info-modal-overlay,
+  .confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .info-modal-content,
+  .confirm-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: #00385d;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .close-button,
+  .confirm-button,
+  .cancel-button {
+    background-color: #006bb3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover,
+  .close-button:hover,
+  .cancel-button:hover {
+    background-color: #005b99;
+  }
+  
+  .cancel-button {
+    background-color: #b30000;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .tramites-table th,
+    .tramites-table td {
+      padding: 10px 8px;
+    }
+  
+    .info-modal-content,
+    .confirm-modal-content {
+      width: 90%;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .tramites-table th,
+    .tramites-table td {
+      padding: 8px 6px;
+    }
+  
+    .table-heading {
+      font-size: 1.2rem;
+    }
+  
+    .info-modal-content,
+    .confirm-modal-content {
+      width: 90%;
+    }
+  
+    .close-button,
+    .confirm-button,
+    .cancel-button {
+      width: 100%;
+    }
+  }  
