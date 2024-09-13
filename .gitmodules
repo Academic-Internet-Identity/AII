@@ -1,0 +1,3 @@
+[submodule "mops"]
+	path = mops
+	url = https://github.com/ZenVoich/mops.git

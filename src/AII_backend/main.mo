@@ -10,6 +10,8 @@ import Types "./types";
 import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
+import Time "mo:base/Time";
+
 
 shared ({ caller }) actor class _Plataforma() {
 
@@ -22,6 +24,7 @@ shared ({ caller }) actor class _Plataforma() {
     public type Uid = Types.Uid;
     public type Aid = Types.Aid;
     public type Materia = Types.Materia;
+    public type Tramite = Types.Tramite;
     public type Horario = Types.Horario;
     public type Grupo = Types.Grupo;
     public type RegistroGrupo = Types.RegistroGrupo;
@@ -30,9 +33,11 @@ shared ({ caller }) actor class _Plataforma() {
     public type RegistroAdministrativoForm = Types.RegistroAdministrativoForm;
     public type RegistroDocenteForm = Types.RegistroDocenteForm;
     public type MateriaRegistro = Types.MateriaRegistro;
+    
 
     stable var actualUid : Nat = 0;
     stable var actualAid : Nat = 0;
+    stable var actualTid : Nat = 0;
 
     stable var grupos = Map.new<Text, Grupo>(); // Mapa de grupos por ID
 
@@ -44,6 +49,11 @@ shared ({ caller }) actor class _Plataforma() {
     func generarAid() : Text {
         actualAid += 1;
         "A" # Nat.toText(actualAid);
+    };
+    // Función para generar un nuevo ID de trámite
+    func generarTramiteId(): Text {
+        actualTid += 1;
+        "T" # Nat.toText(actualTid);
     };
 
     stable let usuarios = Map.new<Principal, Usuario>();
@@ -66,10 +76,25 @@ shared ({ caller }) actor class _Plataforma() {
 
     stable let materias = Map.new<Text, Materia>();
     stable let horarios = Map.new<Text, [Horario]>();
+    // Mapa para almacenar los trámites
+    stable var tramites = Map.new<Text, Tramite>(); // Mapa de trámites por ID
+
 
     public shared ({ caller }) func getMyUser() : async ?Usuario {
         Map.get(usuarios, phash, caller);
+
     };
+    // Definición del tipo Estado para los trámites
+    public type EstadoTramite = {
+        #Pendiente;
+        #EnProceso;
+        #Completado;   // Si esta variante es necesaria
+        #Rechazado;
+        #Listo;        // Si esta variante es necesaria
+    };
+
+
+    
 
     ///////////Seccion para verificar roles//////////
 
@@ -109,6 +134,103 @@ shared ({ caller }) actor class _Plataforma() {
     };
 
     ///////////Fin Seccion para verificar roles//////////
+
+
+    // Ver todos los trámites
+    public shared query func VerTramites() : async [Tramite] {
+        Iter.toArray(Map.vals<Text, Tramite>(tramites));
+    };
+
+    // Ver los trámites de un alumno (filtrando por matrícula)
+    public shared query ({ caller }) func VerMisTramites(matricula: Text) : async [Tramite] {
+        Array.filter<Tramite>(Iter.toArray(Map.vals<Text, Tramite>(tramites)), func (t: Tramite) : Bool {
+            t.matricula == matricula
+        });
+    };
+
+
+
+
+
+
+
+    // Iniciar un nuevo trámite por parte de un alumno
+    public shared ({ caller }) func IniciarTramite(
+        correoElectronico: Text,
+        nombre: Text,
+        matricula: Text,
+        carrera: Text,
+        grado: Nat,
+        tipoSolicitud: Text,
+        tramite: Text,
+        comentarios: ?Text  // Este campo es opcional
+    ) : async Text {
+        let idTramite = generarTramiteId();
+        let nuevoTramite : Tramite = {
+            id = idTramite;
+            correoElectronico = correoElectronico;
+            nombre = nombre;
+            matricula = matricula;
+            carrera = carrera;
+            grado = grado;
+            tipoSolicitud = tipoSolicitud;
+            tramite = tramite;
+            estado = #Pendiente;  // El trámite se crea con estado "Pendiente"
+            comentarios = comentarios;
+        };
+
+        // Guardar el nuevo trámite en el mapa
+        ignore Map.put<Text, Tramite>(tramites, thash, idTramite, nuevoTramite);
+
+        return "Trámite iniciado exitosamente con ID: " # idTramite;
+    };
+
+    // Modificar el estado de un trámite existente
+    public shared ({ caller }) func ModificarEstadoTramite(idTramite: Text, nuevoEstado: EstadoTramite) : async Text {
+        let tramiteOpt = Map.get<Text, Tramite>(tramites, thash, idTramite);
+        switch tramiteOpt {
+            case null { return "Trámite no encontrado."; };
+            case (?tramite) {
+                let tramiteActualizado : Tramite = {
+                    id = tramite.id;
+                    correoElectronico = tramite.correoElectronico;
+                    nombre = tramite.nombre;
+                    matricula = tramite.matricula;
+                    carrera = tramite.carrera;
+                    grado = tramite.grado;
+                    tipoSolicitud = tramite.tipoSolicitud;
+                    tramite = tramite.tramite;
+                    estado = nuevoEstado;  // Aquí actualizamos el estado
+                    comentarios = tramite.comentarios;
+                };
+                ignore Map.put<Text, Tramite>(tramites, thash, idTramite, tramiteActualizado);
+                return "Estado del trámite actualizado exitosamente.";
+            };
+        };
+    };
+
+
+
+    // Rechazar un trámite
+    public shared ({ caller }) func RechazarTramite(idTramite: Text) : async Text {
+        let tramiteOpt = Map.get<Text, Tramite>(tramites, thash, idTramite);
+        switch tramiteOpt {
+            case null { return "Trámite no encontrado."; };
+            case (?tramite) {
+                let tramiteActualizado = { tramite with estado = #Rechazado };
+                ignore Map.put<Text, Tramite>(tramites, thash, idTramite, tramiteActualizado);
+                return "Trámite rechazado exitosamente.";
+            };
+        };
+    };
+
+
+
+
+
+
+
+
 
 
 
@@ -564,6 +686,9 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
         };
     };
 }; */
+
+
+    
 
 
 

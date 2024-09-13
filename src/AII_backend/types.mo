@@ -269,4 +269,28 @@ module {
     public type IC = actor {
         http_request : HttpRequestArgs -> async HttpResponsePayload;
     };
+
+    public type EstadoTramite = {
+        #Pendiente;
+        #EnProceso;
+        #Completado;  // <- Esta variante
+        #Rechazado;
+        #Listo;
+    };
+
+
+    public type Tramite = {
+        id: Text;               // ID del trámite
+        correoElectronico: Text; // Correo electrónico del alumno
+        nombre: Text;            // Nombre del alumno
+        matricula: Text;         // Matrícula del alumno
+        carrera: Text;           // Carrera del alumno
+        grado: Nat;              // Grado del alumno
+        tipoSolicitud: Text;     // Tipo de solicitud (Ej. Inscripción, Baja, etc.)
+        tramite: Text;           // Nombre del trámite específico
+        estado: EstadoTramite;   // Estado del trámite
+        comentarios: ?Text;      // Comentarios adicionales (opcional)
+    };
+
+
 };
