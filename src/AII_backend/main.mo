@@ -10,7 +10,7 @@ import Types "./types";
 import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
-import Time "mo:base/Time";
+//import Time "mo:base/Time";
 
 
 shared ({ caller }) actor class _Plataforma() {

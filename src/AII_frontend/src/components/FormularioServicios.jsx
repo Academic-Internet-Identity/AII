@@ -1,23 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import { useCanister } from '@connect2ic/react';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/formularioServiciosStyles.css';
+import '../styles/formularioServiciosStyles.css';  // Manteniendo tu estilo previo
 
-const FormularioServicios = () => {
+const FormularioTramite = () => {
+  const [AII_backend] = useCanister('AII_backend');
 
-  const handleSubmit = (event) => {
+  // Estado del formulario
+  const [formData, setFormData] = useState({
+    email: '',
+    name: '',
+    matricula: '',
+    carrera: '',
+    grado: '',
+    tipoSolicitud: '',
+    tramite: '',
+    comentarios: '',
+  });
+
+  // Manejo de cambios en los inputs
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Manejo del envío del formulario
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const name = document.getElementById('name').value;
-    const matricula = document.getElementById('matricula').value;
-    const carrera = document.getElementById('carrera').value;
-    const grado = document.getElementById('grado').value;
-    const solicitud = document.getElementById('solicitud').value;
-    const tramite = document.getElementById('tramite').value;
+    const { email, name, matricula, carrera, grado, tipoSolicitud, tramite, comentarios } = formData;
 
-    // Verificación de campos
-    if (!email || !name || !matricula || !carrera || !grado || !solicitud || !tramite) {
+    // Validaciones básicas
+    if (!email || !name || !matricula || !carrera || !grado || !tipoSolicitud || !tramite) {
       toast.warn('Por favor, completa todos los campos obligatorios.');
       return;
     }
@@ -29,52 +47,86 @@ const FormularioServicios = () => {
       return;
     }
 
-    // Si todo está correcto
-    toast.success('Envío exitoso');
+    // Preparar el campo de comentarios como opcional
+    const comentariosOpt = comentarios.trim() === '' ? [] : [comentarios];
+
+    try {
+      // Llamada al backend para crear el trámite
+      const response = await AII_backend.IniciarTramite(
+        email,
+        name,
+        matricula,
+        carrera,
+        parseInt(grado),
+        tipoSolicitud,
+        tramite,
+        comentariosOpt
+      );
+
+      toast.success(response);
+    } catch (error) {
+      toast.error('Error al iniciar el trámite. Por favor, inténtalo de nuevo.');
+      console.error('Error en la creación del trámite:', error);
+    }
   };
 
   return (
     <div className="servicios-form-container">
       <h2 className="servicios-form-title">Solicitud de Trámites de Servicios Escolares</h2>
-      <form className="servicios-form" noValidate onSubmit={handleSubmit}>
+      <form className="servicios-form" onSubmit={handleSubmit}>
+        
         <div className="servicios-form-group">
           <label htmlFor="email" className="servicios-form-label">Correo electrónico *</label>
           <input
             type="email"
             id="email"
+            name="email"
             className="servicios-form-input"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="Tu dirección de correo electrónico"
             required
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Por favor, introduce un correo electrónico válido."
           />
         </div>
         
         <div className="servicios-form-group">
-          <label htmlFor="name" className="servicios-form-label">NOMBRE *</label>
+          <label htmlFor="name" className="servicios-form-label">Nombre Completo *</label>
           <input
             type="text"
             id="name"
+            name="name"
             className="servicios-form-input"
-            placeholder="EJEMPLO: PEREZ PEREZ JUAN"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder="Ejemplo: Pérez Pérez Juan"
             required
           />
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="matricula" className="servicios-form-label">MATRÍCULA *</label>
+          <label htmlFor="matricula" className="servicios-form-label">Matrícula *</label>
           <input
             type="text"
             id="matricula"
+            name="matricula"
             className="servicios-form-input"
-            placeholder="EJEMPLO: 21010400"
+            value={formData.matricula}
+            onChange={handleInputChange}
+            placeholder="Ejemplo: 21010400"
             required
           />
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="carrera" className="servicios-form-label">CARRERA *</label>
-          <select id="carrera" className="servicios-form-select" required>
+          <label htmlFor="carrera" className="servicios-form-label">Carrera *</label>
+          <select
+            id="carrera"
+            name="carrera"
+            className="servicios-form-select"
+            value={formData.carrera}
+            onChange={handleInputChange}
+            required
+          >
             <option value="" disabled selected>Seleccione su carrera</option>
             <option value="MTR">TSU MECATRONICA ÁREA ROBOTICA (MTR)</option>
             <option value="NANO">TSU EN NANOTECNOLOGIA AREA MATERIALES (NANO)</option>
@@ -90,19 +142,29 @@ const FormularioServicios = () => {
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="grado" className="servicios-form-label">GRADO *</label>
+          <label htmlFor="grado" className="servicios-form-label">Grado *</label>
           <input
-            type="text"
+            type="number"
             id="grado"
+            name="grado"
             className="servicios-form-input"
-            placeholder="Tu respuesta"
+            value={formData.grado}
+            onChange={handleInputChange}
+            placeholder="Ejemplo: 1"
             required
           />
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="solicitud" className="servicios-form-label">TIPO DE SOLICITUD *</label>
-          <select id="solicitud" className="servicios-form-select" required>
+          <label htmlFor="tipoSolicitud" className="servicios-form-label">Tipo de Solicitud *</label>
+          <select
+            id="tipoSolicitud"
+            name="tipoSolicitud"
+            className="servicios-form-select"
+            value={formData.tipoSolicitud}
+            onChange={handleInputChange}
+            required
+          >
             <option value="" disabled selected>Seleccione el tipo de solicitud</option>
             <option value="constancia-simple">CONSTANCIA SIMPLE</option>
             <option value="constancia-promedio">CONSTANCIA CON PROMEDIO GRAL</option>
@@ -115,8 +177,15 @@ const FormularioServicios = () => {
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="tramite" className="servicios-form-label">INDICAR EL TRÁMITE PARA EL QUE NECESITA EL DOCUMENTO *</label>
-          <select id="tramite" className="servicios-form-select" required>
+          <label htmlFor="tramite" className="servicios-form-label">Trámite *</label>
+          <select
+            id="tramite"
+            name="tramite"
+            className="servicios-form-select"
+            value={formData.tramite}
+            onChange={handleInputChange}
+            required
+          >
             <option value="" disabled selected>Seleccione el trámite</option>
             <option value="motivos-personales">MOTIVOS PERSONALES</option>
             <option value="cartilla-militar">CARTILLA MILITAR</option>
@@ -126,12 +195,15 @@ const FormularioServicios = () => {
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="comments" className="servicios-form-label">COMENTARIOS ADICIONALES</label>
+          <label htmlFor="comentarios" className="servicios-form-label">Comentarios Adicionales (Opcional)</label>
           <textarea
-            id="comments"
+            id="comentarios"
+            name="comentarios"
             className="servicios-form-textarea"
-            placeholder="Tu respuesta"
-          ></textarea>
+            value={formData.comentarios}
+            onChange={handleInputChange}
+            placeholder="Ingresa comentarios si los tienes"
+          />
         </div>
 
         <button type="submit" className="servicios-form-button">Enviar Solicitud</button>
@@ -139,6 +211,6 @@ const FormularioServicios = () => {
       <ToastContainer />
     </div>
   );
-}
+};
 
-export default FormularioServicios;
+export default FormularioTramite;
