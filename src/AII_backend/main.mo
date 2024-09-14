@@ -33,6 +33,7 @@ shared ({ caller }) actor class _Plataforma() {
     public type RegistroAdministrativoForm = Types.RegistroAdministrativoForm;
     public type RegistroDocenteForm = Types.RegistroDocenteForm;
     public type MateriaRegistro = Types.MateriaRegistro;
+    public type EstadoTramite = Types.EstadoTramite;
     
 
     stable var actualUid : Nat = 0;
@@ -83,14 +84,6 @@ shared ({ caller }) actor class _Plataforma() {
     public shared ({ caller }) func getMyUser() : async ?Usuario {
         Map.get(usuarios, phash, caller);
 
-    };
-    // Definición del tipo Estado para los trámites
-    public type EstadoTramite = {
-        #Pendiente;
-        #EnProceso;
-        #Completado;   // Si esta variante es necesaria
-        #Rechazado;
-        #Listo;        // Si esta variante es necesaria
     };
 
 

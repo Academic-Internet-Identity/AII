@@ -275,7 +275,6 @@ module {
         #EnProceso;
         #Completado;  // <- Esta variante
         #Rechazado;
-        #Listo;
     };
 
 
