@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useCanister } from '@connect2ic/react';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/formularioServiciosStyles.css';  // Manteniendo tu estilo previo
+import '../styles/formularioServiciosStyles.css';
 
 const FormularioTramite = () => {
   const [AII_backend] = useCanister('AII_backend');
@@ -11,7 +11,6 @@ const FormularioTramite = () => {
   const [formData, setFormData] = useState({
     email: '',
     name: '',
-    matricula: '',
     carrera: '',
     grado: '',
     tipoSolicitud: '',
@@ -32,10 +31,10 @@ const FormularioTramite = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { email, name, matricula, carrera, grado, tipoSolicitud, tramite, comentarios } = formData;
+    const { email, name, carrera, grado, tipoSolicitud, tramite, comentarios } = formData;
 
     // Validaciones básicas
-    if (!email || !name || !matricula || !carrera || !grado || !tipoSolicitud || !tramite) {
+    if (!email || !name || !carrera || !grado || !tipoSolicitud || !tramite) {
       toast.warn('Por favor, completa todos los campos obligatorios.');
       return;
     }
@@ -55,7 +54,6 @@ const FormularioTramite = () => {
       const response = await AII_backend.IniciarTramite(
         email,
         name,
-        matricula,
         carrera,
         parseInt(grado),
         tipoSolicitud,
@@ -104,20 +102,6 @@ const FormularioTramite = () => {
         </div>
 
         <div className="servicios-form-group">
-          <label htmlFor="matricula" className="servicios-form-label">Matrícula *</label>
-          <input
-            type="text"
-            id="matricula"
-            name="matricula"
-            className="servicios-form-input"
-            value={formData.matricula}
-            onChange={handleInputChange}
-            placeholder="Ejemplo: 21010400"
-            required
-          />
-        </div>
-
-        <div className="servicios-form-group">
           <label htmlFor="carrera" className="servicios-form-label">Carrera *</label>
           <select
             id="carrera"
@@ -127,7 +111,7 @@ const FormularioTramite = () => {
             onChange={handleInputChange}
             required
           >
-            <option value="" disabled selected>Seleccione su carrera</option>
+            <option value="" disabled>Seleccione su carrera</option>
             <option value="MTR">TSU MECATRONICA ÁREA ROBOTICA (MTR)</option>
             <option value="NANO">TSU EN NANOTECNOLOGIA AREA MATERIALES (NANO)</option>
             <option value="OCINI">TSU EN OPERACIONES COMERCIALES INTERNACIONALES AREA NEGOCIOS INTERNACIONALES (OCINI)</option>
@@ -165,7 +149,7 @@ const FormularioTramite = () => {
             onChange={handleInputChange}
             required
           >
-            <option value="" disabled selected>Seleccione el tipo de solicitud</option>
+            <option value="" disabled>Seleccione el tipo de solicitud</option>
             <option value="constancia-simple">CONSTANCIA SIMPLE</option>
             <option value="constancia-promedio">CONSTANCIA CON PROMEDIO GRAL</option>
             <option value="constancia-cuatrimestre-anterior">CONSTANCIA CON PROMEDIO DEL CUATRIMESTRE ANTERIOR</option>
@@ -186,7 +170,7 @@ const FormularioTramite = () => {
             onChange={handleInputChange}
             required
           >
-            <option value="" disabled selected>Seleccione el trámite</option>
+            <option value="" disabled>Seleccione el trámite</option>
             <option value="motivos-personales">MOTIVOS PERSONALES</option>
             <option value="cartilla-militar">CARTILLA MILITAR</option>
             <option value="visa-pasaporte">VISA O PASAPORTE</option>

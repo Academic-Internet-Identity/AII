@@ -115,7 +115,7 @@ const VerTramites = () => {
 
   return (
     <div className="ver-tramites-container">
-      <h2 className="table-heading">Trámites Pendientes</h2>
+      <h2 className="table-heading">Trámites</h2>
 
       {/* Filtro por estado */}
       <div className="filter-container">
