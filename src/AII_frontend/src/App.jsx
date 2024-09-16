@@ -37,6 +37,7 @@ import GestionarCalificaciones from './components/GestionarCalificaciones';
 import FormularioServicios from './components/FormularioServicios';
 import VerTramites from './components/VerTramites';
 import VerMisTramites from './components/VerMisTramites';
+import CrudCarreras from './components/CrudCarreras';
 
 const client = createClient({
   canisters: {
@@ -141,6 +142,7 @@ function AppRoutes() {
         <Route path="/formulario-servicios" element={<FormularioServicios />}/>
         <Route path="/ver-tramites" element={<VerTramites />}/>
         <Route path="/mis-tramites" element={<VerMisTramites />}/>
+        <Route path="/gestionar-carreras" element={<CrudCarreras />}/>
       </Routes>
     </>
   );

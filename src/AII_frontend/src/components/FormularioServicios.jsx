@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useCanister } from '@connect2ic/react';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,7 +7,7 @@ import '../styles/formularioServiciosStyles.css';
 const FormularioTramite = () => {
   const [AII_backend] = useCanister('AII_backend');
 
-  // Estado del formulario
+  // Estado para el formulario
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -17,6 +17,27 @@ const FormularioTramite = () => {
     tramite: '',
     comentarios: '',
   });
+
+  // Estado para guardar las carreras
+  const [carreras, setCarreras] = useState([]);
+  const [loadingCarreras, setLoadingCarreras] = useState(true);
+
+  // Obtener las carreras del backend
+  useEffect(() => {
+    const obtenerCarreras = async () => {
+      try {
+        const response = await AII_backend.listarCarreras();
+        setCarreras(response); // Guardar las carreras en el estado
+      } catch (error) {
+        toast.error('Error al cargar las carreras.');
+        console.error('Error al obtener carreras:', error);
+      } finally {
+        setLoadingCarreras(false);
+      }
+    };
+
+    obtenerCarreras();
+  }, [AII_backend]);
 
   // Manejo de cambios en los inputs
   const handleInputChange = (event) => {
@@ -112,16 +133,15 @@ const FormularioTramite = () => {
             required
           >
             <option value="" disabled>Seleccione su carrera</option>
-            <option value="MTR">TSU MECATRONICA ÁREA ROBOTICA (MTR)</option>
-            <option value="NANO">TSU EN NANOTECNOLOGIA AREA MATERIALES (NANO)</option>
-            <option value="OCINI">TSU EN OPERACIONES COMERCIALES INTERNACIONALES AREA NEGOCIOS INTERNACIONALES (OCINI)</option>
-            <option value="TISDM">TSU EN TECNOLOGIAS DE LA INFORMACION AREA DESARROLLO DE SOFTWARE MULTIPLATAFORMA (TISDM)</option>
-            <option value="TIIA">TSU EN TECNOLOGIAS DE LA INFORMACION AREA INTELIGENCIA ARTIFICIAL (TIIA)</option>
-            <option value="PISGC">TSU EN PROCESOS INDUSTRIALES AREA SISTEMA DE GESTION DE LA CALIDAD (PISGC)</option>
-            <option value="IMT">INGENIERÍA EN MECATRÓNICA (IMT)</option>
-            <option value="INANO">INGENIERÍA EN NANOTECNOLOGÍA (INANO)</option>
-            <option value="IDGS">INGENIERÍA EN DESARROLLO Y GESTIÓN DE SOFTWARE (IDGS)</option>
-            <option value="ILI">INGENIERÍA EN LOGÍSTICA INTERNACIONAL (ILI)</option>
+            {loadingCarreras ? (
+              <option>Cargando carreras...</option>
+            ) : (
+              carreras.map(([codigo, nombre]) => (
+                <option key={codigo} value={codigo}>
+                  {nombre}
+                </option>
+              ))
+            )}
           </select>
         </div>
 
