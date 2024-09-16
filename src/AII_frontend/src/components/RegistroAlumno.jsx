@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import '../styles/registroAlumnoStyles.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -73,6 +73,21 @@ function RegistroAlumno() {
     hablaLenguaIndigena: false, viveComunidadIndigena: false, folioCeneval: '', emailInstitucional: '',
     matricula: '', carrera: '', semestre: "", nivelDeIngles: '', certificacionDeIngles: false
   });
+
+  const [carreras, setCarreras] = useState([]);
+
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await AII_backend.listarCarreras();
+        setCarreras(response);
+      } catch (error) {
+        toast.error('Error al obtener las carreras');
+        console.error('Error al cargar carreras:', error);
+      }
+    };
+    fetchCarreras();
+  }, [AII_backend]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -285,14 +300,11 @@ function RegistroAlumno() {
           <label htmlFor="carrera">Carrera:</label>
           <select id="carrera" name="carrera" value={form.carrera} onChange={handleChange} required>
             <option value="">Seleccione Carrera</option>
-            <option value="TSU TI Inteligencia Artificial">TSU TI Inteligencia Artificial</option>
-            <option value="TSU TI Desarrollo de Software">TSU TI Desarrollo de Software</option>
-            <option value="TSU Operaciones Comerciales Área Negocios Internacionales">TSU Operaciones Comerciales Área Negocios Internacionales</option>
-            <option value="TSU Procesos Industriales Área Gestión de Calidad">TSU Procesos Industriales Área Gestión de Calidad</option>
-            <option value="TSU Mecatrónica Área Robótica">TSU Mecatrónica Área Robótica</option>
-            <option value="TSU Nanotecnología Área Materiales">TSU Nanotecnología Área Materiales</option>
+            {carreras.map(([codigo, nombre]) => (
+              <option key={codigo} value={nombre}>{nombre}</option>
+            ))}
           </select>
-
+          
           <label htmlFor="semestre">Semestre:</label>
           <input type="number" id="semestre" name="semestre" value={form.semestre} onChange={handleChange} placeholder="Ej. 6" required min="1" />
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,9 +8,24 @@ const AgregarEditarMateria = () => {
   const [nombre, setNombre] = useState('');
   const [codigo, setCodigo] = useState('');
   const [creditos, setCreditos] = useState('');
-  const [grado, setGrado] = useState('');  // Estado para el grado
+  const [grado, setGrado] = useState('');
   const [carreras, setCarreras] = useState(['']);
+  const [todasCarreras, setTodasCarreras] = useState([]); // Estado para todas las carreras del backend
   const [AII_backend] = useCanister('AII_backend');
+
+  // Cargar las carreras desde el backend
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await AII_backend.listarCarreras();
+        setTodasCarreras(response);
+      } catch (error) {
+        toast.error('Error al obtener las carreras');
+        console.error('Error al cargar carreras:', error);
+      }
+    };
+    fetchCarreras();
+  }, [AII_backend]);
 
   const handleCarreraChange = (index, value) => {
     const updatedCarreras = [...carreras];
@@ -25,6 +40,11 @@ const AgregarEditarMateria = () => {
   const removeCarreraField = (index) => {
     const updatedCarreras = carreras.filter((_, i) => i !== index);
     setCarreras(updatedCarreras);
+  };
+
+  // Filtrar las carreras disponibles para evitar que se muestren las seleccionadas
+  const obtenerCarrerasDisponibles = (index) => {
+    return todasCarreras.filter(([codigo]) => !carreras.includes(codigo) || carreras[index] === codigo);
   };
 
   const handleSubmit = async (e) => {
@@ -95,14 +115,19 @@ const AgregarEditarMateria = () => {
           <h4>Carreras Relacionadas</h4>
           {carreras.map((carrera, index) => (
             <div key={index} className="carrera-field">
-              <input
-                type="text"
+              <select
                 value={carrera}
                 onChange={(e) => handleCarreraChange(index, e.target.value)}
-                placeholder={`Carrera #${index + 1} (Ej. Ingeniería en Sistemas)`}
                 required
-                className="materia-form-input"
-              />
+                className="materia-form-select"
+              >
+                <option value="">Seleccione Carrera</option>
+                {obtenerCarrerasDisponibles(index).map(([codigo, nombre]) => (
+                  <option key={codigo} value={codigo}>
+                    {nombre}
+                  </option>
+                ))}
+              </select>
               {index > 0 && (
                 <button
                   type="button"

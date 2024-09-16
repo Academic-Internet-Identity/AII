@@ -68,7 +68,7 @@ body, html {
 /* Estilo del campo de carrera */
 .carrera-field {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -89,12 +89,12 @@ body, html {
 
 /* Botón para eliminar una carrera */
 .remove-carrera-button {
-  background-color: #ff4d4d;
-  color: #fff;
+  background-color: #e74c3c;
+  color: white;
   border: none;
   padding: 10px;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .remove-carrera-button:hover {

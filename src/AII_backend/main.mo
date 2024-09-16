@@ -170,11 +170,26 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Text, Tramite>(tramites));
     };
 
-    // Ver los trámites de un alumno filtrando por principal (caller)
+    // Ver los trámites de un alumno (filtrando por matrícula)
     public shared query ({ caller }) func VerMisTramites() : async [Tramite] {
-        Array.filter<Tramite>(Iter.toArray(Map.vals<Text, Tramite>(tramites)), func (t: Tramite) : Bool {
-            t.matricula == Principal.toText(caller)  // Comparamos con el caller
-        });
+        // Recuperar la información del alumno basado en el principal (caller)
+        let alumnoOpt = Map.get<Principal, Alumno>(alumnos, phash, caller);
+
+        // Verificar que el alumno esté registrado
+        switch alumnoOpt {
+            case null {
+                // Si el alumno no está registrado, devolver un arreglo vacío
+                return [];
+            };
+            case (?alumno) {
+                // Filtrar los trámites por la matrícula del alumno registrado
+                let matricula = alumno.matricula;
+
+                return Array.filter<Tramite>(Iter.toArray(Map.vals<Text, Tramite>(tramites)), func (t: Tramite) : Bool {
+                    t.matricula == matricula;
+                });
+            };
+        };
     };
 
 
