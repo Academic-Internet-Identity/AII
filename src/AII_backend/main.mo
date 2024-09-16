@@ -2,7 +2,7 @@ import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
 import Map "mo:map/Map";
-import { thash; phash } "mo:map/Map";
+//import { thash; phash } "mo:map/Map";
 import Text "mo:base/Text";
 import Set "mo:map/Set";
 import Debug "mo:base/Debug";
@@ -11,6 +11,11 @@ import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
 //import Time "mo:base/Time";
+import Bucket "bucket";
+import { thash; nhash; phash } "mo:map/Map";
+//import Principal "mo:base/Principal";
+//import Types "types";
+import Prim "mo:⛔";
 
 
 shared ({ caller }) actor class _Plataforma() {
@@ -81,9 +86,40 @@ shared ({ caller }) actor class _Plataforma() {
     stable var tramites = Map.new<Text, Tramite>(); // Mapa de trámites por ID
 
 
+    type User = Types.User;
+    type Bucket = Bucket.Bucket;
+    type StoreRequestResponse = Types.StoreRequestResponse;
+    type ReadFileResponse = Types.ReadFileResponse;
+    type StorageLocation = Types.StorageLocation;
+    type File = Types.File;
+    type FileId = Types.FileId;
+    type Dir = Types.Dir;
+    type Result<O,E> = {#Ok: O; #Err: E};
+
+    stable let buckets = Map.new<Principal, Bucket>();
+    stable let cyclesLedger = Map.new<Principal, Nat>();
+    stable let users = Map.new<Principal, User>();
+    stable let indexFiles = Map.new<FileId, StorageLocation>();
+
+    stable var currentFileId = 0;
+
+
+
     public shared ({ caller }) func getMyUser() : async ?Usuario {
         Map.get(usuarios, phash, caller);
 
+    };
+
+    func getFileId(): FileId{
+        currentFileId += 1;
+        currentFileId - 1;
+    };
+
+    func isUser(p : Principal) : Bool {
+        switch (Map.get<Principal, User>(users, phash, p)) {
+            case null { false };
+            case (_) { true };
+        };
     };
 
 
@@ -681,6 +717,102 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 }; */
 
 
+    public shared ({ caller }) func signUp(name : Text) : () {
+        assert not Principal.isAnonymous(caller);
+        assert not isUser(caller);
+        let user = Map.get<Principal, User>(users, phash, caller);
+        switch user {
+            case null {   
+                let newUser = {name};
+                ignore Map.put<Principal, User>(users, phash, caller, newUser); // Registro del usuario
+                ignore Map.put<Principal, Nat>(cyclesLedger, phash, caller, 5_000_000_000_000); // Asignacion de ciclos de regalo
+                ();
+            };
+            case _ { () };
+        };
+    };
+
+    func newBucket(): async {canisterId: Principal; bucket: Bucket}{
+        Prim.cyclesAdd<system>(200_000_000_000); // Cantidad de ciclos para desplegar el Bucket y que tenga una vida prolongada
+        let newBucket = await Bucket.Bucket(50_000_000); // Bytes capacity (Hasta 400GB (ver documentación"))
+        let canisterId = Principal.fromActor(newBucket);
+        ignore Map.put<Principal, Bucket>(buckets, phash, canisterId, newBucket);
+        {canisterId; bucket = newBucket}
+    };
+
+    ///////////////////////// Upload File /////////////////////
+
+    public shared ({ caller }) func getStorageFor(fileName : Text, fileSize : Nat) : async StoreRequestResponse {
+        assert(isUser(caller));
+
+        var bestCandidate : ?{entry: (Principal, Bucket); size: Nat} = null;
+        for ((principal, bucket) in Map.entries(buckets)) {
+            let bucketSize = await bucket.getMemoryAllowed();
+            if (bucketSize >= fileSize) {
+                switch bestCandidate {
+                    case null {
+                        bestCandidate := ?{entry = (principal, bucket); size = bucketSize}
+                    };
+                    case (?candidate) {
+                        bestCandidate := if(candidate.size < bucketSize) {
+                            bestCandidate;
+                        } else {
+                            ?{entry = (principal, bucket); size = bucketSize}
+                        }
+                    }
+                };     
+            };
+        };
+        let storage = switch bestCandidate {
+            case null { await newBucket() };
+            case (?best) { {canisterId = best.entry.0; bucket = best.entry.1} };
+        };
+        let uploadParameters = await storage.bucket.uploadRequest(caller, fileName, fileSize);
+        {canisterId = storage.canisterId; uploadParameters};
+    };
+
+    public shared ({caller}) func commitStorage(internalBucketId : Nat, owner: Principal): async {#Ok: Nat; #Err: Text}{
+        if(not isUser(owner)){ return #Err("Main err: Is not user") };  // Confirmamos que quien quiere subir el archivo es usuario
+        assert(Map.has<Principal, Bucket>(buckets, phash, caller)); //Confirmamos que se esta llamando desde un bucket
+        let storageLocation: StorageLocation = {canisterId = caller; fileId = internalBucketId; owner};
+        let id = getFileId();
+        ignore Map.put<Nat, StorageLocation>(indexFiles, nhash, id, storageLocation);
+        return #Ok(id)
+    };
+
+    //////////////////////// Read or Download file /////////////
+
+    /// Esta funcion solo inicia el proceso de lectura del archivo y, mediante los datos obtenidos en la repuesta,
+    /// se accedera desde el front a la descarga directa de los fragmentos del archivo alojados en el bucket
+
+    public shared ({ caller }) func readRequest(fileId: Nat): async Result<ReadFileResponse, Text> {
+        assert(isUser(caller));
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location{
+            case null {#Err("FileId not found in main canister")};
+            case (?location){
+                let bucket = Map.get<Principal, Bucket>(buckets, phash, location.canisterId);
+                switch bucket {
+                    case null { #Err("Unexpected error. Error code:") };
+                    case(?bucket) {
+                        let readResponse = await bucket.readRequestFoUser(location.fileId, caller);
+                        switch readResponse {
+                            case(#Ok(readResponse)) {#Ok({readResponse with canisterId = location.canisterId}) };
+                            case(#Err(e)) {#Err(e)};
+                        };
+                    };
+                }
+            }   
+             
+        }
+    };
+
+    ////////////////////////////////////// Funciones para gestion de directorio personal de archivos //////////////////////////
+    
+    // public shared ({caller}) func cd(name: Text): async ? {
+        
+
+    // }
     
 
 

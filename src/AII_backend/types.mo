@@ -1,4 +1,6 @@
 import Nat "mo:base/Nat";
+import Map "mo:map/Map";
+import Set "mo:map/Set";
 module {
     public type Uid = Text; // Usuario id
     public type Aid = Text; // Alumno id
@@ -290,6 +292,73 @@ module {
         estado: EstadoTramite;   // Estado del trámite
         comentarios: ?Text;      // Comentarios adicionales (opcional)
     };
+
+    public type BucketManager = actor {
+        stop_canister : shared { canister_id : Principal } -> async ();
+        delete_canister : shared { canister_id : Principal } -> async ();
+    };
+
+    public type FileId = Nat;
+
+    public type Dir = Map.Map<Text,{subDirs: Set.Set<Dir>; files: Set.Set<File>}>;
+    // public type Dir = {name: Text; subDirs: [Dir]; files: [File]};
+
+    public type User = {
+        name: Text;
+        // storage: Dir;
+    };
+
+    public type AssetMetadata = {
+        fileName : Text;
+        total_length : Nat;
+    };
+    public type TempFile = {
+        owner: Principal;
+        fileName : Text;
+        modified : Int;
+        content_chunks : [var Blob];
+        chunks_qty: Nat;
+        total_length : Nat;
+        certified : Bool;
+    }; 
+    public type File = {
+        owner: Principal;
+        authorizedReaders: [Principal];
+        fileName : Text;
+        modified : Int;
+        content_chunks : [Blob];
+        chunks_qty: Nat;
+        total_length : Nat;
+        certified : Bool;
+    };
+    public type StorageLocation = {
+        canisterId: Principal; 
+        fileId: Nat; 
+        owner: Principal
+    };
+    public type StoreRequestResponse = {
+        canisterId: Principal;
+        uploadParameters: UploadResponse;
+    };
+    public type UploadResponse = {
+        id: FileID;
+        chunksQty: Nat;
+        chunkSize: Nat;
+    };
+
+    public type ReadResponse = {
+        id: Nat;
+        file: File;
+    };
+
+    public type ReadFileResponse = {
+        canisterId: Principal;
+        id: Nat;
+        file: File;
+    };
+
+    public type Chunk = Blob;
+    public type FileID = Nat;
 
 
 };
