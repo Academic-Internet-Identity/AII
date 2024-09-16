@@ -184,34 +184,46 @@ shared ({ caller }) actor class _Plataforma() {
 
 
 
+    // Iniciar un nuevo trámite por parte de un alumno
     public shared ({ caller }) func IniciarTramite(
-        correoElectronico: Text,
-        nombre: Text,
-        carrera: Text,
-        grado: Nat,
         tipoSolicitud: Text,
         tramite: Text,
         comentarios: ?Text  // Este campo es opcional
     ) : async Text {
-        let idTramite = generarTramiteId();
-        let nuevoTramite : Tramite = {
-            id = idTramite;
-            correoElectronico = correoElectronico;
-            nombre = nombre;
-            matricula = Principal.toText(caller);  // Usamos el caller como "matrícula"
-            carrera = carrera;
-            grado = grado;
-            tipoSolicitud = tipoSolicitud;
-            tramite = tramite;
-            estado = #Pendiente;  // El trámite se crea con estado "Pendiente"
-            comentarios = comentarios;
+        // Recuperar la información del alumno basado en el principal (caller)
+        let alumnoOpt = Map.get<Principal, Alumno>(alumnos, phash, caller);
+
+        // Verificar que el alumno esté registrado
+        switch alumnoOpt {
+            case null {
+                return "Error: El alumno no está registrado en el sistema.";
+            };
+            case (?alumno) {
+                // Generar un nuevo ID de trámite
+                let idTramite = generarTramiteId();
+
+                // Crear un nuevo trámite usando los datos del alumno recuperados
+                let nuevoTramite : Tramite = {
+                    id = idTramite;
+                    correoElectronico = alumno.emailInstitucional;  // Usar el email institucional del alumno
+                    nombre = alumno.nombre # " " # alumno.apellidoPaterno # " " # alumno.apellidoMaterno;
+                    matricula = alumno.matricula;
+                    carrera = alumno.carrera;
+                    grado = alumno.semestre;
+                    tipoSolicitud = tipoSolicitud;
+                    tramite = tramite;
+                    estado = #Pendiente;  // El trámite se crea con estado "Pendiente"
+                    comentarios = comentarios;
+                };
+
+                // Guardar el nuevo trámite en el mapa
+                ignore Map.put<Text, Tramite>(tramites, thash, idTramite, nuevoTramite);
+
+                return "Trámite iniciado exitosamente con ID: " # idTramite;
+            };
         };
-
-        // Guardar el nuevo trámite en el mapa
-        ignore Map.put<Text, Tramite>(tramites, thash, idTramite, nuevoTramite);
-
-        return "Trámite iniciado exitosamente con ID: " # idTramite;
     };
+
 
 
     // Modificar el estado de un trámite existente
