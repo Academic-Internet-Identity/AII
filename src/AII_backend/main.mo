@@ -134,10 +134,10 @@ shared ({ caller }) actor class _Plataforma() {
         Iter.toArray(Map.vals<Text, Tramite>(tramites));
     };
 
-    // Ver los trámites de un alumno (filtrando por matrícula)
-    public shared query ({ caller }) func VerMisTramites(matricula: Text) : async [Tramite] {
+    // Ver los trámites de un alumno filtrando por principal (caller)
+    public shared query ({ caller }) func VerMisTramites() : async [Tramite] {
         Array.filter<Tramite>(Iter.toArray(Map.vals<Text, Tramite>(tramites)), func (t: Tramite) : Bool {
-            t.matricula == matricula
+            t.matricula == Principal.toText(caller)  // Comparamos con el caller
         });
     };
 
@@ -147,11 +147,10 @@ shared ({ caller }) actor class _Plataforma() {
 
 
 
-    // Iniciar un nuevo trámite por parte de un alumno
+
     public shared ({ caller }) func IniciarTramite(
         correoElectronico: Text,
         nombre: Text,
-        matricula: Text,
         carrera: Text,
         grado: Nat,
         tipoSolicitud: Text,
@@ -163,7 +162,7 @@ shared ({ caller }) actor class _Plataforma() {
             id = idTramite;
             correoElectronico = correoElectronico;
             nombre = nombre;
-            matricula = matricula;
+            matricula = Principal.toText(caller);  // Usamos el caller como "matrícula"
             carrera = carrera;
             grado = grado;
             tipoSolicitud = tipoSolicitud;
@@ -177,6 +176,7 @@ shared ({ caller }) actor class _Plataforma() {
 
         return "Trámite iniciado exitosamente con ID: " # idTramite;
     };
+
 
     // Modificar el estado de un trámite existente
     public shared ({ caller }) func ModificarEstadoTramite(idTramite: Text, nuevoEstado: EstadoTramite) : async Text {
