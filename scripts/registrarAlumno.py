@@ -226,8 +226,8 @@ register_button = driver.find_element(By.XPATH, "//button[text()='Registrar']")
 driver.execute_script("arguments[0].scrollIntoView(true);", register_button)
 register_button.click()
 
-# Esperar un poco antes de cerrar el navegador
-time.sleep(2)
+# # Esperar un poco antes de cerrar el navegador
+# time.sleep(2)
 
-# Cerrar el navegador
-driver.quit()
+# # Cerrar el navegador
+# driver.quit()

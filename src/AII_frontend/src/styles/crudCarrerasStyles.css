@@ -1,0 +1,229 @@
+.crud-carreras-container {
+    padding: 2rem;
+    background-color: #00385d;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .crud-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #00385d;
+    margin-bottom: 30px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .crud-form label {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .crud-form input[type="text"] {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .crud-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  .crud-button {
+    background-color: #006bb3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .crud-button:hover {
+    background-color: #005b99;
+  }
+  
+  .cancelar-button {
+    background-color: #b30000;
+  }
+  
+  .table-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .carreras-table {
+    width: 100%;
+    max-width: 900px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #00385d;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .carreras-table th,
+  .carreras-table td {
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 1px solid #2d2d2d;
+  }
+  
+  .carreras-table th {
+    background-color: #005b99;
+    color: white;
+  }
+  
+  .carreras-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .carreras-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+  }
+  
+  .carreras-table tr:hover {
+    background-color: #1A91DA;
+  }
+  
+  .edit-button {
+    background-color: #28a745;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
+  .edit-button:hover {
+    background-color: #218838;
+  }
+  
+  /* Ventanas modales para confirmar acciones */
+  .confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .confirm-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: #00385d;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .confirm-button,
+  .cancel-button {
+    background-color: #006bb3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .confirm-button:hover,
+  .cancel-button:hover {
+    background-color: #005b99;
+  }
+  
+  .cancel-button {
+    background-color: #b30000;
+  }
+  
+  .cancel-button:hover {
+    background-color: #990000;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .crud-form {
+      padding: 15px;
+      font-size: 0.95rem;
+    }
+  
+    .form-group label {
+      font-size: 0.95rem;
+    }
+  
+    .crud-form input[type="text"] {
+      padding: 10px 16px;
+      font-size: 0.95rem;
+    }
+  
+    .crud-button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+  
+    .carreras-table th,
+    .carreras-table td {
+      padding: 12px 16px;
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .crud-form {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+  
+    .form-group label {
+      font-size: 0.9rem;
+    }
+  
+    .crud-form input[type="text"] {
+      padding: 8px 14px;
+      font-size: 0.9rem;
+    }
+  
+    .crud-button {
+      padding: 6px 14px;
+      font-size: 0.85rem;
+    }
+  
+    .carreras-table th,
+    .carreras-table td {
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+  }

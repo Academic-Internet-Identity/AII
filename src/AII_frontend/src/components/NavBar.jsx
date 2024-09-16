@@ -86,6 +86,7 @@ function NavBar() {
               <>
                 <NavDropdown.Item as={Link} to="/mi-horario">Mi Horario</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/formulario-servicios">Iniciar Trámite</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/mis-tramites">Mis Trámites</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
               </>
             )}
@@ -119,6 +120,7 @@ function NavBar() {
                 </NavDropdown>
                 <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/gestionar-grupos">Gestionar Grupos</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/gestionar-carreras">Gestionar Carreras</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/ver-tramites">Ver Trámites</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
