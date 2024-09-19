@@ -770,7 +770,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     ///////////////////////// Upload File /////////////////////
 
     public shared ({ caller }) func getStorageFor(fileName : Text, fileSize : Nat) : async StoreRequestResponse {
-        assert(isUser(caller));
+        //assert(isUser(caller));
 
         var bestCandidate : ?{entry: (Principal, Bucket); size: Nat} = null;
         for ((principal, bucket) in Map.entries(buckets)) {
@@ -799,7 +799,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     };
 
     public shared ({caller}) func commitStorage(internalBucketId : Nat, owner: Principal): async {#Ok: Nat; #Err: Text}{
-        if(not isUser(owner)){ return #Err("Main err: Is not user") };  // Confirmamos que quien quiere subir el archivo es usuario
+        //if(not isUser(owner)){ return #Err("Main err: Is not user") };  // Confirmamos que quien quiere subir el archivo es usuario
         assert(Map.has<Principal, Bucket>(buckets, phash, caller)); //Confirmamos que se esta llamando desde un bucket
         let storageLocation: StorageLocation = {canisterId = caller; fileId = internalBucketId; owner};
         let id = getFileId();
@@ -813,7 +813,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     /// se accedera desde el front a la descarga directa de los fragmentos del archivo alojados en el bucket
 
     public shared ({ caller }) func readRequest(fileId: Nat): async Result<ReadFileResponse, Text> {
-        assert(isUser(caller));
+        
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location{
             case null {#Err("FileId not found in main canister")};
