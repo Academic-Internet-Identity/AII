@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useCanister } from '@connect2ic/react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Principal} from "@dfinity/principal"
+import {Actor, HttpAgent} from "@dfinity/agent"
+import { idlFactory as bucket_idlFactory } from '../../../declarations/bucket/bucket.did.js';
 
 const SubirArchivo = () => {
   const [archivo, setArchivo] = useState(null);
@@ -10,6 +13,31 @@ const SubirArchivo = () => {
 
   // Manejador de cambio de archivo
   const manejarCambioArchivo = (evento) => setArchivo(evento.target.files[0]);
+
+  //Crear actor
+  const crearActorParaBucket = (canisterId) => {
+      // Opción 1: Para uso en producción
+      // const agent = new HttpAgent({
+      //   host: 'https://ic0.app',  // URL para la red principal (producción)
+      // });
+
+      // Opción 2: Para uso en local
+       const agent = new HttpAgent({
+         host: 'http://localhost:8000',  // URL para entorno local
+       });
+  
+      // Si estás usando local, descomentar la siguiente línea para deshabilitar la validación de root key
+       agent.fetchRootKey().catch((err) => {
+         console.warn('Error fetching root key for local dev', err);
+       });
+
+       const actor = Actor.createActor(bucket_idlFactory, {
+        agent,
+        canisterId: canisterId
+       });
+
+       return actor;
+      }
 
   // Función para dividir el archivo en partes (chunks)
   const dividirArchivoEnPartes = (archivo, tamanoParte = 1_000_000) => {
@@ -34,6 +62,10 @@ const SubirArchivo = () => {
       const respuesta = await AII_backend.getStorageFor(nombreArchivo, tamanoArchivo);
       console.log('Respuesta del backend en getStorageFor:', respuesta);
       const { canisterId, uploadParameters } = respuesta;
+      const principal = Principal.fromUint8Array(canisterId._arr);
+      console.log('Principal del canister: ', principal.toText());
+
+      const bucketActor = crearActorParaBucket(canisterId);
 
       toast.info('Iniciando subida del archivo...');
 
@@ -44,7 +76,7 @@ const SubirArchivo = () => {
       for (let i = 0; i < partes.length; i++) {
         const parte = new Uint8Array(await partes[i].arrayBuffer());
         console.log(`Subiendo parte ${i + 1} de ${partes.length}...`);
-        await AII_backend.addChunck(uploadParameters.id, parte, i);
+        await bucketActor.addChunck(uploadParameters.id, parte, i);
 
         const progreso = Math.round(((i + 1) / partes.length) * 100);
         console.log(`Progreso de subida: ${progreso}%`);
@@ -52,7 +84,7 @@ const SubirArchivo = () => {
       }
 
       // Confirmar la subida del archivo
-      const respuestaConfirmacion = await AII_backend.commitStorage(uploadParameters.id, canisterId);
+      const respuestaConfirmacion = await bucketActor.commitStorage(uploadParameters.id, canisterId);
       console.log('Respuesta del backend en commitStorage:', respuestaConfirmacion);
 
       if (respuestaConfirmacion?.Ok) {

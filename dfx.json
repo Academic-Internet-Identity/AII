@@ -4,6 +4,10 @@
       "main": "src/AII_backend/main.mo",
       "type": "motoko"
     },
+    "bucket":{
+      "main": "src/AII_backend/bucket.mo",
+      "type": "motoko"
+    },
     "AII_frontend": {
       "dependencies": [
         "AII_backend"
