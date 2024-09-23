@@ -1,0 +1,51 @@
+/* Estilos para centrar y ajustar el tamaño del componente de subir archivo */
+
+/* Contenedor principal del componente */
+.subir-archivo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #00385d;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 50%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Título del componente */
+  .subir-archivo-heading {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Botón y campo de archivo */
+  .subir-archivo-input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #00385d;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .subir-archivo-button {
+    background-color: #006bb3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .subir-archivo-button:hover {
+    background-color: #005b99;
+  }  

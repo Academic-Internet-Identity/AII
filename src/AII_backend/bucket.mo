@@ -95,7 +95,7 @@ shared ({caller}) actor class Bucket(maxSize: Nat) = {
         {id; chunksQty; chunkSize};
     };
 
-    public shared ({caller}) func addChunck(tfId :Nat, chunk : Blob, index : Nat) : async Result<(), Text> {
+    public shared ({caller}) func addChunk(tfId :Nat, chunk : Blob, index : Nat) : async Result<(), Text> {
         
         // Debug.print("Guardando " # Nat.toText(chunk.size()) # " Bytes from Chunk Nro " # Nat.toText(index));
         let file = Map.get<Nat, TempFile>(tempFiles, nhash, tfId);
