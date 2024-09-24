@@ -1,53 +1,89 @@
-/* Estilos para centrar y ajustar el tamaño del componente de subir archivo */
-
 /* Contenedor principal del componente */
 .subir-archivo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #00385d;
-    color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    width: 50%;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  /* Título del componente */
-  .subir-archivo-heading {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-  }
-  
-  /* Botón y campo de archivo */
-  .subir-archivo-input {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #00385d;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .subir-archivo-button {
-    background-color: #006bb3;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .subir-archivo-button:hover {
-    background-color: #005b99;
-  }  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Cambiamos el centrado de los elementos para alinearlos a la izquierda */
+  justify-content: center;
+  margin-top: 40px;
+  padding: 30px;
+  background-color: #002a40; /* Hacemos el fondo un poco más oscuro para contraste */
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6); /* Aumentamos la sombra */
+  width: 90%;
+  max-width: 600px; /* Hacemos el contenedor un poco más amplio */
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  
+/* Título del componente */
+.subir-archivo-heading {
+  font-size: 1.8rem; /* Aumentamos el tamaño del título */
+  margin-bottom: 25px;
+  text-align: left; /* Alineamos el título a la izquierda */
+  color: #ffffff;
+}
+
+/* Campos de entrada (ID y Principal) */
+.subir-archivo-input {
+  margin-bottom: 20px; /* Aumentamos el espaciado entre los campos */
+  padding: 12px; /* Hacemos las cajas más espaciosas */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f0f0f0; /* Color de fondo más claro para mejor visibilidad */
+  color: #00385d;
+  width: 100%;
+  max-width: 100%;
+  text-align: left; /* Alineamos el texto a la izquierda */
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.subir-archivo-input::placeholder {
+  color: #888888; /* Hacemos el placeholder de un gris más suave */
+}
+
+/* Botones */
+.subir-archivo-button {
+  background-color: #007acc;
+  color: #fff;
+  border: none;
+  padding: 10px 18px; /* Reducimos ligeramente el tamaño de los botones */
+  margin-bottom: 10px; /* Añadimos espaciado entre los botones */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  width: 100%; /* Los botones ocuparán el 100% del ancho del contenedor */
+}
+
+.subir-archivo-button:hover {
+  background-color: #005f99; /* Un color más oscuro al pasar el cursor */
+}
+
+/* Mensaje de progreso */
+p {
+  font-size: 1rem;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+/* Espaciado adicional entre secciones */
+h3 {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  color: #ffffff;
+  text-align: left; /* Alineamos los subtítulos a la izquierda */
+}
+
+/* Media queries para pantallas más pequeñas */
+@media screen and (max-width: 768px) {
+  .subir-archivo-container {
+    width: 95%; /* Ajustamos el ancho del contenedor en pantallas más pequeñas */
+  }
+
+  .subir-archivo-button {
+    padding: 10px; /* Reducimos el tamaño del padding en botones */
+  }
+}
