@@ -12,10 +12,9 @@ const SubirArchivo = () => {
   const [archivo, setArchivo] = useState(null);
   const [progresoSubida, setProgresoSubida] = useState(0);
   const [AII_backend] = useCanister('AII_backend');
-  const [fileId, setFileId] = useState(''); // ID del archivo ingresado por el usuario para descargar
+  const [fileId, setFileId] = useState(''); // ID del archivo ingresado por el usuario para descargar/eliminar
 
   const manejarCambioArchivo = (evento) => setArchivo(evento.target.files[0]);
-
   const manejarCambioFileId = (evento) => setFileId(evento.target.value);
 
   const crearActorParaBucket = async (canisterId) => {
@@ -45,7 +44,6 @@ const SubirArchivo = () => {
       setProgresoSubida(0);
 
       const respuesta = await AII_backend.getStorageFor(nombreArchivo, tamanoArchivo);
-      console.log('Respuesta de getStorageFor:', respuesta);
       const { canisterId, uploadParameters } = respuesta;
       const bucketActor = await crearActorParaBucket(canisterId);
 
@@ -55,21 +53,16 @@ const SubirArchivo = () => {
       for (let i = 0; i < partes.length; i++) {
         const parte = new Uint8Array(await partes[i].arrayBuffer());
         const resultadoChunk = await bucketActor.addChunk(uploadParameters.id, parte, i);
-        console.log(`Resultado de añadir chunk ${i}:`, resultadoChunk);
         setProgresoSubida(Math.round(((i + 1) / partes.length) * 100));
       }
 
       const respuestaConfirmacion = await bucketActor.commitLoad(uploadParameters.id);
-      console.log('Respuesta de commitLoad:', respuestaConfirmacion);
       if (respuestaConfirmacion?.Ok) {
         toast.success('Archivo subido exitosamente.');
-        console.log(`ID del archivo subido: ${respuestaConfirmacion.Ok}`);
       } else {
-        console.error('Error al confirmar la subida:', respuestaConfirmacion);
         toast.error('Error al confirmar la subida.');
       }
     } catch (error) {
-      console.error('Error durante la subida del archivo:', error);
       toast.error('Error durante la subida del archivo.');
     }
   };
@@ -79,82 +72,67 @@ const SubirArchivo = () => {
     
     try {
       const archivoId = parseInt(fileId, 10);
-      if (isNaN(archivoId)) {
-        return toast.error('ID del archivo no es un número válido.');
-      }
-  
-      // Llamar a la función readRequest para obtener detalles del archivo
+      if (isNaN(archivoId)) return toast.error('ID del archivo no es un número válido.');
+
       const resultado = await AII_backend.readRequest(archivoId);
-      console.log('Resultado de readRequest:', resultado); // Log de la respuesta de la solicitud
-  
       if (resultado.Ok) {
-        // Aquí incluimos explícitamente el ID en los detalles del archivo
         const { canisterId, file } = resultado.Ok;
-        const fileWithId = { ...file, id: resultado.Ok.id }; // Añadir el ID al objeto del archivo
-        console.log('Detalles del archivo:', fileWithId);
-  
-        if (!fileWithId || !fileWithId.chunks_qty || !fileWithId.id) {
-          throw new Error('Datos del archivo incompletos o inválidos.');
-        }
-  
+        const fileWithId = { ...file, id: resultado.Ok.id };
+
         const bucketActor = await crearActorParaBucket(canisterId);
-  
-        // Verificamos que chunks_qty sea un número y no un BigInt
-        const chunksQty = Number(fileWithId.chunks_qty); // Convertimos chunks_qty a un número regular
+
+        const chunksQty = Number(fileWithId.chunks_qty);
         const fileChunks = [];
-  
-        // Iteramos sobre los fragmentos del archivo (chunks) para descargarlos
+
         for (let i = 0; i < chunksQty; i++) {
-          console.log(`Descargando fragmento ${i + 1} de ${chunksQty}...`);
-  
-          // Obtener cada chunk del archivo
-          const chunkResponse = await bucketActor.getChunck(Number(fileWithId.id), i); // Usamos el ID ahora incluido en fileWithId
-          console.log(`Resultado de getChunck(${i}):`, chunkResponse);
-  
-          if (chunkResponse.Ok) {
-            fileChunks.push(chunkResponse.Ok);
-          } else {
-            console.error(`Error al obtener el chunk ${i}:`, chunkResponse.Err);
-            toast.error(`Error al obtener el fragmento ${i}.`);
-            return;
-          }
+          const chunkResponse = await bucketActor.getChunck(Number(fileWithId.id), i);
+          if (chunkResponse.Ok) fileChunks.push(chunkResponse.Ok);
+          else return toast.error(`Error al obtener el fragmento ${i}.`);
         }
-  
-        // Concatenar los fragmentos descargados en un Blob
+
         const archivoBlob = new Blob(fileChunks, { type: 'application/octet-stream' });
         const url = URL.createObjectURL(archivoBlob);
-  
-        // Crear un enlace para descargar el archivo
+
         const enlaceDescarga = document.createElement('a');
         enlaceDescarga.href = url;
-        enlaceDescarga.download = fileWithId.fileName; // Nombre del archivo original
+        enlaceDescarga.download = fileWithId.fileName;
         document.body.appendChild(enlaceDescarga);
         enlaceDescarga.click();
-  
+
         toast.success('Archivo descargado exitosamente.');
-        console.log(`Archivo descargado: ${fileWithId.fileName}`);
       } else {
-        console.error('Error al descargar el archivo:', resultado);
         toast.error('Error al descargar el archivo.');
       }
     } catch (error) {
-      console.error('Error al descargar el archivo:', error);
       toast.error('Error al descargar el archivo.');
     }
-  };  
+  };
+
+  const manejarEliminarArchivo = async () => {
+    if (!fileId) return toast.error('Por favor, ingresa un ID de archivo válido.');
+    
+    try {
+      const archivoId = parseInt(fileId, 10);
+      if (isNaN(archivoId)) return toast.error('ID del archivo no es un número válido.');
+
+      // Llamar a la función para eliminar el archivo
+      const resultado = await AII_backend.requestDeleteFile(archivoId);
+      if (resultado.Ok) {
+        toast.success('Archivo eliminado exitosamente.');
+      } else {
+        toast.error('Error al eliminar el archivo: ' + resultado.Err);
+      }
+    } catch (error) {
+      toast.error('Error al eliminar el archivo.');
+    }
+  };
 
   return (
     <div className="subir-archivo-container">
       <h2 className="subir-archivo-heading">Subir Archivo</h2>
       <form onSubmit={manejarSubidaArchivo}>
-        <input
-          type="file"
-          onChange={manejarCambioArchivo}
-          className="subir-archivo-input"
-        />
-        <button type="submit" className="subir-archivo-button">
-          Subir Archivo
-        </button>
+        <input type="file" onChange={manejarCambioArchivo} className="subir-archivo-input" />
+        <button type="submit" className="subir-archivo-button">Subir Archivo</button>
       </form>
 
       {progresoSubida > 0 && <p>Progreso de subida: {progresoSubida}%</p>}
@@ -169,6 +147,9 @@ const SubirArchivo = () => {
       />
       <button onClick={manejarDescargarArchivo} className="subir-archivo-button">
         Descargar Archivo
+      </button>
+      <button onClick={manejarEliminarArchivo} className="subir-archivo-button">
+        Eliminar Archivo
       </button>
 
       <ToastContainer />

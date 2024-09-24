@@ -834,6 +834,31 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
         }
     };
 
+
+    public shared ({ caller }) func requestDeleteFile(fileId: Nat): async Result<Text, Text> {
+
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location {
+            case null { #Err("FileId not found in main canister");};
+            case (?location) {
+                let bucket = Map.get<Principal, Bucket>(buckets, phash, location.canisterId);
+                switch bucket {
+                    case null {#Err("Unexpected error. Error code: Could not find the bucket.");};
+                    case (?bucket) {
+                        let deleteResult = await bucket.deleteFile(location.fileId, caller);
+                        if (deleteResult) {
+                            ignore Map.remove<Nat, StorageLocation>(indexFiles, nhash, fileId);
+                            return #Ok("Archivo eliminado exitosamente.");
+                        } else {
+                            return #Err("Error: No se pudo eliminar el archivo.");
+                        }
+                    };
+                };
+            };
+        }
+    };
+
+
     ////////////////////////////////////// Funciones para gestion de directorio personal de archivos //////////////////////////
     
     // public shared ({caller}) func cd(name: Text): async ? {
