@@ -173,7 +173,7 @@ shared ({caller}) actor class Bucket(maxSize: Nat) = {
     };
     ///////////////////////////// Delete File ///////////////////////////
     public shared ({ caller }) func deleteFile(id: Nat, owner: Principal): async Bool {
-        assert(authorizedCaller(caller));
+        //assert(authorizedCaller(caller));
         let file = Map.remove<Nat, File>(files, nhash, id);
         switch file {
             case null { return false};
