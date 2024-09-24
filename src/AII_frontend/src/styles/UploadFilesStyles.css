@@ -2,45 +2,45 @@
 .subir-archivo-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Cambiamos el centrado de los elementos para alinearlos a la izquierda */
+  align-items: flex-start;
   justify-content: center;
   margin-top: 40px;
   padding: 30px;
-  background-color: #002a40; /* Hacemos el fondo un poco más oscuro para contraste */
+  background-color: #002a40;
   color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6); /* Aumentamos la sombra */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
   width: 90%;
-  max-width: 600px; /* Hacemos el contenedor un poco más amplio */
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
 
 /* Título del componente */
 .subir-archivo-heading {
-  font-size: 1.8rem; /* Aumentamos el tamaño del título */
+  font-size: 1.8rem;
   margin-bottom: 25px;
-  text-align: left; /* Alineamos el título a la izquierda */
+  text-align: left;
   color: #ffffff;
 }
 
 /* Campos de entrada (ID y Principal) */
 .subir-archivo-input {
-  margin-bottom: 20px; /* Aumentamos el espaciado entre los campos */
-  padding: 12px; /* Hacemos las cajas más espaciosas */
+  margin-bottom: 20px;
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  background-color: #f0f0f0; /* Color de fondo más claro para mejor visibilidad */
+  background-color: #f0f0f0;
   color: #00385d;
   width: 100%;
   max-width: 100%;
-  text-align: left; /* Alineamos el texto a la izquierda */
+  text-align: left;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
 .subir-archivo-input::placeholder {
-  color: #888888; /* Hacemos el placeholder de un gris más suave */
+  color: #888888;
 }
 
 /* Botones */
@@ -48,17 +48,17 @@
   background-color: #007acc;
   color: #fff;
   border: none;
-  padding: 10px 18px; /* Reducimos ligeramente el tamaño de los botones */
-  margin-bottom: 10px; /* Añadimos espaciado entre los botones */
+  padding: 10px 18px;
+  margin-bottom: 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-size: 1rem;
-  width: 100%; /* Los botones ocuparán el 100% del ancho del contenedor */
+  width: 100%;
 }
 
 .subir-archivo-button:hover {
-  background-color: #005f99; /* Un color más oscuro al pasar el cursor */
+  background-color: #005f99;
 }
 
 /* Mensaje de progreso */
@@ -74,16 +74,16 @@ h3 {
   margin-bottom: 20px;
   font-size: 1.4rem;
   color: #ffffff;
-  text-align: left; /* Alineamos los subtítulos a la izquierda */
+  text-align: left;
 }
 
 /* Media queries para pantallas más pequeñas */
 @media screen and (max-width: 768px) {
   .subir-archivo-container {
-    width: 95%; /* Ajustamos el ancho del contenedor en pantallas más pequeñas */
+    width: 95%;
   }
 
   .subir-archivo-button {
-    padding: 10px; /* Reducimos el tamaño del padding en botones */
+    padding: 10px;
   }
 }
