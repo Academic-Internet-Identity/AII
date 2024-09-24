@@ -858,6 +858,75 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
         }
     };
 
+    ////////////////////////////////////// Compartir archivos /////////////////////////////////////////////////
+    public shared ({ caller }) func shareFileWithPrincipalInMain(fileId: Nat, p: Principal): async Result<[Principal], Text> {
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location {
+            case null { #Err("FileId not found in main canister") };
+            case (?location) {
+                let bucket = Map.get<Principal, Bucket>(buckets, phash, location.canisterId);
+                switch bucket {
+                    case null { #Err("Bucket not found") };
+                    case (?bucket) {
+                        let shareResponse = await bucket.shareFileWithPrincipal(location.fileId, p);
+                        #Ok(shareResponse);
+                    };
+                };
+            };
+        }
+    };
+
+    // Nueva función que solo devuelve el principal del bucket donde está el archivo
+    public shared ({ caller }) func getBucketPrincipalForFile(fileId: Nat): async Result<Principal, Text> {
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location {
+            case null { #Err("FileId not found in main canister") };
+            case (?location) {
+                // Devolver el Principal del bucket
+                #Ok(location.canisterId);
+            };
+        }
+    };
+
+
+    ///////////////////////////////////// Dejar de compartir archivos ////////////////////////////////////////////
+    public shared ({ caller }) func stopShareFileWithPrincipalInMain(fileId: Nat, p: Principal): async Result<(), Text> {
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location {
+            case null { #Err("FileId not found in main canister") };
+            case (?location) {
+                let bucket = Map.get<Principal, Bucket>(buckets, phash, location.canisterId);
+                switch bucket {
+                    case null { #Err("Bucket not found") };
+                    case (?bucket) {
+                        let _ = await bucket.stopShareFileWithPrincipal(location.fileId, p);
+                        #Ok(());
+                    };
+                };
+            };
+        }
+    };
+
+    public shared ({ caller }) func stopShareFileInMain(fileId: Nat): async Result<(), Text> {
+        let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
+        switch location {
+            case null { #Err("FileId not found in main canister") };
+            case (?location) {
+                let bucket = Map.get<Principal, Bucket>(buckets, phash, location.canisterId);
+                switch bucket {
+                    case null { #Err("Bucket not found") };
+                    case (?bucket) {
+                        let _ = await bucket.stopShareFile(location.fileId);
+                        #Ok(());
+                    };
+                };
+            };
+        }
+    };
+
+
+
+
 
     ////////////////////////////////////// Funciones para gestion de directorio personal de archivos //////////////////////////
     

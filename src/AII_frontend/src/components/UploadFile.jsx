@@ -13,9 +13,11 @@ const SubirArchivo = () => {
   const [progresoSubida, setProgresoSubida] = useState(0);
   const [AII_backend] = useCanister('AII_backend');
   const [fileId, setFileId] = useState(''); // ID del archivo ingresado por el usuario para descargar/eliminar
+  const [principalToShare, setPrincipalToShare] = useState(''); // Principal con el que compartir el archivo
 
   const manejarCambioArchivo = (evento) => setArchivo(evento.target.files[0]);
   const manejarCambioFileId = (evento) => setFileId(evento.target.value);
+  const manejarCambioPrincipal = (evento) => setPrincipalToShare(evento.target.value);
 
   const crearActorParaBucket = async (canisterId) => {
     let authClient = await AuthClient.create();
@@ -127,6 +129,111 @@ const SubirArchivo = () => {
     }
   };
 
+  const manejarCompartirArchivo = async () => {
+    if (!fileId || !principalToShare) return toast.error('Por favor, ingresa un ID de archivo y un Principal válido.');
+    
+    try {
+      const archivoId = parseInt(fileId, 10);
+      if (isNaN(archivoId)) return toast.error('ID del archivo no es un número válido.');
+      
+      // Obtener el Principal del bucket desde el canister principal (Main)
+      const resultado = await AII_backend.getBucketPrincipalForFile(archivoId);
+      if (resultado.Ok) {
+        const bucketPrincipal = resultado.Ok;
+        console.log('Principal del bucket:', bucketPrincipal);
+  
+        // Crear actor para el bucket usando el Principal retornado
+        const bucketActor = await crearActorParaBucket(bucketPrincipal);
+        const principal = Principal.fromText(principalToShare);
+        console.log('Principal para compartir:', principal);
+  
+        // Llamar directamente a la función de compartir en el bucket
+        const compartirResultado = await bucketActor.shareFileWithPrincipal(archivoId, principal);
+        console.log('Resultado de compartir archivo:', compartirResultado);
+  
+        if (compartirResultado) {
+          toast.success('Archivo compartido exitosamente.');
+        } else {
+          toast.error('Error al compartir el archivo.');
+        }
+      } else {
+        toast.error(`Error al obtener el Principal del bucket: ${resultado.Err}`);
+      }
+    } catch (error) {
+      console.error('Error al compartir el archivo:', error);
+      toast.error('Error al compartir el archivo.');
+    }
+  };  
+
+
+  const manejarDejarDeCompartirArchivo = async () => {
+    if (!fileId || !principalToShare) return toast.error('Por favor, ingresa un ID de archivo y un Principal válido.');
+    
+    try {
+      const archivoId = parseInt(fileId, 10);
+      if (isNaN(archivoId)) return toast.error('ID del archivo no es un número válido.');
+  
+      // Obtener el Principal del bucket desde el canister principal (Main)
+      const resultado = await AII_backend.getBucketPrincipalForFile(archivoId);
+      if (resultado.Ok) {
+        const bucketPrincipal = resultado.Ok;
+        console.log('Principal del bucket:', bucketPrincipal);
+  
+        // Crear actor para el bucket usando el Principal retornado
+        const bucketActor = await crearActorParaBucket(bucketPrincipal);
+        const principal = Principal.fromText(principalToShare);
+  
+        // Llamar directamente a la función de dejar de compartir en el bucket
+        const stopShareResultado = await bucketActor.stopShareFileWithPrincipal(archivoId, principal);
+        if (stopShareResultado.Ok !== undefined) {
+          toast.success('Se ha dejado de compartir con el Principal especificado.');
+        } else {
+          toast.error('Error al dejar de compartir el archivo.');
+          console.log('Error al dejar de compartit: ',stopShareResultado)
+        }
+      } else {
+        toast.error(`Error al obtener el Principal del bucket: ${resultado.Err}`);
+      }
+    } catch (error) {
+      console.error('Error al dejar de compartir el archivo:', error);
+      toast.error('Error al dejar de compartir el archivo.');
+    }
+  };
+  
+
+  const manejarDetenerComparticion = async () => {
+    if (!fileId) return toast.error('Por favor, ingresa un ID de archivo válido.');
+    
+    try {
+      const archivoId = parseInt(fileId, 10);
+      if (isNaN(archivoId)) return toast.error('ID del archivo no es un número válido.');
+  
+      // Obtener el Principal del bucket desde el canister principal (Main)
+      const resultado = await AII_backend.getBucketPrincipalForFile(archivoId);
+      if (resultado.Ok) {
+        const bucketPrincipal = resultado.Ok;
+        console.log('Principal del bucket:', bucketPrincipal);
+  
+        // Crear actor para el bucket usando el Principal retornado
+        const bucketActor = await crearActorParaBucket(bucketPrincipal);
+  
+        // Llamar directamente a la función de detener la compartición en el bucket
+        const stopShareResultado = await bucketActor.stopShareFile(archivoId);
+        if (stopShareResultado.Ok !== undefined) {
+          toast.success('Se ha dejado de compartir el archivo completamente.');
+        } else {
+          toast.error('Error al detener la compartición del archivo.');
+        }
+      } else {
+        toast.error(`Error al obtener el Principal del bucket: ${resultado.Err}`);
+      }
+    } catch (error) {
+      console.error('Error al detener la compartición del archivo:', error);
+      toast.error('Error al detener la compartición del archivo.');
+    }
+  };
+  
+
   return (
     <div className="subir-archivo-container">
       <h2 className="subir-archivo-heading">Subir Archivo</h2>
@@ -145,9 +252,30 @@ const SubirArchivo = () => {
         onChange={manejarCambioFileId}
         className="subir-archivo-input"
       />
+      <input
+        type="text"
+        placeholder="Ingresa el Principal para compartir"
+        value={principalToShare}
+        onChange={manejarCambioPrincipal}
+        className="subir-archivo-input"
+      />
+      
+      <button onClick={manejarCompartirArchivo} className="subir-archivo-button">
+        Compartir Archivo con Principal
+      </button>
+      
+      <button onClick={manejarDejarDeCompartirArchivo} className="subir-archivo-button">
+        Dejar de Compartir con Principal
+      </button>
+
+      <button onClick={manejarDetenerComparticion} className="subir-archivo-button">
+        Detener Compartición Total
+      </button>
+
       <button onClick={manejarDescargarArchivo} className="subir-archivo-button">
         Descargar Archivo
       </button>
+      
       <button onClick={manejarEliminarArchivo} className="subir-archivo-button">
         Eliminar Archivo
       </button>
