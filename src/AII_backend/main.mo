@@ -1379,6 +1379,7 @@ public shared ({ caller }) func actualizarCalificacionPorMateria(grupoId: Text, 
     };
 
     public shared ({ caller }) func getBalance() : async Nat {
+        Debug.print("El caller es: " # Principal.toText(caller));
         let account = { owner = caller; subaccount = null };
         let balance = await ckbtcLedger.icrc1_balance_of(account);
         return balance;
