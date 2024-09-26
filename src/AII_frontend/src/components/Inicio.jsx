@@ -6,6 +6,7 @@ import { useCanister } from '@connect2ic/react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/inicioStyles.css';
 import UploadFile from './UploadFile';
+import PagarConPlug from './PagarConPlug';
 
 function Inicio() {
   const { principal } = useUser();
@@ -72,6 +73,7 @@ function Inicio() {
       ) : (
         <p className="principal-text">No se ha encontrado el principal</p>
       )}
+      <PagarConPlug />
       <UploadFile />
     </div>
   );
