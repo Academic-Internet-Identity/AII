@@ -1,36 +1,44 @@
 import React, { useState } from 'react';
+import { useCanister } from '@connect2ic/react';
+import { Principal } from '@dfinity/principal';  // Asegúrate de importar Principal
+import { useUser } from '../UserContext';  // Importa el contexto de usuario
 
 const PagarConPlug = () => {
+  const { principal } = useUser();  // Obtén el principal desde el contexto de usuario
   const [isPaying, setIsPaying] = useState(false);
   const [amount, setAmount] = useState(''); // Estado para el monto ingresado por el usuario
   const [selectedToken, setSelectedToken] = useState('ICP'); // Estado para seleccionar token
 
   const predefinedRecipient = "tvggu-rti2w-hwwp4-efuir-mkqq6-xujb3-quzh5-ecbad-u62dy-slahw-nae"; // Destinatario predefinido
 
-  // Información de los tokens disponibles
-  const tokens = {
-    ICP: {
-      id: '',  // ICP no necesita un canister específico
-    },
-    ckBTC: {
-      id: 'mxzaz-hqaaa-aaaar-qaada-cai', // Canister ID para ckBTC
-      standard: 'ICRC1' // Estándar del token ckBTC
-    },
+  // Usa el hook useCanister para obtener el canister principal 'AII_backend'
+  const [AII_backend] = useCanister('AII_backend');
+
+  // Function to get the user's ckBTC balance
+  const getBalance = async () => {
+    try {
+      const balance = await AII_backend.getBalance();
+      console.log('Balance actual de ckBTC:', balance.toString());
+      return balance;
+    } catch (error) {
+      console.error('Error al obtener el balance:', error);
+      return 0;
+    }
   };
 
-  // Función para autenticar y realizar el pago
+  // Function for payment handling (ICP & ckBTC)
   const handleAutenticarYPagar = async () => {
     setIsPaying(true); // Desactivar el botón de pago mientras se procesa
 
     try {
-      // Verificar que Plug Wallet esté disponible
+      // Verificar que Plug Wallet esté disponible para ICP
       if (!window.ic?.plug) {
         console.error('Plug Wallet no está instalado o disponible.');
         setIsPaying(false);
         return;
       }
 
-      // Verificar si Plug está conectado, si no, solicitar conexión
+      // Conectar a Plug Wallet si no está conectado
       const isConnected = await window.ic.plug.isConnected();
       if (!isConnected) {
         const connectionResult = await window.ic.plug.requestConnect();
@@ -39,38 +47,41 @@ const PagarConPlug = () => {
         }
       }
 
-      // Validar el monto ingresado por el usuario
+      // Validar el monto ingresado
       if (!amount || isNaN(amount) || amount <= 0) {
         throw new Error('Por favor, ingresa un monto válido.');
       }
 
-      // Configurar los parámetros de la transacción dependiendo del token seleccionado
+      // Imprime el principal obtenido desde el contexto de usuario
+      console.log('Principal del usuario conectado (desde contexto):', principal);
+
+      // Obtener el balance antes de la transacción
+      const balance = await getBalance();
+      if (BigInt(parseFloat(amount) * 100000000) > balance) {
+        throw new Error('Fondos insuficientes');
+      }
+
+      // Lógica de transacción basada en el token seleccionado
       if (selectedToken === 'ICP') {
-        // Transacción de ICP
+        // Transacción de ICP usando Plug Wallet
         const transactionParams = {
           to: predefinedRecipient,
           amount: parseFloat(amount) * 100000000,  // Convertir a e8s (ICP tiene 8 decimales)
         };
-        await window.ic.plug.requestTransfer(transactionParams);
+        const result = await window.ic.plug.requestTransfer(transactionParams);
+        console.log('Resultado de la transacción ICP:', result);
+
       } else if (selectedToken === 'ckBTC') {
-        // Transacción de ckBTC usando ICRC-1 estándar
-        const transactionParams = {
-          to: predefinedRecipient,
-          strAmount: amount,  // El monto debe estar en formato string para ckBTC
-          token: tokens.ckBTC.id,  // Canister ID para ckBTC
-          standard: tokens.ckBTC.standard,  // Estándar de ckBTC
-          // opts es opcional, si no deseas especificar el fee o memo puedes dejarlo vacío
-          opts: {
-            memo: "ckBTC payment", // Memo opcional para la transacción
-          },
-        };
-        console.log("Enviando transferencia ckBTC:", transactionParams);
-        const result = await window.ic.plug.requestTransferToken(transactionParams);
-        console.log("Resultado de la transferencia:", result);
+        // Convertir el predefinedRecipient a Principal
+        const recipientPrincipal = Principal.fromText(predefinedRecipient);
+
+        // Transacción de ckBTC usando la función `transferTokens` del canister 'AII_backend'
+        const result = await AII_backend.transferTokens(recipientPrincipal, BigInt(parseFloat(amount) * 100000000));
+        console.log('Resultado de la transacción ckBTC:', result);
       }
 
     } catch (error) {
-      console.error('Error al intentar realizar el pago con Plug:', error);
+      console.error('Error al intentar realizar el pago:', error);
     } finally {
       setIsPaying(false); // Reactivar el botón después del proceso
     }

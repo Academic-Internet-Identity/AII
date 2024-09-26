@@ -2,7 +2,6 @@ import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
 import Map "mo:map/Map";
-//import { thash; phash } "mo:map/Map";
 import Text "mo:base/Text";
 import Set "mo:map/Set";
 import Debug "mo:base/Debug";
@@ -10,12 +9,11 @@ import Types "./types";
 import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
-//import Time "mo:base/Time";
 import Bucket "bucket";
 import { thash; nhash; phash } "mo:map/Map";
-//import Principal "mo:base/Principal";
-//import Types "types";
 import Prim "mo:⛔";
+import ckbtcLedger "canister:icrc1_ledger";
+
 
 
 shared ({ caller }) actor class _Plataforma() {
@@ -1350,5 +1348,39 @@ public shared ({ caller }) func actualizarCalificacionPorMateria(grupoId: Text, 
         "\", \"nombre\": \"" # alumno.nombre #
         "\", \"semestre\": " # Nat.toText(alumno.semestre) #
         "}"
-    }
+    };
+
+
+////////////////////////////// PAGOS CON CKBTC //////////////////////////////////
+
+    public shared ({ caller }) func transferTokens(to: Principal, amount: Nat) : async Text {
+        //let fromAccount = { owner = caller; subaccount = null };
+        let toAccount = { owner = to; subaccount = null };
+    
+        let transferArgs = {
+            from_subaccount = null;
+            to = toAccount;
+            amount = amount;
+            fee = null; // Se aplicará la tarifa predeterminada del ledger
+            memo = null;
+            created_at_time = null;
+        };
+
+        let result = await ckbtcLedger.icrc1_transfer(transferArgs);
+    
+        switch (result) {
+            case (#Ok(txIndex)) {
+                return "Transferencia exitosa. Índice de transacción: " # Nat.toText(txIndex);
+            };
+            case (#Err(error)) {
+                return "Error en la transferencia: " # debug_show(error);
+            };
+        };
+    };
+
+    public shared ({ caller }) func getBalance() : async Nat {
+        let account = { owner = caller; subaccount = null };
+        let balance = await ckbtcLedger.icrc1_balance_of(account);
+        return balance;
+    };
 };
