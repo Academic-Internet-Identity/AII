@@ -73,7 +73,6 @@ function Inicio() {
       ) : (
         <p className="principal-text">No se ha encontrado el principal</p>
       )}
-      <PagarConPlug />
       <UploadFile />
     </div>
   );

@@ -148,6 +148,10 @@
     width: 90%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
+
+  .confirm-modal-content p {
+    color: #00385d;
+  }
   
   .confirm-button,
   .cancel-button {

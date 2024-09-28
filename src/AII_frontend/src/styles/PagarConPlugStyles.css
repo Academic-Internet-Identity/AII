@@ -1,0 +1,80 @@
+/* Contenedor principal del componente de pago */
+.pagar-plug-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f0f2f5;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  /* Grupo de formulario con select y input */
+  .pagar-form-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Select para los tokens (estilo del select desactivado) */
+  .select-token {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    width: 40%;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: not-allowed;
+  }
+  
+  /* Input del monto con diseño mejorado */
+  .input-amount {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    width: 55%;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: right;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  /* Efecto de foco en el input */
+  .styled-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+  }
+  
+  /* Botón de "Autenticar y Pagar" */
+  .autenticar-pagar-button {
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    background: linear-gradient(94.95deg, #00D4FF -1.41%, #FF00D4 34.12%, #FFD400 70.19%, #00FF85 101.95%);
+    border-radius: 12px;
+    color: #ffffff;
+    padding: 12px 40px;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in, transform 0.3s ease-in-out;
+    transform: scale(1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Hover y efectos para el botón */
+  .autenticar-pagar-button:hover {
+    opacity: 0.94;
+    transform: scale(1.05);
+  }
+  
+  .autenticar-pagar-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }  

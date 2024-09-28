@@ -85,6 +85,14 @@
   width: 100%;
 }
 
+.info-modal-content p {
+  color: #00385d;
+}
+
+.confirm-modal-content p {
+  color: #00385d;
+}
+
 .close-button,
 .confirm-button,
 .cancel-button {
