@@ -10,6 +10,9 @@ The AII (School Management Platform) is a system developed for efficient managem
 - Management of subjects and schedules. (Developing)
 - Creation and management of groups and assignment of subjects. (Developing)
 - Integration with external APIs for data querying.
+- Payment handling: Users can make secure payments through the platform.
+- File management: Users can upload, share, and delete files.
+- Request and process generation: Supports the creation and tracking of academic or administrative requests.
 - Administration panel for approval of registrations.
 - User interface developed in React.
 - Backend developed in Motoko
