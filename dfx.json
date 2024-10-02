@@ -8,16 +8,6 @@
       "main": "src/AII_backend/bucket.mo",
       "type": "motoko"
     },
-    "icrc1_ledger": {
-      "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/24fd80082f40de6d0b3cd7876be09ef1aadbde86/rs/rosetta-api/icrc1/ledger/ledger.did",
-      "wasm": "https://download.dfinity.systems/ic/24fd80082f40de6d0b3cd7876be09ef1aadbde86/canisters/ic-icrc1-ledger.wasm.gz",
-      "remote": {
-        "id": {
-          "ic": "mxzaz-hqaaa-aaaar-qaada-cai"
-        }
-      }
-    },
     "AII_frontend": {
       "dependencies": [
         "AII_backend"
