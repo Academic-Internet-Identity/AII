@@ -38,6 +38,7 @@ import FormularioServicios from './components/FormularioServicios';
 import VerTramites from './components/VerTramites';
 import VerMisTramites from './components/VerMisTramites';
 import CrudCarreras from './components/CrudCarreras';
+import UploadFile from './components/UploadFile';
 
 const client = createClient({
   canisters: {
@@ -143,6 +144,7 @@ function AppRoutes() {
         <Route path="/ver-tramites" element={<VerTramites />}/>
         <Route path="/mis-tramites" element={<VerMisTramites />}/>
         <Route path="/gestionar-carreras" element={<CrudCarreras />}/>
+        <Route path="/gestionar-archivos" element={<UploadFile />}/>
       </Routes>
     </>
   );

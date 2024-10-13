@@ -768,7 +768,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     ///////////////////////// Upload File /////////////////////
 
     public shared ({ caller }) func getStorageFor(fileName : Text, fileSize : Nat) : async StoreRequestResponse {
-        //assert(isUser(caller));
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
 
         var bestCandidate : ?{entry: (Principal, Bucket); size: Nat} = null;
         for ((principal, bucket) in Map.entries(buckets)) {
@@ -811,6 +811,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     /// se accedera desde el front a la descarga directa de los fragmentos del archivo alojados en el bucket
 
     public shared ({ caller }) func readRequest(fileId: Nat): async Result<ReadFileResponse, Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
         
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location{
@@ -834,6 +835,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 
 
     public shared ({ caller }) func requestDeleteFile(fileId: Nat): async Result<Text, Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
 
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location {
@@ -858,6 +860,8 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 
     ////////////////////////////////////// Compartir archivos /////////////////////////////////////////////////
     public shared ({ caller }) func shareFileWithPrincipalInMain(fileId: Nat, p: Principal): async Result<[Principal], Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
+
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location {
             case null { #Err("FileId not found in main canister") };
@@ -876,6 +880,8 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 
     // Nueva función que solo devuelve el principal del bucket donde está el archivo
     public shared ({ caller }) func getBucketPrincipalForFile(fileId: Nat): async Result<Principal, Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
+
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location {
             case null { #Err("FileId not found in main canister") };
@@ -889,6 +895,8 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 
     ///////////////////////////////////// Dejar de compartir archivos ////////////////////////////////////////////
     public shared ({ caller }) func stopShareFileWithPrincipalInMain(fileId: Nat, p: Principal): async Result<(), Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
+
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location {
             case null { #Err("FileId not found in main canister") };
@@ -906,6 +914,8 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
     };
 
     public shared ({ caller }) func stopShareFileInMain(fileId: Nat): async Result<(), Text> {
+        assert (esAdmin(caller) or esAdministrativo(caller) or esAlumno(caller) or esDocente(caller));
+        
         let location = Map.get<Nat, StorageLocation>(indexFiles, nhash, fileId);
         switch location {
             case null { #Err("FileId not found in main canister") };

@@ -66,14 +66,14 @@ function Inicio() {
         <>
           <p className="principal-text">Principal: {principal}</p>
           <p className="rol-text">Rol: {rol}</p>
-          <button onClick={handleConsultaAlumnosClick} className="consulta-alumnos-button">
+         {/* <button onClick={handleConsultaAlumnosClick} className="consulta-alumnos-button">
             Consultar Alumnos HTTP outcall
           </button>
+          */}
         </>
       ) : (
         <p className="principal-text">No se ha encontrado el principal</p>
       )}
-      <UploadFile />
     </div>
   );
 }

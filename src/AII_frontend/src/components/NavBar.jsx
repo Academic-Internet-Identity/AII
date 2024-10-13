@@ -1,18 +1,20 @@
+// NavBar.jsx
+
 import React, { useEffect, useState } from 'react';
-import { Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap'; // Importa Modal y Button
+import { Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useConnect, useCanister } from '@connect2ic/react';
 import { useUser } from '../UserContext';
-import PagarConPlug from './PagarConPlug'; // Importa tu componente de pago
+import PagarConPlug from './PagarConPlug';
 import '../styles/navBarStyles.css'; // Importa estilos personalizados
-import logo from '/logo-completo-utma.png'; // Logo personalizado
+import logo from '/logo-completo-utma.png';
 
 function NavBar() {
   const { isConnected, disconnect, connect, principal: connectPrincipal } = useConnect();
   const { principal, setPrincipal, setRol, rol, resetUser } = useUser();
   const navigate = useNavigate();
   const [AII_backend] = useCanister('AII_backend');
-  const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (isConnected && connectPrincipal) {
@@ -52,7 +54,7 @@ function NavBar() {
 
       fetchUserRole();
     } else {
-      resetUser(); // Resetea el estado cuando se desconecta
+      resetUser();
     }
   }, [isConnected, connectPrincipal, AII_backend, setPrincipal, setRol, resetUser]);
 
@@ -62,12 +64,12 @@ function NavBar() {
 
   const handleLogout = async () => {
     await disconnect();
-    resetUser(); // Resetea el estado del usuario al desconectarse
+    resetUser();
     navigate('/');
   };
 
-  const handleShowModal = () => setShowModal(true); // Función para abrir el modal
-  const handleCloseModal = () => setShowModal(false); // Función para cerrar el modal
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   return (
     <>
@@ -91,6 +93,7 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/mi-horario">Mi Horario</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/formulario-servicios">Iniciar Trámite</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/mis-tramites">Mis Trámites</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/gestionar-archivos">Subir Archivo</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
                 </>
               )}
@@ -99,6 +102,7 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/gestionar-calificaciones">Calificaciones</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/horarios">Horarios</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/gestionar-archivos">Subir Archivo</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
                 </>
               )}
@@ -126,6 +130,7 @@ function NavBar() {
                   <NavDropdown.Item as={Link} to="/gestionar-carreras">Gestionar Carreras</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/ingles">Inglés</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/ver-tramites">Ver Trámites</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/gestionar-archivos">Subir Archivo</NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/mi-perfil">Mi Perfil</NavDropdown.Item>
                 </>
               )}
@@ -135,7 +140,6 @@ function NavBar() {
             {isConnected ? (
               <>
                 <Nav.Link onClick={handleLogout}>Cerrar Sesión</Nav.Link>
-                {/* Botón Pagar en la esquina derecha */}
                 <Button variant="primary" onClick={handleShowModal} className="ml-2 pagar-button">
                   Pagar
                 </Button>
@@ -147,7 +151,6 @@ function NavBar() {
         </Navbar.Collapse>
       </Navbar>
 
-      {/* Modal para el componente PagarConPlug */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Realizar Pago</Modal.Title>
