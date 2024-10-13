@@ -5,8 +5,6 @@ import { useUser } from '../UserContext';
 import { useCanister } from '@connect2ic/react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/inicioStyles.css';
-import UploadFile from './UploadFile';
-import PagarConPlug from './PagarConPlug';
 
 function Inicio() {
   const { principal } = useUser();
