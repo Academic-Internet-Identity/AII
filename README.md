@@ -7,8 +7,8 @@ The AII (School Management Platform) is a system developed for efficient managem
 ## Features
 
 - Registration and management of users with different roles: students, administrative staff, and teachers.
-- Management of subjects and schedules. (Developing)
-- Creation and management of groups and assignment of subjects. (Developing)
+- Management of subjects and schedules.
+- Creation and management of groups and assignment of subjects.
 - Integration with external APIs for data querying.
 - Payment handling: Users can make secure payments through the platform.
 - File management: Users with role Student, Teacher or Administrative can upload, share, and delete files.
