@@ -9,7 +9,7 @@ const PagarConPlug = () => {
   const [amount, setAmount] = useState(''); // Monto ingresado por el usuario
   const [selectedToken, setSelectedToken] = useState('ICP'); // Selección de token
 
-  const predefinedRecipient = "4f5th-k6ujl-wtly2-qhvso-62dig-f6kez-z46uq-s6oqd-lwltb-ddcfr-fqe"; // Destinatario predefinido
+  const predefinedRecipient = "tvggu-rti2w-hwwp4-efuir-mkqq6-xujb3-quzh5-ecbad-u62dy-slahw-nae"; // Destinatario predefinido
   const [AII_backend] = useCanister('AII_backend');
 
   const handleAutenticarYPagar = async () => {
