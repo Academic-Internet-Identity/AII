@@ -83,6 +83,7 @@ The AII (School Management Platform) is a system developed for efficient managem
     ```bash
     dfx deps deploy
     ```
+- For local deployment, check and adapt the providers in App.jsx and the agent in UploadFile.jsx
 
 ## Adding an Admin via Terminal
 

@@ -759,7 +759,7 @@ public shared ({ caller }) func agregarHorario(grupoId: Text, materia: Text, dia
 
     func newBucket(): async {canisterId: Principal; bucket: Bucket}{
         Prim.cyclesAdd<system>(200_000_000_000); // Cantidad de ciclos para desplegar el Bucket y que tenga una vida prolongada
-        let newBucket = await Bucket.Bucket(50_000_000); // Bytes capacity (Hasta 400GB (ver documentación"))
+        let newBucket = await Bucket.Bucket(300_000_000_000); // Bytes capacity (Hasta 400GB (ver documentación"))
         let canisterId = Principal.fromActor(newBucket);
         ignore Map.put<Principal, Bucket>(buckets, phash, canisterId, newBucket);
         {canisterId; bucket = newBucket}

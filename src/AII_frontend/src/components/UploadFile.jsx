@@ -24,9 +24,9 @@ const SubirArchivo = () => {
     const currentIdentity = authClient.getIdentity();
     if (!currentIdentity) throw new Error("Identidad no disponible. Asegúrate de estar autenticado.");
 
-    const agent = new HttpAgent({ host: 'http://localhost:8000', identity: currentIdentity });
-    //const agent = new HttpAgent({ host: 'https://ic0.app', identity: currentIdentity }); //mainnet
-    await agent.fetchRootKey().catch((err) => console.warn('Error fetching root key for local dev', err)); //only local
+    const agent = new HttpAgent({ host: 'https://ic0.app', identity: currentIdentity }); //mainnet
+    //await agent.fetchRootKey().catch((err) => console.warn('Error fetching root key for local dev', err)); //only local
+    //const agent = new HttpAgent({ host: 'http://localhost:8000', identity: currentIdentity }); //only local
 
     return Actor.createActor(bucket_idlFactory, { agent, canisterId });
   };
