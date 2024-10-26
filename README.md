@@ -1,5 +1,10 @@
 # Academic Internet Identity
 
+## Video Explain:
+[![Video en Google Drive](https://img.shields.io/badge/Ver%20video%20en-Google%20Drive-blue)](https://drive.google.com/file/d/1mDyerCRnwNef42G6no_yHTnjErZAGBCR/view?usp=drivesdk)
+[![Ver video en Google Drive](https://img.icons8.com/ios/452/play--v1.png)](https://drive.google.com/file/d/1mDyerCRnwNef42G6no_yHTnjErZAGBCR/view?usp=drivesdk)
+
+
 ## Description
 
 The AII (School Management Platform) is a system developed for efficient management of users, subjects, and schedules at the Universidad Tecnológica Metropolitana de Aguascalientes (UTMA), with the possibility of expanding the scope. The system allows the management of profiles for students, administrative staff, and teachers, as well as integrating functionalities for querying information through HTTP calls to external APIs.
