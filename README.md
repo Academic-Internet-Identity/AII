@@ -1,14 +1,13 @@
 # Academic Internet Identity
 
 ## Video Explain:
+
 [![Video en Google Drive](https://img.shields.io/badge/Ver%20video%20en-Google%20Drive-blue)](https://drive.google.com/file/d/1mDyerCRnwNef42G6no_yHTnjErZAGBCR/view?usp=drivesdk)
 [![Ver video en Google Drive](https://img.icons8.com/ios/452/play--v1.png)](https://drive.google.com/file/d/1mDyerCRnwNef42G6no_yHTnjErZAGBCR/view?usp=drivesdk)
 
 ## Live Application
 
 [![Visit Live Application](https://img.shields.io/badge/Visit%20Live%20Application-ICP-blue)](https://cj2kt-2yaaa-aaaag-qkfoa-cai.icp0.io/)
-
-
 
 ## Description
 
@@ -37,9 +36,25 @@ The AII (School Management Platform) is a system developed for efficient managem
 
 ### Prerequisites
 
-- Node.js and npm installed
-- DFX (Dfinity SDK) configured and running
+- Node.js and npm installed, node 20
+
+```
+node --version
+```
+
+- DFX (Dfinity SDK) configured and running, dfx 0.20.1
+
+```
+dfx --version
+```
+
 - Internet Identity configured for local development
+- Global install mops and ic-mops
+
+```
+npm install -g ic-mops@1.9.0 mops@3.0.2
+npm ls -g
+```
 
 ### Installation
 
@@ -53,55 +68,48 @@ The AII (School Management Platform) is a system developed for efficient managem
 2. **Install frontend dependencies:**
 
    ```bash
-   cd AII_frontend
+   cd src/AII_frontend
    npm install
    ```
 
 3. **Verify Mops:**
-   
-   - Clone the Mops repository and build the tool:
-     ```bash
-     git clone https://github.com/ZenVoich/mops.git
-     cd mops/cli
-     npm install
-     npm link
-     ```
 
-   - Navigate to your project directory and initialize Mops in your project:
-     ```bash
-     cd ../../AII
-     mops init
-     ```
+   Add the necessary dependencies using Mops:
 
-   - Add the necessary dependencies using Mops:
-     ```bash
-     mops add base
-     mops add Map
-     mops install
-     ```
+   ```bash
+   mops install
+   ```
 
 4. **Deploy the project:**
 
    ```bash
-   cd ../AII_backend
-   dfx start --background
-   dfx deploy
+   cd src/AII_backend
+   dfx start --background --clean
    ```
 
 - To deploy your Internet Computer application locally, you need to use the `deps`.
 
-    ```bash
-    dfx deps deploy
-    ```
+  ```bash
+  dfx deps pull
+  dfx deps deploy
+  ```
+
+  ```bash
+  dfx deploy
+  ```
+
+- When the process ask you for a number for a Nat, you must type **10_000_000**, this is for a first buket canister
+
 - For local deployment, check and adapt the providers in App.jsx and the agent in UploadFile.jsx
 
 ## Adding an Admin via Terminal
 
 To add a user as an admin in your Internet Computer application using the terminal, use the following `dfx` command. Replace `<USER_PRINCIPAL>` with the actual principal ID of the user you want to add as an admin.
 
-   ```bash
-   dfx canister call AII_backend agregarAdmin '(principal "<USER_PRINCIPAL>")'
-   ```
+```bash
+dfx canister call AII_backend agregarAdmin '(principal "<USER_PRINCIPAL>")'
+```
+
 - Only the deployer can designate a user as an admin using the terminal.
 - An admin user can approve and manage all the services of the platform.
 
@@ -138,6 +146,7 @@ To add a user as an admin in your Internet Computer application using the termin
 1. **Development Environment Setup:**
 
    Ensure you have the following prerequisites installed before starting development:
+
    - Node.js and npm
    - DFX (Dfinity SDK)
    - Internet Identity configured
@@ -163,6 +172,7 @@ To add a user as an admin in your Internet Computer application using the termin
 
 - **How can I restart the development environment?**
   To restart the development environment, you can stop and restart the DFX service:
+
   ```bash
   dfx stop
   dfx start --background --clean
@@ -170,6 +180,7 @@ To add a user as an admin in your Internet Computer application using the termin
 
 - **How can I check the deployment status of the canisters?**
   You can use the `dfx canister status` command to check the deployment status of the canisters:
+
   ```bash
   dfx canister status canister_name
   ```
@@ -177,3 +188,6 @@ To add a user as an admin in your Internet Computer application using the termin
 - **Where can I find more information about using DFX, Motoko and ICP?**
   The official Internet Computer documentation provides detailed guides and examples on using DFX and developing in Motoko and other languages. Visit [Internet Computer Developer Documentation](https://internetcomputer.org/docs/current/home).
 
+```
+
+```
