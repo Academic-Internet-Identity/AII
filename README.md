@@ -38,23 +38,23 @@ The AII (School Management Platform) is a system developed for efficient managem
 
 - Node.js and npm installed, node 20
 
-```
-node --version
-```
+  ```
+  node --version
+  ```
 
 - DFX (Dfinity SDK) configured and running, dfx 0.20.1
 
-```
-dfx --version
-```
+  ```
+  dfx --version
+  ```
 
 - Internet Identity configured for local development
-- Global install mops and ic-mops
+- Install mops and ic-mops globally
 
-```
-npm install -g ic-mops@1.9.0 mops@3.0.2
-npm ls -g
-```
+  ```
+  npm install -g ic-mops@1.9.0 mops@3.0.2
+  npm ls -g
+  ```
 
 ### Installation
 
@@ -74,9 +74,11 @@ npm ls -g
 
 3. **Verify Mops:**
 
-   Add the necessary dependencies using Mops:
+   Add the necessary dependencies using Mops and Npm(over root directory):
 
    ```bash
+   cd ../../
+   npm install
    mops install
    ```
 
@@ -98,7 +100,7 @@ npm ls -g
   dfx deploy
   ```
 
-- When the process ask you for a number for a Nat, you must type **10_000_000**, this is for a first buket canister
+- When the process asks you to enter a number for a Nat, type **10_000_000**. This is for the first bucket canister
 
 - For local deployment, check and adapt the providers in App.jsx and the agent in UploadFile.jsx
 
